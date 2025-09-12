@@ -2,6 +2,10 @@
 
 This project uses React with Vite and React Router. The application starts in `src/main.tsx`, which provides global context and renders the routes defined in `src/routes.tsx`.
 
+## Environment Variables
+
+- `IMAGE_BASE_URL`: Base URL used by the server to prefix image filenames from `products.csv`.
+
 ## Expanding the ESLint configuration
 
 If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
