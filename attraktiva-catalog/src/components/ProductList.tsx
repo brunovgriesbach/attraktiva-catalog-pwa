@@ -4,12 +4,41 @@ import styles from './ProductList.module.css'
 
 interface ProductListProps {
   products: Product[]
+  searchTerm?: string
+  filter?: string
 }
 
-export default function ProductList({ products }: ProductListProps) {
+export default function ProductList({
+  products,
+  searchTerm = '',
+  filter = 'all',
+}: ProductListProps) {
+  const filteredProducts = products.filter((product) => {
+    const matchesSearch = product.name
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
+
+    let matchesFilter = true
+    switch (filter) {
+      case 'under-10':
+        matchesFilter = product.price < 10
+        break
+      case '10-20':
+        matchesFilter = product.price >= 10 && product.price <= 20
+        break
+      case 'over-20':
+        matchesFilter = product.price > 20
+        break
+      default:
+        matchesFilter = true
+    }
+
+    return matchesSearch && matchesFilter
+  })
+
   return (
     <div className={styles.list}>
-      {products.map((product) => (
+      {filteredProducts.map((product) => (
         <ProductCard key={product.id} product={product} />
       ))}
     </div>
