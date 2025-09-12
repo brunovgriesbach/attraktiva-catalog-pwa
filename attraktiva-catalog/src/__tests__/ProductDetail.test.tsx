@@ -14,10 +14,12 @@ describe('ProductDetail', () => {
         <Routes>
           <Route path="/product/:id" element={<ProductDetail />} />
         </Routes>
-      </MemoryRouter>
+      </MemoryRouter>,
     )
 
-    expect(screen.getByRole('heading', { name: 'Product 1' })).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { name: 'Product 1' }),
+    ).toBeInTheDocument()
     expect(screen.getByText('Description for product 1')).toBeInTheDocument()
   })
 
@@ -27,10 +29,9 @@ describe('ProductDetail', () => {
         <Routes>
           <Route path="/product/:id" element={<ProductDetail />} />
         </Routes>
-      </MemoryRouter>
+      </MemoryRouter>,
     )
 
     expect(screen.getByText('Product not found.')).toBeInTheDocument()
   })
 })
-

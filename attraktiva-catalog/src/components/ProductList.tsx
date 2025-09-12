@@ -27,8 +27,7 @@ export default function ProductList({
             matchesFilter = product.price < 10
             break
           case '10-20':
-            matchesFilter =
-              product.price >= 10 && product.price <= 20
+            matchesFilter = product.price >= 10 && product.price <= 20
             break
           case 'over-20':
             matchesFilter = product.price > 20
