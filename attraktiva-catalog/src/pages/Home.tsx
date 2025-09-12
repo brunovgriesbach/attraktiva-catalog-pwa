@@ -1,12 +1,20 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import ProductList from '../components/ProductList'
 import SearchBar from '../components/SearchBar'
-import { products } from '../data/products'
+import { fetchProducts } from '../api/products'
+import type { Product } from '../data/products'
 import styles from './Home.module.css'
 
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState('')
   const [filter, setFilter] = useState('all')
+  const [products, setProducts] = useState<Product[]>([])
+
+  useEffect(() => {
+    fetchProducts()
+      .then(setProducts)
+      .catch(() => {})
+  }, [])
 
   return (
     <div className={styles.container}>

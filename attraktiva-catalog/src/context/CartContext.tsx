@@ -5,7 +5,7 @@ import {
   useState,
   ReactNode,
 } from 'react'
-import { Product } from '../data/products'
+import type { Product } from '../data/products'
 
 interface CartContextType {
   items: Product[]
