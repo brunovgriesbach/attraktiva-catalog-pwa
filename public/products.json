@@ -1,0 +1,190 @@
+[
+  {
+    "id": 1,
+    "title": "Modern Gray Sofa",
+    "slug": "modern-gray-sofa",
+    "price": 1299,
+    "category": "sofa",
+    "thumbnailUrl": "https://picsum.photos/seed/modern-gray-sofa/400/300",
+    "images": [
+      "https://picsum.photos/seed/modern-gray-sofa/800/600",
+      "https://picsum.photos/seed/modern-gray-sofa-2/800/600",
+      "https://picsum.photos/seed/modern-gray-sofa-3/800/600"
+    ],
+    "dimensions": { "width": 200, "height": 90, "depth": 95 },
+    "materials": ["fabric", "wood"],
+    "stock": 5,
+    "description": "Comfortable modern sofa with gray fabric upholstery."
+  },
+  {
+    "id": 2,
+    "title": "Blue Sectional Sofa",
+    "slug": "blue-sectional-sofa",
+    "price": 1899,
+    "category": "sofa",
+    "thumbnailUrl": "https://picsum.photos/seed/blue-sectional-sofa/400/300",
+    "images": [
+      "https://picsum.photos/seed/blue-sectional-sofa/800/600",
+      "https://picsum.photos/seed/blue-sectional-sofa-2/800/600"
+    ],
+    "dimensions": { "width": 260, "height": 85, "depth": 160 },
+    "materials": ["velvet", "metal"],
+    "stock": 3,
+    "description": "Spacious blue sectional sofa with plush cushions."
+  },
+  {
+    "id": 3,
+    "title": "Leather Recliner",
+    "slug": "leather-recliner",
+    "price": 799,
+    "category": "sofa",
+    "thumbnailUrl": "https://picsum.photos/seed/leather-recliner/400/300",
+    "images": [
+      "https://picsum.photos/seed/leather-recliner/800/600"
+    ],
+    "dimensions": { "width": 90, "height": 110, "depth": 100 },
+    "materials": ["leather", "steel"],
+    "stock": 8,
+    "description": "Reclining leather armchair for ultimate comfort."
+  },
+  {
+    "id": 4,
+    "title": "Oak Dining Table",
+    "slug": "oak-dining-table",
+    "price": 999,
+    "category": "table",
+    "thumbnailUrl": "https://picsum.photos/seed/oak-dining-table/400/300",
+    "images": [
+      "https://picsum.photos/seed/oak-dining-table/800/600",
+      "https://picsum.photos/seed/oak-dining-table-2/800/600"
+    ],
+    "dimensions": { "width": 180, "height": 75, "depth": 90 },
+    "materials": ["oak"],
+    "stock": 6,
+    "description": "Sturdy oak dining table for family gatherings."
+  },
+  {
+    "id": 5,
+    "title": "Glass Coffee Table",
+    "slug": "glass-coffee-table",
+    "price": 299,
+    "category": "table",
+    "thumbnailUrl": "https://picsum.photos/seed/glass-coffee-table/400/300",
+    "images": [
+      "https://picsum.photos/seed/glass-coffee-table/800/600"
+    ],
+    "dimensions": { "width": 120, "height": 45, "depth": 60 },
+    "materials": ["glass", "metal"],
+    "stock": 10,
+    "description": "Minimalist glass coffee table with metal frame."
+  },
+  {
+    "id": 6,
+    "title": "White Office Desk",
+    "slug": "white-office-desk",
+    "price": 499,
+    "category": "table",
+    "thumbnailUrl": "https://picsum.photos/seed/white-office-desk/400/300",
+    "images": [
+      "https://picsum.photos/seed/white-office-desk/800/600",
+      "https://picsum.photos/seed/white-office-desk-2/800/600"
+    ],
+    "dimensions": { "width": 150, "height": 75, "depth": 70 },
+    "materials": ["MDF", "steel"],
+    "stock": 4,
+    "description": "Clean white office desk with cable management."
+  },
+  {
+    "id": 7,
+    "title": "Lounge Chair",
+    "slug": "lounge-chair",
+    "price": 399,
+    "category": "chair",
+    "thumbnailUrl": "https://picsum.photos/seed/lounge-chair/400/300",
+    "images": [
+      "https://picsum.photos/seed/lounge-chair/800/600",
+      "https://picsum.photos/seed/lounge-chair-2/800/600"
+    ],
+    "dimensions": { "width": 80, "height": 90, "depth": 85 },
+    "materials": ["fabric", "wood"],
+    "stock": 12,
+    "description": "Cozy lounge chair with wooden legs."
+  },
+  {
+    "id": 8,
+    "title": "Ergonomic Office Chair",
+    "slug": "ergonomic-office-chair",
+    "price": 249,
+    "category": "chair",
+    "thumbnailUrl": "https://picsum.photos/seed/ergonomic-office-chair/400/300",
+    "images": [
+      "https://picsum.photos/seed/ergonomic-office-chair/800/600"
+    ],
+    "dimensions": { "width": 70, "height": 120, "depth": 70 },
+    "materials": ["mesh", "plastic"],
+    "stock": 15,
+    "description": "Ergonomic chair with adjustable height and lumbar support."
+  },
+  {
+    "id": 9,
+    "title": "Wooden Stool",
+    "slug": "wooden-stool",
+    "price": 89,
+    "category": "chair",
+    "thumbnailUrl": "https://picsum.photos/seed/wooden-stool/400/300",
+    "images": [
+      "https://picsum.photos/seed/wooden-stool/800/600"
+    ],
+    "dimensions": { "width": 40, "height": 45, "depth": 40 },
+    "materials": ["pine"],
+    "stock": 30,
+    "description": "Simple wooden stool for extra seating."
+  },
+  {
+    "id": 10,
+    "title": "Classic Bookshelf",
+    "slug": "classic-bookshelf",
+    "price": 549,
+    "category": "shelf",
+    "thumbnailUrl": "https://picsum.photos/seed/classic-bookshelf/400/300",
+    "images": [
+      "https://picsum.photos/seed/classic-bookshelf/800/600",
+      "https://picsum.photos/seed/classic-bookshelf-2/800/600"
+    ],
+    "dimensions": { "width": 100, "height": 200, "depth": 35 },
+    "materials": ["oak"],
+    "stock": 7,
+    "description": "Tall bookshelf with five adjustable shelves."
+  },
+  {
+    "id": 11,
+    "title": "Metal Storage Rack",
+    "slug": "metal-storage-rack",
+    "price": 199,
+    "category": "shelf",
+    "thumbnailUrl": "https://picsum.photos/seed/metal-storage-rack/400/300",
+    "images": [
+      "https://picsum.photos/seed/metal-storage-rack/800/600"
+    ],
+    "dimensions": { "width": 90, "height": 180, "depth": 40 },
+    "materials": ["steel"],
+    "stock": 20,
+    "description": "Durable metal rack for garage storage."
+  },
+  {
+    "id": 12,
+    "title": "TV Stand",
+    "slug": "tv-stand",
+    "price": 349,
+    "category": "shelf",
+    "thumbnailUrl": "https://picsum.photos/seed/tv-stand/400/300",
+    "images": [
+      "https://picsum.photos/seed/tv-stand/800/600",
+      "https://picsum.photos/seed/tv-stand-2/800/600"
+    ],
+    "dimensions": { "width": 160, "height": 50, "depth": 40 },
+    "materials": ["MDF", "glass"],
+    "stock": 9,
+    "description": "Modern TV stand with glass shelves."
+  }
+]
