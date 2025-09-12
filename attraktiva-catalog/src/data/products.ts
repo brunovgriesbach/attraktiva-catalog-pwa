@@ -1,9 +1,9 @@
 export interface Product {
-  id: number;
-  name: string;
-  description: string;
-  price: number;
-  image: string;
+  id: number
+  name: string
+  description: string
+  price: number
+  image: string
 }
 
 export const products: Product[] = [
@@ -21,4 +21,4 @@ export const products: Product[] = [
     price: 19.99,
     image: '/images/product2.jpg',
   },
-];
+]
