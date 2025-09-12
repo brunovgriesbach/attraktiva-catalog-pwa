@@ -1,4 +1,10 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react'
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  ReactNode,
+} from 'react'
 import { Product } from '../data/products'
 
 /* eslint-disable no-unused-vars */
@@ -53,4 +59,3 @@ export const useCart = () => {
   }
   return context
 }
-

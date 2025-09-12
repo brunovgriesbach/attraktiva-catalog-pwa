@@ -14,7 +14,7 @@ registerRoute(navigationRoute)
 
 registerRoute(
   ({ url }) => url.pathname.startsWith('/api/products'),
-  new NetworkFirst({ cacheName: 'products-cache' })
+  new NetworkFirst({ cacheName: 'products-cache' }),
 )
 
 registerRoute(
@@ -22,9 +22,12 @@ registerRoute(
   new CacheFirst({
     cacheName: 'images-cache',
     plugins: [
-      new ExpirationPlugin({ maxEntries: 60, maxAgeSeconds: 60 * 60 * 24 * 30 }),
+      new ExpirationPlugin({
+        maxEntries: 60,
+        maxAgeSeconds: 60 * 60 * 24 * 30,
+      }),
     ],
-  })
+  }),
 )
 
 self.addEventListener('push', (event) => {
@@ -42,15 +45,15 @@ self.addEventListener('notificationclick', (event) => {
   event.notification.close()
   const url = event.notification.data
   event.waitUntil(
-    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(
-      (clients) => {
+    self.clients
+      .matchAll({ type: 'window', includeUncontrolled: true })
+      .then((clients) => {
         for (const client of clients) {
           if ('focus' in client) return client.focus()
         }
         if (self.clients.openWindow && url) {
           return self.clients.openWindow(url)
         }
-      }
-    )
+      }),
   )
 })

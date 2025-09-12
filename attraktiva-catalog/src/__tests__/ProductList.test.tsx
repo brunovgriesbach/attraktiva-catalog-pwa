@@ -13,7 +13,7 @@ describe('ProductList', () => {
     render(
       <MemoryRouter>
         <ProductList products={products} />
-      </MemoryRouter>
+      </MemoryRouter>,
     )
 
     products.forEach((product) => {
@@ -21,4 +21,3 @@ describe('ProductList', () => {
     })
   })
 })
-
