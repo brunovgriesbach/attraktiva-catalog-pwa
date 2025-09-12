@@ -1,7 +1,7 @@
 /* eslint-env node */
 import express from 'express'
 import webPush from 'web-push'
-import { products } from '../src/data/products.ts'
+import { products } from './products.js'
 
 const app = express()
 app.use(express.json())
