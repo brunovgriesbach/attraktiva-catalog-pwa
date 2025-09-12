@@ -7,35 +7,13 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
+      srcDir: 'src',
+      filename: 'sw.ts',
+      strategies: 'injectManifest',
       registerType: 'autoUpdate',
       manifest: false,
-      workbox: {
+      injectManifest: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
-        navigateFallback: 'index.html',
-        runtimeCaching: [
-          {
-            urlPattern: ({ request }) => request.mode === 'navigate',
-            handler: 'NetworkFirst',
-          },
-          {
-            urlPattern: /\/api\/products/,
-            handler: 'NetworkFirst',
-            options: {
-              cacheName: 'products-cache',
-            },
-          },
-          {
-            urlPattern: ({ request }) => request.destination === 'image',
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'images-cache',
-              expiration: {
-                maxEntries: 60,
-                maxAgeSeconds: 60 * 60 * 24 * 30,
-              },
-            },
-          },
-        ],
       },
       devOptions: {
         enabled: true,
