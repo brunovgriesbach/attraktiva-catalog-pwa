@@ -6,7 +6,7 @@ module.exports = {
     es2020: true,
   },
   extends: ['eslint:recommended', 'plugin:react-hooks/recommended'],
-  plugins: ['react-refresh'],
+  plugins: ['react-refresh', '@typescript-eslint'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 'latest',
@@ -14,7 +14,7 @@ module.exports = {
     ecmaFeatures: { jsx: true },
   },
   rules: {
-    'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
+    '@typescript-eslint/no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
     'react-refresh/only-export-components': 'error',
   },
 }
