@@ -1,28 +1,37 @@
-import { describe, it, expect, vi, afterEach } from 'vitest'
+import {
+  describe,
+  it,
+  expect,
+  beforeAll,
+  afterEach,
+  afterAll,
+} from 'vitest'
+import { http, HttpResponse } from 'msw'
+import { setupServer } from 'msw/node'
+
 import { fetchProducts } from './products'
 import type { Product } from '../data/products'
 
-afterEach(() => {
-  vi.restoreAllMocks()
-})
+const mockProducts: Product[] = [
+  {
+    id: 1,
+    name: 'Mock Product',
+    description: 'Mock description',
+    price: 5,
+    image: '/images/mock.jpg',
+  },
+]
+
+const server = setupServer(
+  http.get('/api/products', () => HttpResponse.json(mockProducts))
+)
+
+beforeAll(() => server.listen())
+afterEach(() => server.resetHandlers())
+afterAll(() => server.close())
 
 describe('fetchProducts', () => {
   it('returns products in correct format', async () => {
-    const mockProducts: Product[] = [
-      {
-        id: 1,
-        name: 'Mock Product',
-        description: 'Mock description',
-        price: 5,
-        image: '/images/mock.jpg',
-      },
-    ]
-
-    vi.spyOn(globalThis, 'fetch').mockResolvedValue({
-      ok: true,
-      json: async () => mockProducts,
-    } as unknown as Response)
-
     const data = await fetchProducts()
     expect(data).toEqual(mockProducts)
     data.forEach((p) => {
