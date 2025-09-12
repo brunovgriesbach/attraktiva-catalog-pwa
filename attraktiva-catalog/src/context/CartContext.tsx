@@ -7,14 +7,12 @@ import {
 } from 'react'
 import { Product } from '../data/products'
 
-/* eslint-disable no-unused-vars */
 interface CartContextType {
   items: Product[]
   addItem(product: Product): void
   removeItem(id: number): void
   clearCart(): void
 }
-/* eslint-enable no-unused-vars */
 
 const CartContext = createContext<CartContextType | undefined>(undefined)
 

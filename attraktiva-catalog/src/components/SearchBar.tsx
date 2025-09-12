@@ -1,13 +1,11 @@
 import styles from './SearchBar.module.css'
 
-/* eslint-disable no-unused-vars */
 interface SearchBarProps {
   searchTerm: string
   filter: string
   onSearchTermChange: (value: string) => void
   onFilterChange: (value: string) => void
 }
-/* eslint-enable no-unused-vars */
 
 export default function SearchBar({
   searchTerm,
