@@ -7,6 +7,7 @@ module.exports = {
   },
   extends: ['eslint:recommended', 'plugin:react-hooks/recommended'],
   plugins: ['react-refresh'],
+  parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 'latest',
     sourceType: 'module',
