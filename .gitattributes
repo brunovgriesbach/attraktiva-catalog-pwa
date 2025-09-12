@@ -1,0 +1,12 @@
+*.png binary -merge
+*.jpg binary -merge
+*.jpeg binary -merge
+*.webp binary -merge
+*.gif binary -merge
+*.ico binary -merge
+*.pdf binary -merge
+*.zip binary -merge
+*.woff binary -merge
+*.woff2 binary -merge
+*.ttf binary -merge
+*.otf binary -merge
