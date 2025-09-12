@@ -11,3 +11,13 @@ O frontend está localizado na pasta [`attraktiva-catalog`](./attraktiva-catalog
 - [ ] Configuração de linting, formatação e testes.
 - [ ] Implementação das principais funcionalidades do catálogo.
 - [ ] Inclusão de assets do PWA e ajustes finais.
+
+## Deploy
+
+A publicação do PWA é feita automaticamente via GitHub Actions. Para habilitar o processo, defina as seguintes variáveis de ambiente secretas no repositório:
+
+- `VERCEL_TOKEN`
+- `VERCEL_ORG_ID`
+- `VERCEL_PROJECT_ID`
+
+As variáveis podem ser configuradas em *Settings > Secrets and variables > Actions* no GitHub.
