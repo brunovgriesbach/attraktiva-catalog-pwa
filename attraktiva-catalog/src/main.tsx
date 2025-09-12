@@ -3,7 +3,6 @@ import { createRoot } from 'react-dom/client'
 import { RouterProvider } from 'react-router-dom'
 import './index.css'
 import { router } from './routes'
-import { CartProvider } from './context/CartContext'
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
@@ -27,9 +26,7 @@ if ('serviceWorker' in navigator) {
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <CartProvider>
-      <RouterProvider router={router} />
-    </CartProvider>
+    <RouterProvider router={router} />
   </StrictMode>,
 )
 
