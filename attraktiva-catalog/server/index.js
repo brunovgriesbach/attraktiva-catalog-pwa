@@ -1,7 +1,8 @@
 /* eslint-env node */
 import express from 'express'
 import webPush from 'web-push'
-import { products } from './products.js'
+import fs from 'fs'
+import { parse } from 'csv-parse/sync'
 
 const app = express()
 app.use(express.json())
@@ -34,6 +35,15 @@ app.post('/api/push', async (req, res) => {
 })
 
 app.get('/api/products', (req, res) => {
+  const csv = fs.readFileSync(new URL('./data/products.csv', import.meta.url))
+  const records = parse(csv, { columns: true, skip_empty_lines: true })
+  const products = records.map((p) => ({
+    id: Number(p.id),
+    name: p.name,
+    description: p.description,
+    price: Number(p.price),
+    image: p.image,
+  }))
   res.json(products)
 })
 
