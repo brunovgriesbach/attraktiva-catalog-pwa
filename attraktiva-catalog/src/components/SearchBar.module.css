@@ -1,5 +1,44 @@
 .searchBar {
-  display: flex;
-  gap: 0.5rem;
+  display: grid;
+  gap: 0.75rem;
   margin-bottom: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  align-items: end;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.input,
+.select {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  font: inherit;
+  background-color: #fff;
+  color: inherit;
+  min-height: 2.5rem;
+}
+
+.input:focus,
+.select:focus {
+  outline: 3px solid rgba(59, 130, 246, 0.35);
+  outline-offset: 2px;
+}
+
+@media (max-width: 480px) {
+  .searchBar {
+    grid-template-columns: 1fr;
+  }
 }

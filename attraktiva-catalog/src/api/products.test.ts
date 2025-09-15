@@ -5,10 +5,7 @@ import { fetchProducts } from './products'
 
 import.meta.env.VITE_API_URL = 'http://localhost'
 
-type CsvProduct = Product & {
-  category: string
-  subcategory: string
-}
+type CsvProduct = Product
 
 const mockProducts = [
   {
@@ -67,14 +64,6 @@ describe('fetchProducts', () => {
 
     expect(mockFetch).toHaveBeenCalledWith('http://localhost/products.csv')
 
-    const expectedProducts: Product[] = mockProducts.map((product) => {
-      const { category, subcategory, ...productWithoutCategories } = product
-      void category
-      void subcategory
-
-      return productWithoutCategories
-    })
-
-    expect(data).toEqual(expectedProducts)
+    expect(data).toEqual(mockProducts)
   })
 })

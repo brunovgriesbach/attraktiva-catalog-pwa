@@ -11,11 +11,6 @@ vi.mock('../api/products', () => ({
   fetchProducts: vi.fn(),
 }))
 
-type MockProduct = Product & {
-  category: string
-  subcategory: string
-}
-
 const mockProducts = [
   {
     id: 1,
@@ -35,7 +30,7 @@ const mockProducts = [
     category: 'Category 2',
     subcategory: 'Subcategory 2',
   },
-] satisfies MockProduct[]
+] satisfies Product[]
 
 const mockedFetchProducts = vi.mocked(fetchProducts)
 
