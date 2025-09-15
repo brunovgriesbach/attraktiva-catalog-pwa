@@ -7,6 +7,8 @@ O frontend está localizado na pasta [`attraktiva-catalog`](./attraktiva-catalog
 ## Imagens de produtos e execução local
 
 1. **Obter link público do OneDrive:** carregue a imagem no OneDrive, clique em *Compartilhar* e escolha a opção "Qualquer pessoa com o link". Use *Copiar link* para gerar uma URL pública.
+   - O PWA aceita links de compartilhamento como `https://onedrive.live.com/?cid=...&resid=...&authkey=...` ou `https://1drv.ms/...` e faz a conversão automática para o download direto.
+   - Certifique-se de que o arquivo esteja configurado como público; do contrário, as imagens não ficarão acessíveis no catálogo.
 2. **Atualizar `products.csv`:** edite o arquivo [`attraktiva-catalog/server/products.csv`](./attraktiva-catalog/server/products.csv) e cole a URL na coluna `image` correspondente a cada produto.
 3. **Rodar servidor e Vite:** dentro da pasta [`attraktiva-catalog`](./attraktiva-catalog), execute `npm run server` para iniciar a API Express disponível em `http://localhost:3000`. Em outro terminal, rode `npm run dev` para subir o Vite.
 4. **Configurar a URL da API no frontend:** ainda na pasta [`attraktiva-catalog`](./attraktiva-catalog), crie um arquivo `.env` contendo `VITE_API_URL=http://localhost:3000` para que o PWA consuma a API local.

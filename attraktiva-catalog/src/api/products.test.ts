@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
 
 import type { Product } from '../data/products'
-import { fetchProducts } from './products'
+import { fetchProducts, resolveOneDriveUrl } from './products'
 
 import.meta.env.VITE_API_URL = 'http://localhost'
 
@@ -65,5 +65,30 @@ describe('fetchProducts', () => {
     expect(mockFetch).toHaveBeenCalledWith('http://localhost/products.csv')
 
     expect(data).toEqual(mockProducts)
+  })
+})
+
+describe('resolveOneDriveUrl', () => {
+  it('converts onedrive.live.com share URLs to direct download links', () => {
+    const url =
+      'https://onedrive.live.com/?cid=123ABC&resid=123ABC%21123&authkey=%21AIexampleKey'
+    const resolved = resolveOneDriveUrl(url)
+
+    expect(resolved).toBe(
+      'https://onedrive.live.com/download?cid=123ABC&resid=123ABC%21123&authkey=%21AIexampleKey',
+    )
+  })
+
+  it('appends download parameter to short 1drv.ms links', () => {
+    const url = 'https://1drv.ms/u/s!example'
+    const resolved = resolveOneDriveUrl(url)
+
+    expect(resolved).toBe('https://1drv.ms/u/s!example?download=1')
+  })
+
+  it('returns the original URL for non-OneDrive hosts', () => {
+    const url = 'https://example.com/image.jpg'
+
+    expect(resolveOneDriveUrl(url)).toBe(url)
   })
 })
