@@ -8,7 +8,10 @@ O frontend está localizado na pasta [`attraktiva-catalog`](./attraktiva-catalog
 
 1. **Obter link público do OneDrive:** carregue a imagem no OneDrive, clique em *Compartilhar* e escolha a opção "Qualquer pessoa com o link". Use *Copiar link* para gerar uma URL pública.
 2. **Atualizar `products.csv`:** edite o arquivo [`attraktiva-catalog/server/products.csv`](./attraktiva-catalog/server/products.csv) e cole a URL na coluna `image` correspondente a cada produto.
-3. **Rodar servidor e Vite:** dentro da pasta [`attraktiva-catalog`](./attraktiva-catalog), execute `npm run server` para iniciar a API que lê o CSV e, em outro terminal, `npm run dev` para subir o Vite. A aplicação consumirá os produtos expostos em `http://localhost:3000/api/products`.
+3. **Rodar servidor e Vite:** dentro da pasta [`attraktiva-catalog`](./attraktiva-catalog), execute `npm run server` para iniciar a API Express disponível em `http://localhost:3000`. Em outro terminal, rode `npm run dev` para subir o Vite.
+4. **Configurar a URL da API no frontend:** ainda na pasta [`attraktiva-catalog`](./attraktiva-catalog), crie um arquivo `.env` contendo `VITE_API_URL=http://localhost:3000` para que o PWA consuma a API local.
+
+> Sem executar o servidor local ou sem definir a variável `VITE_API_URL`, o PWA exibirá a mensagem **"Erro ao buscar produtos"**.
 
 ## Roadmap
 
