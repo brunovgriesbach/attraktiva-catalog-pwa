@@ -2,10 +2,10 @@
 
 This project uses React with Vite and React Router. The application starts in `src/main.tsx`, which provides global context and renders the routes defined in `src/routes.tsx`.
 
-## Environment Variables
+## Product catalog
 
-- `IMAGE_BASE_URL`: Base URL used by the server to prefix image filenames from `products.csv`.
-- `VITE_API_URL`: Base URL for the backend API (e.g., `http://localhost:3000`).
+The product catalog is stored in `public/products.csv` and served as a static asset. The frontend consumes this file directly and
+parses it to build the list of available products.
 
 ## Linting, formatting, and tests
 
