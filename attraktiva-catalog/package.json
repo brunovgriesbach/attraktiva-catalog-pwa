@@ -9,6 +9,7 @@
     "lint": "ESLINT_USE_FLAT_CONFIG=false eslint . --ext .js,.jsx,.ts,.tsx",
     "preview": "vite preview",
     "format": "prettier --check .",
+    "format:fix": "prettier --write .",
     "test": "vitest run --passWithNoTests",
     "server": "node server/index.js",
     "generate-vapid": "node scripts/generate-vapid.js"
