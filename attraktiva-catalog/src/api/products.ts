@@ -36,6 +36,54 @@ function isAbsoluteUrl(value: string): boolean {
   return /^[a-zA-Z][a-zA-Z\d+\-.]*:\/\//.test(value)
 }
 
+export function resolveOneDriveUrl(url: string): string {
+  if (typeof url !== 'string' || url.trim().length === 0) {
+    return url
+  }
+
+  let parsedUrl: URL
+  try {
+    parsedUrl = new URL(url)
+  } catch {
+    return url
+  }
+
+  const hostname = parsedUrl.hostname.toLowerCase()
+
+  if (hostname === 'onedrive.live.com') {
+    const cid = parsedUrl.searchParams.get('cid')
+    const resid = parsedUrl.searchParams.get('resid') ?? parsedUrl.searchParams.get('id')
+    const authkey = parsedUrl.searchParams.get('authkey')
+
+    const params = new URLSearchParams()
+
+    if (cid) {
+      params.set('cid', cid)
+    }
+    if (resid) {
+      params.set('resid', resid)
+    }
+    if (authkey) {
+      params.set('authkey', authkey)
+    }
+
+    const query = params.toString()
+
+    if (query.length === 0) {
+      return url
+    }
+
+    return `https://onedrive.live.com/download?${query}`
+  }
+
+  if (hostname === '1drv.ms') {
+    parsedUrl.searchParams.set('download', '1')
+    return parsedUrl.toString()
+  }
+
+  return url
+}
+
 function resolveProductsUrl(baseUrl?: string): string {
   const rawBase = baseUrl ?? import.meta.env.BASE_URL ?? '/'
   const trimmedBase = rawBase.trim()
@@ -82,7 +130,7 @@ export async function fetchProducts(baseUrl?: string): Promise<Product[]> {
     const price = toNumber(row.price)
     const name = normalizeText(row.name)
     const description = normalizeText(row.description)
-    const image = normalizeText(row.image)
+    const image = resolveOneDriveUrl(normalizeText(row.image))
     const category = normalizeText(row.category)
     const subcategory = normalizeText(row.subcategory)
 
