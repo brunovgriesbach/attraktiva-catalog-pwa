@@ -22,25 +22,40 @@ function toNumber(value: string | number | null | undefined): number {
   return Number.isFinite(normalized) ? normalized : NaN
 }
 
-function resolveProductsUrl(): string {
-  const basePath = (import.meta.env.BASE_URL ?? '/').trim() || '/'
-  const normalizedBasePath = basePath.endsWith('/')
-    ? basePath
-    : `${basePath}/`
-  const baseWithLeadingSlash = normalizedBasePath.startsWith('/')
-    ? normalizedBasePath
-    : `/${normalizedBasePath}`
+function ensureTrailingSlash(value: string): string {
+  return value.endsWith('/') ? value : `${value}/`
+}
 
-  if (typeof window === 'undefined' || typeof window.location === 'undefined') {
-    return `${baseWithLeadingSlash}products.csv`
+function ensureLeadingSlash(value: string): string {
+  return value.startsWith('/') ? value : `/${value}`
+}
+
+function isAbsoluteUrl(value: string): boolean {
+  return /^[a-zA-Z][a-zA-Z\d+\-.]*:\/\//.test(value)
+}
+
+function resolveProductsUrl(baseUrl?: string): string {
+  const rawBase = baseUrl ?? import.meta.env.BASE_URL ?? '/'
+  const trimmedBase = rawBase.trim()
+  const basePath = trimmedBase.length === 0 ? '/' : trimmedBase
+
+  if (isAbsoluteUrl(basePath)) {
+    const normalizedBaseUrl = ensureTrailingSlash(basePath)
+    return new URL('products.csv', normalizedBaseUrl).toString()
   }
 
-  const root = new URL(baseWithLeadingSlash, window.location.origin)
+  const normalizedBasePath = ensureLeadingSlash(ensureTrailingSlash(basePath))
+
+  if (typeof window === 'undefined' || typeof window.location === 'undefined') {
+    return `${normalizedBasePath}products.csv`
+  }
+
+  const root = new URL(normalizedBasePath, window.location.origin)
   return new URL('products.csv', root).toString()
 }
 
-export async function fetchProducts(): Promise<Product[]> {
-  const requestUrl = resolveProductsUrl()
+export async function fetchProducts(baseUrl?: string): Promise<Product[]> {
+  const requestUrl = resolveProductsUrl(baseUrl)
   const response = await fetch(requestUrl)
   if (!response.ok) {
     throw new Error('Failed to fetch product catalog')

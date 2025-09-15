@@ -3,6 +3,8 @@ import { describe, it, expect, vi, afterEach } from 'vitest'
 import type { Product } from '../data/products'
 import { fetchProducts } from './products'
 
+import.meta.env.VITE_API_URL = 'http://localhost'
+
 type CsvProduct = Product & {
   category: string
   subcategory: string
@@ -61,20 +63,9 @@ describe('fetchProducts', () => {
         text: async () => csvResponse,
       } as unknown as Response)
 
-    const data = await fetchProducts()
+    const data = await fetchProducts('http://localhost')
 
-    const basePath = (import.meta.env.BASE_URL ?? '/').trim() || '/'
-    const normalizedBasePath = basePath.endsWith('/')
-      ? basePath
-      : `${basePath}/`
-    const baseWithLeadingSlash = normalizedBasePath.startsWith('/')
-      ? normalizedBasePath
-      : `/${normalizedBasePath}`
-    const expectedUrl = new URL(
-      'products.csv',
-      new URL(baseWithLeadingSlash, window.location.origin),
-    ).toString()
-    expect(mockFetch).toHaveBeenCalledWith(expectedUrl)
+    expect(mockFetch).toHaveBeenCalledWith('http://localhost/products.csv')
 
     const expectedProducts = mockProducts.map((product) => {
       const { category, subcategory, ...rest } = product
