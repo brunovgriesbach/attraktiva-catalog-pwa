@@ -1,9 +1,11 @@
 /* eslint-env node */
 import express from 'express'
+import cors from 'cors'
 import webPush from 'web-push'
 import { products } from './products.js'
 
 const app = express()
+app.use(cors())
 app.use(express.json())
 
 const { VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY } = process.env
