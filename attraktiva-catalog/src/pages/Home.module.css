@@ -11,3 +11,36 @@
   color: red;
   margin-bottom: 1rem;
 }
+
+.filters {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.filtersMenu,
+.filtersSearch {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.filtersSearch :global(.searchBar) {
+  margin-bottom: 0;
+}
+
+@media (min-width: 768px) {
+  .filters {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .filtersMenu {
+    flex: 0 0 320px;
+  }
+
+  .filtersSearch {
+    flex: 1;
+  }
+}

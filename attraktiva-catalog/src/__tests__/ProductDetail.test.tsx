@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, cleanup } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import * as matchers from '@testing-library/jest-dom/matchers'
@@ -15,11 +15,14 @@ const mockProducts: Product[] = [
     description: 'Description for product 1',
     price: 9.99,
     image: '/images/product1.jpg',
+    category: 'Furniture',
+    subcategory: 'Chairs',
   },
 ]
 
 afterEach(() => {
   vi.restoreAllMocks()
+  cleanup()
 })
 
 describe('ProductDetail', () => {

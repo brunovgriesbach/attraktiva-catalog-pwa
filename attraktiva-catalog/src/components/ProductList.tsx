@@ -6,23 +6,31 @@ import styles from './ProductList.module.css'
 interface ProductListProps {
   products: Product[]
   searchTerm?: string
-  filter?: string
+  priceFilter?: string
+  categoryFilter?: string | null
+  subcategoryFilter?: string | null
 }
 
 export default function ProductList({
   products,
   searchTerm = '',
-  filter = 'all',
+  priceFilter = 'all',
+  categoryFilter = null,
+  subcategoryFilter = null,
 }: ProductListProps) {
   const filteredProducts = useMemo(
-    () =>
-      products.filter((product) => {
+    () => {
+      const normalizedSearch = searchTerm.trim().toLowerCase()
+      const normalizedCategory = categoryFilter?.toLowerCase() ?? ''
+      const normalizedSubcategory = subcategoryFilter?.toLowerCase() ?? ''
+
+      return products.filter((product) => {
         const matchesSearch = product.name
           .toLowerCase()
-          .includes(searchTerm.toLowerCase())
+          .includes(normalizedSearch)
 
         let matchesFilter = true
-        switch (filter) {
+        switch (priceFilter) {
           case 'under-10':
             matchesFilter = product.price < 10
             break
@@ -36,9 +44,20 @@ export default function ProductList({
             matchesFilter = true
         }
 
-        return matchesSearch && matchesFilter
-      }),
-    [products, searchTerm, filter],
+        const matchesCategory =
+          !normalizedCategory ||
+          product.category.toLowerCase() === normalizedCategory
+
+        const matchesSubcategory =
+          !normalizedSubcategory ||
+          product.subcategory.toLowerCase() === normalizedSubcategory
+
+        return (
+          matchesSearch && matchesFilter && matchesCategory && matchesSubcategory
+        )
+      })
+    },
+    [products, searchTerm, priceFilter, categoryFilter, subcategoryFilter],
   )
 
   return (

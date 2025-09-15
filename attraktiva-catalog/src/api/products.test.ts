@@ -15,6 +15,8 @@ describe('fetchProducts', () => {
         description: 'Mock description',
         price: 5,
         image: '/images/mock.jpg',
+        category: 'Category',
+        subcategory: 'Subcategory',
       },
     ]
 
@@ -31,6 +33,8 @@ describe('fetchProducts', () => {
       expect(typeof p.description).toBe('string')
       expect(typeof p.price).toBe('number')
       expect(typeof p.image).toBe('string')
+      expect(typeof p.category).toBe('string')
+      expect(typeof p.subcategory).toBe('string')
     })
   })
 })
