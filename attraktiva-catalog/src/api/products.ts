@@ -88,7 +88,7 @@ function extractParamValues(parsedUrl: URL, originalUrl: string, names: string[]
   return null
 }
 
-export function resolveOneDriveUrl(url: string): string {
+export async function resolveOneDriveUrl(url: string): Promise<string> {
   if (typeof url !== 'string') {
     return url
   }
@@ -114,16 +114,45 @@ export function resolveOneDriveUrl(url: string): string {
     return normalizedUrl
   }
 
+  if (isShortOneDriveHost) {
+    try {
+      const response = await fetch(normalizedUrl, { redirect: 'manual' })
+      const locationHeader = response.headers?.get('location')
+
+      if (locationHeader) {
+        const trimmedLocation = locationHeader.trim()
+
+        if (trimmedLocation.length > 0) {
+          try {
+            const redirectUrl = new URL(trimmedLocation, parsedUrl)
+            const redirectHostname = redirectUrl.hostname.toLowerCase()
+            const pointsToOneDrive =
+              redirectHostname === 'onedrive.live.com' ||
+              redirectHostname.endsWith('.onedrive.live.com')
+
+            if (pointsToOneDrive) {
+              const resolvedRedirect = await resolveOneDriveUrl(redirectUrl.toString())
+              if (resolvedRedirect.toLowerCase().includes('onedrive.live.com/download')) {
+                return resolvedRedirect
+              }
+            }
+          } catch {
+            // Ignore URL parsing errors and fall back to the original URL
+          }
+        }
+      }
+    } catch {
+      // Ignore network errors and fall back to the original URL
+    }
+
+    return normalizedUrl
+  }
+
   const cid = extractParamValues(parsedUrl, normalizedUrl, ['cid'])
   const resid = extractParamValues(parsedUrl, normalizedUrl, ['resid', 'resId', 'id'])
   const authkey = extractParamValues(parsedUrl, normalizedUrl, ['authkey', 'authKey'])
 
   if (!resid) {
-    if (isShortOneDriveHost) {
-      parsedUrl.searchParams.set('download', '1')
-      return parsedUrl.toString()
-    }
-
     return normalizedUrl
   }
 
@@ -187,7 +216,7 @@ export async function fetchProducts(baseUrl?: string): Promise<Product[]> {
     const price = toNumber(row.price)
     const name = normalizeText(row.name)
     const description = normalizeText(row.description)
-    const image = resolveOneDriveUrl(normalizeText(row.image))
+    const image = await resolveOneDriveUrl(normalizeText(row.image))
     const category = normalizeText(row.category)
     const subcategory = normalizeText(row.subcategory)
 
