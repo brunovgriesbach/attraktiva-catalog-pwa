@@ -1,6 +1,9 @@
-id;name;description;price;image
-1;Cadeira Atenas;Cadeira super confortável;100;https://1drv.ms/i/c/3150482359d620a2/EcNiiWoTVxhBuYzZqCWioNEBT9t--DH_PoTzD7BdyajnZA?e=EVvi9F
-2;Sofá Melissa;Sofá Top;2000;https://1drv.ms/i/c/3150482359d620a2/EcNiiWoTVxhBuYzZqCWioNEBT9t--DH_PoTzD7BdyajnZA?e=EVvi9F
-3;Rack Aurora;Rack Bonito;450;https://1drv.ms/i/c/3150482359d620a2/EdbnsX-HL11PmwpaxnroP7MBr5JyQ0doGT5ctWgblrYPPA?e=5sH1fe
-4;Mesa de Jantar Tupia;Mesa pra jantar;720;https://1drv.ms/i/c/3150482359d620a2/EVWHPzG5bvBPozwKJITM8yMBzsNET0YYvNkNqaiHns4-Vg?e=rVLSqv
-5;Poltrona Karina;Poltrona gostosa;1200;https://1drv.ms/i/c/3150482359d620a2/EY1eWDXNlJ9MplUbZWhG1DEBlu9yzhR3JwQDL9zcHMjJ_g?e=0wvQK1
+id;name;description;price;image;category;subcategory
+1;Cadeira Atenas;Cadeira super confortável;100;https://picsum.photos/seed/cadeira/600/400;Sala de Estar;Cadeiras
+2;Sofá Melissa;Sofá amplo e confortável;2000;https://picsum.photos/seed/sofa/600/400;Sala de Estar;Sofás
+3;Rack Aurora;Rack elegante para a sala de TV;450;https://picsum.photos/seed/rack/600/400;Sala de Estar;Racks
+4;Mesa de Jantar Tupia;Mesa ideal para refeições em família;720;https://picsum.photos/seed/mesa/600/400;Sala de Jantar;Mesas
+5;Poltrona Karina;Poltrona com design moderno;1200;https://picsum.photos/seed/poltrona/600/400;Sala de Estar;Poltronas
+6;Guarda-roupa Íris;Guarda-roupa espaçoso com espelho;1800;https://picsum.photos/seed/guarda-roupa/600/400;Quarto;Guarda-roupas
+7;Cama Lisboa;Cama queen-size estofada;1500;https://picsum.photos/seed/cama/600/400;Quarto;Camas
+8;Luminária Boreal;Luminária de piso com iluminação suave;350;https://picsum.photos/seed/luminaria/600/400;Iluminação;Luminárias

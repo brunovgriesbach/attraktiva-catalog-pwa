@@ -7,6 +7,8 @@ type RawProduct = {
   description?: string | null
   price?: string | number | null
   image?: string | null
+  category?: string | null
+  subcategory?: string | null
 }
 
 function normalizeText(value: string | number | null | undefined): string {
@@ -81,13 +83,17 @@ export async function fetchProducts(baseUrl?: string): Promise<Product[]> {
     const name = normalizeText(row.name)
     const description = normalizeText(row.description)
     const image = normalizeText(row.image)
+    const category = normalizeText(row.category)
+    const subcategory = normalizeText(row.subcategory)
 
     if (
       Number.isNaN(id) ||
       Number.isNaN(price) ||
       name.length === 0 ||
       description.length === 0 ||
-      image.length === 0
+      image.length === 0 ||
+      category.length === 0 ||
+      subcategory.length === 0
     ) {
       continue
     }
@@ -98,6 +104,8 @@ export async function fetchProducts(baseUrl?: string): Promise<Product[]> {
       description,
       price,
       image,
+      category,
+      subcategory,
     })
   }
 

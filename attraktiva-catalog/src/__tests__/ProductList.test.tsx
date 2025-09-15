@@ -1,6 +1,6 @@
-import { render, screen } from '@testing-library/react'
+import { cleanup, render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
-import { describe, it, expect } from 'vitest'
+import { afterEach, describe, it, expect } from 'vitest'
 import * as matchers from '@testing-library/jest-dom/matchers'
 
 import ProductList from '../components/ProductList'
@@ -9,32 +9,96 @@ import type { Product } from '../data/products'
 const mockProducts: Product[] = [
   {
     id: 1,
-    name: 'Product 1',
-    description: 'Description for product 1',
-    price: 9.99,
-    image: '/images/product1.jpg',
+    name: 'Sofá Boreal',
+    description: 'Sofá confortável para sala de estar',
+    price: 2500,
+    image: '/images/sofa.jpg',
+    category: 'Sala de Estar',
+    subcategory: 'Sofás',
   },
   {
     id: 2,
-    name: 'Product 2',
-    description: 'Description for product 2',
-    price: 19.99,
-    image: '/images/product2.jpg',
+    name: 'Cama Lisboa',
+    description: 'Cama queen-size estofada',
+    price: 1500,
+    image: '/images/cama.jpg',
+    category: 'Quarto',
+    subcategory: 'Camas',
+  },
+  {
+    id: 3,
+    name: 'Luminária Lunar',
+    description: 'Luminária de piso com iluminação suave',
+    price: 350,
+    image: '/images/luminaria.jpg',
+    category: 'Iluminação',
+    subcategory: 'Luminárias',
   },
 ]
 
 expect.extend(matchers)
 
+afterEach(() => {
+  cleanup()
+})
+
 describe('ProductList', () => {
   it('renders all products', () => {
     render(
       <MemoryRouter>
-        <ProductList products={mockProducts} />
+        <ProductList
+          products={mockProducts}
+          searchTerm=""
+          category=""
+          subcategory=""
+          sortOrder="default"
+        />
       </MemoryRouter>,
     )
 
     mockProducts.forEach((product) => {
       expect(screen.getByText(product.name)).toBeInTheDocument()
     })
+  })
+
+  it('filters by category, subcategory and search term', () => {
+    render(
+      <MemoryRouter>
+        <ProductList
+          products={mockProducts}
+          searchTerm="queen"
+          category="Quarto"
+          subcategory="Camas"
+          sortOrder="default"
+        />
+      </MemoryRouter>,
+    )
+
+    expect(screen.getByText('Cama Lisboa')).toBeInTheDocument()
+    expect(screen.queryByText('Sofá Boreal')).not.toBeInTheDocument()
+    expect(screen.queryByText('Luminária Lunar')).not.toBeInTheDocument()
+  })
+
+  it('sorts products by price when requested', () => {
+    render(
+      <MemoryRouter>
+        <ProductList
+          products={mockProducts}
+          searchTerm=""
+          category=""
+          subcategory=""
+          sortOrder="price-asc"
+        />
+      </MemoryRouter>,
+    )
+
+    const productHeadings = screen.getAllByRole('heading', { level: 3 })
+    const renderedNames = productHeadings.map((heading) => heading.textContent ?? '')
+
+    expect(renderedNames).toEqual([
+      'Luminária Lunar',
+      'Cama Lisboa',
+      'Sofá Boreal',
+    ])
   })
 })
