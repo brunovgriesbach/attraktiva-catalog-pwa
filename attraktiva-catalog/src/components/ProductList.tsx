@@ -1,12 +1,12 @@
-import { useMemo } from 'react'
-import type { Product } from '../data/products'
-import ProductCard from './ProductCard'
-import styles from './ProductList.module.css'
+import { useMemo } from 'react';
+import type { Product } from '../data/products';
+import ProductCard from './ProductCard';
+import styles from './ProductList.module.css';
 
 interface ProductListProps {
-  products: Product[]
-  searchTerm?: string
-  filter?: string
+  products: Product[];
+  searchTerm?: string;
+  filter?: string;
 }
 
 export default function ProductList({
@@ -19,27 +19,27 @@ export default function ProductList({
       products.filter((product) => {
         const matchesSearch = product.name
           .toLowerCase()
-          .includes(searchTerm.toLowerCase())
+          .includes(searchTerm.toLowerCase());
 
-        let matchesFilter = true
+        let matchesFilter = true;
         switch (filter) {
           case 'under-10':
-            matchesFilter = product.price < 10
-            break
+            matchesFilter = product.price < 10;
+            break;
           case '10-20':
-            matchesFilter = product.price >= 10 && product.price <= 20
-            break
+            matchesFilter = product.price >= 10 && product.price <= 20;
+            break;
           case 'over-20':
-            matchesFilter = product.price > 20
-            break
+            matchesFilter = product.price > 20;
+            break;
           default:
-            matchesFilter = true
+            matchesFilter = true;
         }
 
-        return matchesSearch && matchesFilter
+        return matchesSearch && matchesFilter;
       }),
     [products, searchTerm, filter],
-  )
+  );
 
   return (
     <div className={styles.list}>
@@ -47,5 +47,5 @@ export default function ProductList({
         <ProductCard key={product.id} product={product} />
       ))}
     </div>
-  )
+  );
 }

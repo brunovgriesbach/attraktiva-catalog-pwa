@@ -1,10 +1,10 @@
-import { render, screen } from '@testing-library/react'
-import { MemoryRouter } from 'react-router-dom'
-import { describe, it, expect } from 'vitest'
-import * as matchers from '@testing-library/jest-dom/matchers'
+import { render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
+import { describe, it, expect } from 'vitest';
+import * as matchers from '@testing-library/jest-dom/matchers';
 
-import ProductList from '../components/ProductList'
-import type { Product } from '../data/products'
+import ProductList from '../components/ProductList';
+import type { Product } from '../data/products';
 
 const mockProducts: Product[] = [
   {
@@ -21,9 +21,9 @@ const mockProducts: Product[] = [
     price: 19.99,
     image: '/images/product2.jpg',
   },
-]
+];
 
-expect.extend(matchers)
+expect.extend(matchers);
 
 describe('ProductList', () => {
   it('renders all products', () => {
@@ -31,10 +31,10 @@ describe('ProductList', () => {
       <MemoryRouter>
         <ProductList products={mockProducts} />
       </MemoryRouter>,
-    )
+    );
 
     mockProducts.forEach((product) => {
-      expect(screen.getByText(product.name)).toBeInTheDocument()
-    })
-  })
-})
+      expect(screen.getByText(product.name)).toBeInTheDocument();
+    });
+  });
+});

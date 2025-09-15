@@ -1,26 +1,26 @@
-import { useEffect, useState } from 'react'
-import ProductList from '../components/ProductList'
-import SearchBar from '../components/SearchBar'
-import { fetchProducts } from '../api/products'
-import type { Product } from '../data/products'
-import styles from './Home.module.css'
+import { useEffect, useState } from 'react';
+import ProductList from '../components/ProductList';
+import SearchBar from '../components/SearchBar';
+import { fetchProducts } from '../api/products';
+import type { Product } from '../data/products';
+import styles from './Home.module.css';
 
 export default function Home() {
-  const [searchTerm, setSearchTerm] = useState('')
-  const [filter, setFilter] = useState('all')
-  const [products, setProducts] = useState<Product[]>([])
-  const [error, setError] = useState('')
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filter, setFilter] = useState('all');
+  const [products, setProducts] = useState<Product[]>([]);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     fetchProducts()
       .then(setProducts)
       .catch((err) => {
-        console.error('Erro ao buscar produtos', err)
+        console.error('Erro ao buscar produtos', err);
         setError(
-          'Não foi possível carregar os produtos. Verifique se o servidor/backend está em execução.'
-        )
-      })
-  }, [])
+          'Não foi possível carregar os produtos. Verifique se o servidor/backend está em execução.',
+        );
+      });
+  }, []);
 
   return (
     <div className={styles.container}>
@@ -38,5 +38,5 @@ export default function Home() {
         filter={filter}
       />
     </div>
-  )
+  );
 }

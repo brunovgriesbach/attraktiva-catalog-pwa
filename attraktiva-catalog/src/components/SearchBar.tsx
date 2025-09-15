@@ -1,10 +1,10 @@
-import styles from './SearchBar.module.css'
+import styles from './SearchBar.module.css';
 
 interface SearchBarProps {
-  searchTerm: string
-  filter: string
-  onSearchTermChange: (value: string) => void
-  onFilterChange: (value: string) => void
+  searchTerm: string;
+  filter: string;
+  onSearchTermChange: (value: string) => void;
+  onFilterChange: (value: string) => void;
 }
 
 export default function SearchBar({
@@ -28,5 +28,5 @@ export default function SearchBar({
         <option value="over-20">Over $20</option>
       </select>
     </div>
-  )
+  );
 }

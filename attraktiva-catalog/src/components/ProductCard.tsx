@@ -1,9 +1,9 @@
-import { Link } from 'react-router-dom'
-import type { Product } from '../data/products'
-import styles from './ProductCard.module.css'
+import { Link } from 'react-router-dom';
+import type { Product } from '../data/products';
+import styles from './ProductCard.module.css';
 
 interface ProductCardProps {
-  product: Product
+  product: Product;
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
@@ -17,5 +17,5 @@ export default function ProductCard({ product }: ProductCardProps) {
         </div>
       </Link>
     </div>
-  )
+  );
 }

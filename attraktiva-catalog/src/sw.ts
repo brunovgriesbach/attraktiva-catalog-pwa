@@ -1,21 +1,21 @@
 /// <reference lib="webworker" />
 /* eslint-disable no-restricted-globals, no-undef */
-import { precacheAndRoute } from 'workbox-precaching'
-import { registerRoute, NavigationRoute } from 'workbox-routing'
-import { NetworkFirst, CacheFirst } from 'workbox-strategies'
-import { ExpirationPlugin } from 'workbox-expiration'
+import { precacheAndRoute } from 'workbox-precaching';
+import { registerRoute, NavigationRoute } from 'workbox-routing';
+import { NetworkFirst, CacheFirst } from 'workbox-strategies';
+import { ExpirationPlugin } from 'workbox-expiration';
 
-declare const self: ServiceWorkerGlobalScope & { __WB_MANIFEST: any }
+declare const self: ServiceWorkerGlobalScope & { __WB_MANIFEST: any };
 
-precacheAndRoute(self.__WB_MANIFEST)
+precacheAndRoute(self.__WB_MANIFEST);
 
-const navigationRoute = new NavigationRoute(new NetworkFirst())
-registerRoute(navigationRoute)
+const navigationRoute = new NavigationRoute(new NetworkFirst());
+registerRoute(navigationRoute);
 
 registerRoute(
   ({ url }) => url.pathname.startsWith('/api/products'),
   new NetworkFirst({ cacheName: 'products-cache' }),
-)
+);
 
 registerRoute(
   ({ request }) => request.destination === 'image',
@@ -28,32 +28,32 @@ registerRoute(
       }),
     ],
   }),
-)
+);
 
 self.addEventListener('push', (event) => {
-  const data = event.data?.json() ?? {}
-  const title = data.title || 'Notification'
+  const data = event.data?.json() ?? {};
+  const title = data.title || 'Notification';
   const options: NotificationOptions = {
     body: data.body,
     icon: data.icon,
     data: data.url,
-  }
-  event.waitUntil(self.registration.showNotification(title, options))
-})
+  };
+  event.waitUntil(self.registration.showNotification(title, options));
+});
 
 self.addEventListener('notificationclick', (event) => {
-  event.notification.close()
-  const url = event.notification.data
+  event.notification.close();
+  const url = event.notification.data;
   event.waitUntil(
     self.clients
       .matchAll({ type: 'window', includeUncontrolled: true })
       .then((clients) => {
         for (const client of clients) {
-          if ('focus' in client) return client.focus()
+          if ('focus' in client) return client.focus();
         }
         if (self.clients.openWindow && url) {
-          return self.clients.openWindow(url)
+          return self.clients.openWindow(url);
         }
       }),
-  )
-})
+  );
+});

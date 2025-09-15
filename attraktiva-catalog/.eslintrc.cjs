@@ -20,4 +20,4 @@ module.exports = {
     ],
     'react-refresh/only-export-components': 'error',
   },
-}
+};

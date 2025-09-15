@@ -1,8 +1,8 @@
 /* eslint-env node */
-import fs from 'fs'
-import csv from 'csv-parser'
+import fs from 'fs';
+import csv from 'csv-parser';
 
-const products = []
+const products = [];
 
 await new Promise((resolve, reject) => {
   fs.createReadStream(new URL('./products.csv', import.meta.url))
@@ -14,10 +14,10 @@ await new Promise((resolve, reject) => {
         description: row.description,
         price: Number(row.price),
         image: row.image,
-      })
+      });
     })
     .on('end', resolve)
-    .on('error', reject)
-})
+    .on('error', reject);
+});
 
-export { products }
+export { products };
