@@ -17,7 +17,7 @@ export default function Home() {
       .catch((err) => {
         console.error('Erro ao buscar produtos', err)
         setError(
-          'Não foi possível carregar os produtos. Verifique se o servidor/backend está em execução.'
+          'Não foi possível carregar os produtos. Verifique se o servidor/backend está em execução.',
         )
       })
   }, [])
