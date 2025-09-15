@@ -1,3 +1,6 @@
-id;name;description;price;image
-1;Product 1;Description for product 1;9.99;1.jpg
-2;Product 2;Description for product 2;19.99;2.jpg
+﻿id;name;description;price;image
+1;Cadeira Atenas;Cadeira super confortável;100;1.jpg
+2;Sofá Melissa;Sofá Top;2000;2.png
+3;Rack Aurora;Rack Bonito;450;3.jpeg
+4;Mesa de Jantar Tupia;Mesa pra jantar;720;4.jpg
+5;Poltrona Karina;Poltrona gostosa;1200;5.jpeg
