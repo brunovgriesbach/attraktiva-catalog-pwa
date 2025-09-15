@@ -76,11 +76,12 @@ describe('fetchProducts', () => {
     ).toString()
     expect(mockFetch).toHaveBeenCalledWith(expectedUrl)
 
-    const expectedProducts = mockProducts.map((product) => {
-      const { category, subcategory, ...rest } = product
+    const expectedProducts: Product[] = mockProducts.map((product) => {
+      const { category, subcategory, ...productWithoutCategories } = product
       void category
       void subcategory
-      return rest
+
+      return productWithoutCategories
     })
 
     expect(data).toEqual(expectedProducts)

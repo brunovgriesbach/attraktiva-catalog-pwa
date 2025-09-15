@@ -16,7 +16,7 @@ type MockProduct = Product & {
   subcategory: string
 }
 
-const mockProducts: MockProduct[] = [
+const mockProducts = [
   {
     id: 1,
     name: 'Product 1',
@@ -35,9 +35,19 @@ const mockProducts: MockProduct[] = [
     category: 'Category 2',
     subcategory: 'Subcategory 2',
   },
-]
+] satisfies MockProduct[]
 
 const mockedFetchProducts = vi.mocked(fetchProducts)
+
+function renderProductDetail(productId: number) {
+  render(
+    <MemoryRouter initialEntries={[`/product/${productId}`]}>
+      <Routes>
+        <Route path="/product/:id" element={<ProductDetail />} />
+      </Routes>
+    </MemoryRouter>,
+  )
+}
 
 expect.extend(matchers)
 
@@ -51,13 +61,7 @@ describe('ProductDetail', () => {
   it('shows product info when product exists', async () => {
     mockedFetchProducts.mockResolvedValue(mockProducts)
 
-    render(
-      <MemoryRouter initialEntries={['/product/1']}>
-        <Routes>
-          <Route path="/product/:id" element={<ProductDetail />} />
-        </Routes>
-      </MemoryRouter>,
-    )
+    renderProductDetail(1)
 
     expect(
       await screen.findByRole('heading', { name: 'Product 1' }),
@@ -72,13 +76,7 @@ describe('ProductDetail', () => {
   it('shows not found message for missing product', async () => {
     mockedFetchProducts.mockResolvedValue(mockProducts)
 
-    render(
-      <MemoryRouter initialEntries={['/product/999']}>
-        <Routes>
-          <Route path="/product/:id" element={<ProductDetail />} />
-        </Routes>
-      </MemoryRouter>,
-    )
+    renderProductDetail(999)
 
     expect(await screen.findByText('Product not found.')).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Back to products' })).toHaveAttribute(
