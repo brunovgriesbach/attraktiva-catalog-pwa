@@ -1,5 +1,50 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
+
+import type { Product } from '../data/products'
 import { fetchProducts } from './products'
+
+type CsvProduct = Product & {
+  category: string
+  subcategory: string
+}
+
+const mockProducts = [
+  {
+    id: 1,
+    name: 'Mock Product',
+    description: 'Mock description',
+    price: 5,
+    image: '/images/mock.jpg',
+    category: 'Category 1',
+    subcategory: 'Subcategory 1',
+  },
+  {
+    id: 2,
+    name: 'Second Product',
+    description: 'Another description',
+    price: 8.5,
+    image: '/images/second.jpg',
+    category: 'Category 2',
+    subcategory: 'Subcategory 2',
+  },
+] satisfies CsvProduct[]
+
+function createCsvResponse(products: CsvProduct[]): string {
+  const header = 'id;name;description;price;image;category;subcategory'
+  const rows = products.map((product) =>
+    [
+      product.id,
+      product.name,
+      product.description,
+      product.price,
+      product.image,
+      product.category,
+      product.subcategory,
+    ].join(';'),
+  )
+
+  return [header, ...rows].join('\n')
+}
 
 afterEach(() => {
   vi.restoreAllMocks()
@@ -7,9 +52,7 @@ afterEach(() => {
 
 describe('fetchProducts', () => {
   it('returns products in correct format', async () => {
-    const csvResponse = `id;name;description;price;image\n` +
-      `1;Mock Product;Mock description;5;/images/mock.jpg\n` +
-      `2;Second Product;Another description;8.5;/images/second.jpg\n`
+    const csvResponse = createCsvResponse(mockProducts)
 
     const mockFetch = vi
       .spyOn(globalThis, 'fetch')
@@ -32,21 +75,14 @@ describe('fetchProducts', () => {
       new URL(baseWithLeadingSlash, window.location.origin),
     ).toString()
     expect(mockFetch).toHaveBeenCalledWith(expectedUrl)
-    expect(data).toEqual([
-      {
-        id: 1,
-        name: 'Mock Product',
-        description: 'Mock description',
-        price: 5,
-        image: '/images/mock.jpg',
-      },
-      {
-        id: 2,
-        name: 'Second Product',
-        description: 'Another description',
-        price: 8.5,
-        image: '/images/second.jpg',
-      },
-    ])
+
+    const expectedProducts = mockProducts.map((product) => {
+      const { category, subcategory, ...rest } = product
+      void category
+      void subcategory
+      return rest
+    })
+
+    expect(data).toEqual(expectedProducts)
   })
 })
