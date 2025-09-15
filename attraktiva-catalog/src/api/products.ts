@@ -36,52 +36,109 @@ function isAbsoluteUrl(value: string): boolean {
   return /^[a-zA-Z][a-zA-Z\d+\-.]*:\/\//.test(value)
 }
 
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
+function getCaseInsensitiveParam(
+  params: URLSearchParams | undefined,
+  name: string,
+): string | null {
+  if (!params) {
+    return null
+  }
+
+  const lowerCaseName = name.toLowerCase()
+
+  for (const [key, value] of params.entries()) {
+    if (key.toLowerCase() === lowerCaseName && value.length > 0) {
+      return value
+    }
+  }
+
+  return null
+}
+
+function extractParamValues(parsedUrl: URL, originalUrl: string, names: string[]): string | null {
+  const hash = parsedUrl.hash.replace(/^#/, '')
+  const hashParams = hash.length > 0 ? new URLSearchParams(hash.replace(/^!/, '')) : undefined
+
+  for (const params of [parsedUrl.searchParams, hashParams]) {
+    for (const name of names) {
+      const value = getCaseInsensitiveParam(params, name)
+      if (value) {
+        return value
+      }
+    }
+  }
+
+  for (const name of names) {
+    const regex = new RegExp(`[?&#]${escapeRegExp(name)}=([^&#]*)`, 'i')
+    const match = regex.exec(originalUrl)
+    if (match && match[1]) {
+      const encodedValue = match[1].replace(/\+/g, ' ')
+      try {
+        return decodeURIComponent(encodedValue)
+      } catch {
+        return encodedValue
+      }
+    }
+  }
+
+  return null
+}
+
 export function resolveOneDriveUrl(url: string): string {
-  if (typeof url !== 'string' || url.trim().length === 0) {
+  if (typeof url !== 'string') {
     return url
+  }
+
+  const normalizedUrl = url.trim()
+  if (normalizedUrl.length === 0) {
+    return normalizedUrl
   }
 
   let parsedUrl: URL
   try {
-    parsedUrl = new URL(url)
+    parsedUrl = new URL(normalizedUrl)
   } catch {
-    return url
+    return normalizedUrl
   }
 
   const hostname = parsedUrl.hostname.toLowerCase()
+  const isOneDriveLiveHost =
+    hostname === 'onedrive.live.com' || hostname.endsWith('.onedrive.live.com')
+  const isShortOneDriveHost = hostname === '1drv.ms' || hostname.endsWith('.1drv.ms')
 
-  if (hostname === 'onedrive.live.com') {
-    const cid = parsedUrl.searchParams.get('cid')
-    const resid = parsedUrl.searchParams.get('resid') ?? parsedUrl.searchParams.get('id')
-    const authkey = parsedUrl.searchParams.get('authkey')
-
-    const params = new URLSearchParams()
-
-    if (cid) {
-      params.set('cid', cid)
-    }
-    if (resid) {
-      params.set('resid', resid)
-    }
-    if (authkey) {
-      params.set('authkey', authkey)
-    }
-
-    const query = params.toString()
-
-    if (query.length === 0) {
-      return url
-    }
-
-    return `https://onedrive.live.com/download?${query}`
+  if (!isOneDriveLiveHost && !isShortOneDriveHost) {
+    return normalizedUrl
   }
 
-  if (hostname === '1drv.ms') {
-    parsedUrl.searchParams.set('download', '1')
-    return parsedUrl.toString()
+  const cid = extractParamValues(parsedUrl, normalizedUrl, ['cid'])
+  const resid = extractParamValues(parsedUrl, normalizedUrl, ['resid', 'resId', 'id'])
+  const authkey = extractParamValues(parsedUrl, normalizedUrl, ['authkey', 'authKey'])
+
+  if (!resid) {
+    if (isShortOneDriveHost) {
+      parsedUrl.searchParams.set('download', '1')
+      return parsedUrl.toString()
+    }
+
+    return normalizedUrl
   }
 
-  return url
+  const params = new URLSearchParams()
+  if (cid) {
+    params.set('cid', cid)
+  }
+
+  params.set('resid', resid)
+
+  if (authkey) {
+    params.set('authkey', authkey)
+  }
+
+  return `https://onedrive.live.com/download?${params.toString()}`
 }
 
 function resolveProductsUrl(baseUrl?: string): string {
