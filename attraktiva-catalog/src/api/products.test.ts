@@ -69,26 +69,38 @@ describe('fetchProducts', () => {
 })
 
 describe('resolveOneDriveUrl', () => {
-  it('converts onedrive.live.com share URLs to direct download links', () => {
+  it('converts onedrive.live.com share URLs to direct download links', async () => {
     const url =
       'https://onedrive.live.com/?cid=123ABC&resid=123ABC%21123&authkey=%21AIexampleKey'
-    const resolved = resolveOneDriveUrl(url)
+    const resolved = await resolveOneDriveUrl(url)
 
     expect(resolved).toBe(
       'https://onedrive.live.com/download?cid=123ABC&resid=123ABC%21123&authkey=%21AIexampleKey',
     )
   })
 
-  it('appends download parameter to short 1drv.ms links', () => {
+  it('resolves short 1drv.ms redirects to direct download links', async () => {
     const url = 'https://1drv.ms/u/s!example'
-    const resolved = resolveOneDriveUrl(url)
+    const redirectUrl =
+      'https://onedrive.live.com/?cid=123ABC&resid=123ABC%21123&authkey=%21AIexampleKey'
 
-    expect(resolved).toBe('https://1drv.ms/u/s!example?download=1')
+    const fetchMock = vi
+      .spyOn(globalThis, 'fetch')
+      .mockResolvedValue({
+        headers: new Headers({ location: redirectUrl }),
+      } as unknown as Response)
+
+    const resolved = await resolveOneDriveUrl(url)
+
+    expect(fetchMock).toHaveBeenCalledWith(url, { redirect: 'manual' })
+    expect(resolved).toBe(
+      'https://onedrive.live.com/download?cid=123ABC&resid=123ABC%21123&authkey=%21AIexampleKey',
+    )
   })
 
-  it('returns the original URL for non-OneDrive hosts', () => {
+  it('returns the original URL for non-OneDrive hosts', async () => {
     const url = 'https://example.com/image.jpg'
 
-    expect(resolveOneDriveUrl(url)).toBe(url)
+    await expect(resolveOneDriveUrl(url)).resolves.toBe(url)
   })
 })
