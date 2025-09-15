@@ -4,6 +4,12 @@
 
 O frontend está localizado na pasta [`attraktiva-catalog`](./attraktiva-catalog). Consulte o README dessa pasta para instruções de desenvolvimento.
 
+## Imagens de produtos e execução local
+
+1. **Obter link público do OneDrive:** carregue a imagem no OneDrive, clique em *Compartilhar* e escolha a opção "Qualquer pessoa com o link". Use *Copiar link* para gerar uma URL pública.
+2. **Atualizar `products.csv`:** edite o arquivo [`attraktiva-catalog/server/products.csv`](./attraktiva-catalog/server/products.csv) e cole a URL na coluna `image` correspondente a cada produto.
+3. **Rodar servidor e Vite:** dentro da pasta [`attraktiva-catalog`](./attraktiva-catalog), execute `npm run server` para iniciar a API que lê o CSV e, em outro terminal, `npm run dev` para subir o Vite. A aplicação consumirá os produtos expostos em `http://localhost:3000/api/products`.
+
 ## Roadmap
 
 - [x] Configuração básica do repositório.
