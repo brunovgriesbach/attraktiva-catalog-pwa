@@ -7,6 +7,12 @@ This project uses React with Vite and React Router. The application starts in `s
 - `IMAGE_BASE_URL`: Base URL used by the server to prefix image filenames from `products.csv`.
 - `VITE_API_URL`: Base URL for the backend API (e.g., `http://localhost:3000`).
 
+## Linting, formatting, and tests
+
+- `npm run lint` / `npm run lint:fix`
+- `npm run format` / `npm run format:fix`
+- `npm test`
+
 ## Expanding the ESLint configuration
 
 If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.

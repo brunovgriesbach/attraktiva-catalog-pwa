@@ -17,9 +17,15 @@ O frontend está localizado na pasta [`attraktiva-catalog`](./attraktiva-catalog
 
 - [x] Configuração básica do repositório.
 - [x] Setup do Vite + React e estrutura inicial do projeto.
-- [ ] Configuração de linting, formatação e testes.
+- [x] Configuração de linting, formatação e testes.
 - [ ] Implementação das principais funcionalidades do catálogo.
 - [ ] Inclusão de assets do PWA e ajustes finais.
+
+## Comandos de linting, formatação e testes
+
+- `npm run lint` / `npm run lint:fix`
+- `npm run format` / `npm run format:fix`
+- `npm test`
 
 ## Deploy
 
