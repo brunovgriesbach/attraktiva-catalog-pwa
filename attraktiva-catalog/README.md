@@ -5,6 +5,7 @@ This project uses React with Vite and React Router. The application starts in `s
 ## Environment Variables
 
 - `IMAGE_BASE_URL`: Base URL used by the server to prefix image filenames from `products.csv`.
+- `VITE_API_URL`: Base URL for the backend API (e.g., `http://localhost:3000`).
 
 ## Expanding the ESLint configuration
 
