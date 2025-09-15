@@ -2,11 +2,16 @@
 import express from 'express'
 import cors from 'cors'
 import webPush from 'web-push'
-import { products } from './products.js'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 
 const app = express()
 app.use(cors())
 app.use(express.json())
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+const productsCsvPath = path.resolve(__dirname, '../public/products.csv')
 
 const { VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY } = process.env
 
@@ -35,8 +40,8 @@ app.post('/api/push', async (req, res) => {
   res.json({ sent: subscriptions.length })
 })
 
-app.get('/api/products', (req, res) => {
-  res.json(products)
+app.get('/products.csv', (req, res) => {
+  res.sendFile(productsCsvPath)
 })
 
 const port = process.env.PORT || 3000

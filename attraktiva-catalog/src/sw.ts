@@ -13,7 +13,7 @@ const navigationRoute = new NavigationRoute(new NetworkFirst())
 registerRoute(navigationRoute)
 
 registerRoute(
-  ({ url }) => url.pathname.startsWith('/api/products'),
+  ({ url }) => url.pathname.endsWith('/products.csv'),
   new NetworkFirst({ cacheName: 'products-cache' }),
 )
 

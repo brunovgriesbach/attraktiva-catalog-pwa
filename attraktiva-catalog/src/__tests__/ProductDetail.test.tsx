@@ -4,19 +4,8 @@ import { describe, it, expect, vi, afterEach } from 'vitest'
 import * as matchers from '@testing-library/jest-dom/matchers'
 
 import ProductDetail from '../pages/ProductDetail'
-import type { Product } from '../data/products'
 
 expect.extend(matchers)
-
-const mockProducts: Product[] = [
-  {
-    id: 1,
-    name: 'Product 1',
-    description: 'Description for product 1',
-    price: 9.99,
-    image: '/images/product1.jpg',
-  },
-]
 
 afterEach(() => {
   vi.restoreAllMocks()
@@ -24,9 +13,12 @@ afterEach(() => {
 
 describe('ProductDetail', () => {
   it('shows product info when product exists', async () => {
+    const csvResponse = `id;name;description;price;image\n` +
+      `1;Product 1;Description for product 1;9.99;/images/product1.jpg\n`
+
     vi.spyOn(globalThis, 'fetch').mockResolvedValue({
       ok: true,
-      json: async () => mockProducts,
+      text: async () => csvResponse,
     } as unknown as Response)
 
     render(
@@ -44,9 +36,12 @@ describe('ProductDetail', () => {
   })
 
   it('shows not found message for missing product', async () => {
+    const csvResponse = `id;name;description;price;image\n` +
+      `1;Product 1;Description for product 1;9.99;/images/product1.jpg\n`
+
     vi.spyOn(globalThis, 'fetch').mockResolvedValue({
       ok: true,
-      json: async () => mockProducts,
+      text: async () => csvResponse,
     } as unknown as Response)
 
     render(
