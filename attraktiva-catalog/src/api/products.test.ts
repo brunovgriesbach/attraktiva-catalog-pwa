@@ -67,11 +67,12 @@ describe('fetchProducts', () => {
 
     expect(mockFetch).toHaveBeenCalledWith('http://localhost/products.csv')
 
-    const expectedProducts = mockProducts.map((product) => {
-      const { category, subcategory, ...rest } = product
+    const expectedProducts: Product[] = mockProducts.map((product) => {
+      const { category, subcategory, ...productWithoutCategories } = product
       void category
       void subcategory
-      return rest
+
+      return productWithoutCategories
     })
 
     expect(data).toEqual(expectedProducts)
