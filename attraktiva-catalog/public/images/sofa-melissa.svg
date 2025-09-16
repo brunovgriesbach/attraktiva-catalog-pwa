@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#c7d7f7" />
+      <stop offset="100%" stop-color="#8aa9f0" />
+    </linearGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#grad)" rx="32" />
+  <g fill="#ffffff" opacity="0.85">
+    <rect x="80" y="180" width="240" height="80" rx="24" />
+    <rect x="110" y="140" width="180" height="60" rx="20" />
+    <rect x="110" y="260" width="40" height="40" rx="12" />
+    <rect x="250" y="260" width="40" height="40" rx="12" />
+  </g>
+  <text x="200" y="360" text-anchor="middle" font-family="'Inter', 'Helvetica', 'Arial', sans-serif" font-size="32" fill="#ffffff">Sofá Melissa</text>
+</svg>
