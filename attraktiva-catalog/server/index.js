@@ -5,9 +5,12 @@ import webPush from 'web-push'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
+import oneDriveResolverRouter from './onedrive-resolver.js'
+
 const app = express()
 app.use(cors())
 app.use(express.json())
+app.use(oneDriveResolverRouter)
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
