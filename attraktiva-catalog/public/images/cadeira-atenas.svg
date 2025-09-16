@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f7c6c7" />
+      <stop offset="100%" stop-color="#f0939c" />
+    </linearGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#grad)" rx="32" />
+  <g fill="none" stroke="#ffffff" stroke-width="12" stroke-linecap="round">
+    <path d="M120 260 L280 260" />
+    <path d="M140 140 C140 110 260 110 260 140 L260 230 C260 260 140 260 140 230 Z" fill="#ffffff" opacity="0.65" />
+    <path d="M150 260 L150 320" />
+    <path d="M250 260 L250 320" />
+  </g>
+  <text x="200" y="360" text-anchor="middle" font-family="'Inter', 'Helvetica', 'Arial', sans-serif" font-size="32" fill="#ffffff">Cadeira Atenas</text>
+</svg>

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#d4f6d2" />
+      <stop offset="100%" stop-color="#8ed39a" />
+    </linearGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#grad)" rx="32" />
+  <g fill="#ffffff" opacity="0.9">
+    <rect x="90" y="200" width="220" height="60" rx="16" />
+    <rect x="90" y="140" width="220" height="40" rx="12" />
+    <rect x="120" y="220" width="40" height="20" rx="6" fill="#8ed39a" opacity="0.8" />
+    <rect x="180" y="220" width="40" height="20" rx="6" fill="#8ed39a" opacity="0.8" />
+    <rect x="240" y="220" width="40" height="20" rx="6" fill="#8ed39a" opacity="0.8" />
+  </g>
+  <text x="200" y="360" text-anchor="middle" font-family="'Inter', 'Helvetica', 'Arial', sans-serif" font-size="32" fill="#ffffff">Rack Aurora</text>
+</svg>
