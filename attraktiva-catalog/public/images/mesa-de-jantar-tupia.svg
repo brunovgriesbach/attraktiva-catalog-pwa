@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffe6c7" />
+      <stop offset="100%" stop-color="#f0b266" />
+    </linearGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#grad)" rx="32" />
+  <g fill="#ffffff" opacity="0.9">
+    <ellipse cx="200" cy="210" rx="130" ry="60" />
+    <rect x="180" y="210" width="40" height="80" rx="12" />
+  </g>
+  <text x="200" y="360" text-anchor="middle" font-family="'Inter', 'Helvetica', 'Arial', sans-serif" font-size="30" fill="#ffffff">Mesa Tupia</text>
+</svg>
