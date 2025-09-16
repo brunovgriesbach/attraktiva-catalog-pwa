@@ -1,6 +1,6 @@
 id;name;description;price;image;category;subcategory
-1;Cadeira Atenas;Cadeira super confortável;100;/images/cadeira-atenas.svg;Sala de Estar;Cadeiras
-2;Sofá Melissa;Sofá amplo e confortável;2000;/images/sofa-melissa.svg;Sala de Estar;Sofás
-3;Rack Aurora;Rack elegante para a sala de TV;450;/images/rack-aurora.svg;Sala de Estar;Racks
-4;Mesa de Jantar Tupia;Mesa ideal para refeições em família;720;/images/mesa-de-jantar-tupia.svg;Sala de Jantar;Mesas
-5;Poltrona Karina;Poltrona com design moderno;1200;/images/poltrona-karina.svg;Sala de Estar;Poltronas
+1;Cadeira Atenas;Cadeira super confortável;100;https://attraktiva.vteximg.com.br/arquivos/ids/282846-600-600/Cadeira-20Livia-20363-20--20Freijo-20Matrezan-2002.png?v=638857685516900000;Sala de Estar;Cadeiras
+2;Sofá Melissa;Sofá amplo e confortável;2000/https://attraktiva.vteximg.com.br/arquivos/ids/280709-600-600/Sof-C3-A1-20Cayman-20234m-20455-20--20Pesponto-20Cor-20Couro-20Mempra-20--20-2-.png?v=638545030617800000;Sala de Estar;Sofás
+3;Rack Aurora;Rack elegante para a sala de TV;450;https://attraktiva.vteximg.com.br/arquivos/ids/278737-600-600/Rack-20Columbia-20Rustic-20Brown-20--20Grafite-20Renar-2001.png?v=638466219808600000;Sala de Estar;Racks
+4;Mesa de Jantar Tupia;Mesa ideal para refeições em família;720;https://attraktiva.vteximg.com.br/arquivos/ids/279721-600-600/Mesa-20Jantar-20Alpha-20220-20x-20110-20Lamina-20Carvalho-20Capuccino-20Asterope-2001.png?v=638507764088770000;Sala de Jantar;Mesas
+5;Poltrona Karina;Poltrona com design moderno;1200;https://attraktiva.vteximg.com.br/arquivos/ids/281218-600-600/Poltrona-20Gloria-20Girat-C3-B3ria-202939-20Dmonegatto-2002.png?v=638582061638700000;Sala de Estar;Poltronas
