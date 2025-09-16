@@ -43,7 +43,7 @@ export default function ProductDetail() {
       <div className={styles.info}>
         <h2 className={styles.name}>{product.name}</h2>
         <p className={styles.description}>{product.description}</p>
-        <p className={styles.price}>${product.price.toFixed(2)}</p>
+        <p className={styles.price}>R$ {product.price.toFixed(2)}</p>
         <Link to="/" className={styles.back}>
           Back to products
         </Link>

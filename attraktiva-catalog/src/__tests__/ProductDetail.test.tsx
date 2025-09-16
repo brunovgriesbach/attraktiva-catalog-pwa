@@ -62,7 +62,7 @@ describe('ProductDetail', () => {
       await screen.findByRole('heading', { name: 'Product 1' }),
     ).toBeInTheDocument()
     expect(screen.getByText('Description for product 1')).toBeInTheDocument()
-    expect(screen.getByText('$9.99')).toBeInTheDocument()
+    expect(screen.getByText('R$ 9.99')).toBeInTheDocument()
     const backLink = screen.getByRole('link', { name: 'Back to products' })
     expect(backLink).toHaveAttribute('href', '/')
     expect(mockedFetchProducts).toHaveBeenCalledTimes(1)
