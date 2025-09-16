@@ -16,7 +16,6 @@ export default function ProductCard({ product }: ProductCardProps) {
         </div>
         <div className={styles.info}>
           <h3 className={styles.name}>{product.name}</h3>
-          <p className={styles.price}>${product.price.toFixed(2)}</p>
         </div>
       </Link>
     </div>

@@ -56,10 +56,9 @@
 
 .info {
   flex: 1;
-  padding: 1.25rem 1.5rem;
+  padding: 1.15rem 1.5rem;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
 }
 
 .name {
@@ -67,11 +66,4 @@
   font-size: 1.05rem;
   font-weight: 600;
   color: #0f172a;
-}
-
-.price {
-  margin: 0;
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #2563eb;
 }
