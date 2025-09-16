@@ -88,6 +88,41 @@ function extractParamValues(parsedUrl: URL, originalUrl: string, names: string[]
   return null
 }
 
+const ONEDRIVE_RESOLVER_ENDPOINT = '/api/onedrive/resolve'
+
+function isOneDriveHostname(hostname: string): boolean {
+  const lowerCase = hostname.toLowerCase()
+  return lowerCase === 'onedrive.live.com' || lowerCase.endsWith('.onedrive.live.com')
+}
+
+function isShortOneDriveHostname(hostname: string): boolean {
+  const lowerCase = hostname.toLowerCase()
+  return lowerCase === '1drv.ms' || lowerCase.endsWith('.1drv.ms')
+}
+
+function resolveOneDriveResolverEndpoint(): string {
+  const rawBase = import.meta.env.VITE_API_URL
+  const normalizedBase = typeof rawBase === 'string' ? rawBase.trim() : ''
+
+  if (normalizedBase.length > 0) {
+    try {
+      return new URL(ONEDRIVE_RESOLVER_ENDPOINT, normalizedBase).toString()
+    } catch {
+      const normalizedBaseUrl = ensureTrailingSlash(normalizedBase)
+      const trimmedPath = ONEDRIVE_RESOLVER_ENDPOINT.startsWith('/')
+        ? ONEDRIVE_RESOLVER_ENDPOINT.slice(1)
+        : ONEDRIVE_RESOLVER_ENDPOINT
+      return `${normalizedBaseUrl}${trimmedPath}`
+    }
+  }
+
+  if (typeof window !== 'undefined' && typeof window.location !== 'undefined') {
+    return new URL(ONEDRIVE_RESOLVER_ENDPOINT, window.location.origin).toString()
+  }
+
+  return ONEDRIVE_RESOLVER_ENDPOINT
+}
+
 export async function resolveOneDriveUrl(url: string): Promise<string> {
   if (typeof url !== 'string') {
     return url
@@ -105,16 +140,52 @@ export async function resolveOneDriveUrl(url: string): Promise<string> {
     return normalizedUrl
   }
 
-  const hostname = parsedUrl.hostname.toLowerCase()
-  const isOneDriveLiveHost =
-    hostname === 'onedrive.live.com' || hostname.endsWith('.onedrive.live.com')
-  const isShortOneDriveHost = hostname === '1drv.ms' || hostname.endsWith('.1drv.ms')
+  const hostname = parsedUrl.hostname
+  const isOneDriveLiveHost = isOneDriveHostname(hostname)
+  const isShortOneDriveHost = isShortOneDriveHostname(hostname)
 
   if (!isOneDriveLiveHost && !isShortOneDriveHost) {
     return normalizedUrl
   }
 
   if (isShortOneDriveHost) {
+    const isBrowserEnvironment =
+      typeof window !== 'undefined' && typeof window.document !== 'undefined'
+
+    if (isBrowserEnvironment) {
+      const resolverEndpoint = resolveOneDriveResolverEndpoint()
+
+      try {
+        const response = await fetch(resolverEndpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ url: normalizedUrl }),
+        })
+
+        if (response.ok) {
+          try {
+            const payload = (await response.json()) as { url?: string }
+            const resolvedUrl =
+              typeof payload?.url === 'string' ? payload.url.trim() : ''
+
+            if (resolvedUrl.length > 0) {
+              if (resolvedUrl === normalizedUrl) {
+                return normalizedUrl
+              }
+
+              return resolveOneDriveUrl(resolvedUrl)
+            }
+          } catch {
+            // Ignore JSON parsing errors and fall back to the original URL
+          }
+        }
+      } catch {
+        // Ignore network errors and fall back to the original URL
+      }
+    }
+
     try {
       const response = await fetch(normalizedUrl, { redirect: 'manual' })
       const locationHeader = response.headers?.get('location')
@@ -125,13 +196,14 @@ export async function resolveOneDriveUrl(url: string): Promise<string> {
         if (trimmedLocation.length > 0) {
           try {
             const redirectUrl = new URL(trimmedLocation, parsedUrl)
-            const redirectHostname = redirectUrl.hostname.toLowerCase()
-            const pointsToOneDrive =
-              redirectHostname === 'onedrive.live.com' ||
-              redirectHostname.endsWith('.onedrive.live.com')
+            if (isOneDriveHostname(redirectUrl.hostname)) {
+              const redirectString = redirectUrl.toString()
 
-            if (pointsToOneDrive) {
-              const resolvedRedirect = await resolveOneDriveUrl(redirectUrl.toString())
+              if (redirectString === normalizedUrl) {
+                return normalizedUrl
+              }
+
+              const resolvedRedirect = await resolveOneDriveUrl(redirectString)
               if (resolvedRedirect.toLowerCase().includes('onedrive.live.com/download')) {
                 return resolvedRedirect
               }

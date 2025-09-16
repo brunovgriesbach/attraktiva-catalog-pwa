@@ -87,12 +87,22 @@ describe('resolveOneDriveUrl', () => {
     const fetchMock = vi
       .spyOn(globalThis, 'fetch')
       .mockResolvedValue({
-        headers: new Headers({ location: redirectUrl }),
+        ok: true,
+        json: async () => ({ url: redirectUrl }),
       } as unknown as Response)
 
     const resolved = await resolveOneDriveUrl(url)
 
-    expect(fetchMock).toHaveBeenCalledWith(url, { redirect: 'manual' })
+    expect(fetchMock).toHaveBeenCalledWith(
+      'http://localhost/api/onedrive/resolve',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ url }),
+      },
+    )
     expect(resolved).toBe(
       'https://onedrive.live.com/download?cid=123ABC&resid=123ABC%21123&authkey=%21AIexampleKey',
     )
