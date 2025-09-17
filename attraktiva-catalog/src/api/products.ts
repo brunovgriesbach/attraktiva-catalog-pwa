@@ -24,38 +24,6 @@ function toNumber(value: string | number | null | undefined): number {
   return Number.isFinite(normalized) ? normalized : NaN
 }
 
-function normalizeImageUrl(value: string): string {
-  const trimmed = value.trim()
-
-  if (trimmed.length === 0) {
-    return trimmed
-  }
-
-  if (!isAbsoluteUrl(trimmed)) {
-    return trimmed
-  }
-
-  try {
-    const url = new URL(trimmed)
-
-    if (url.hostname !== 'drive.google.com') {
-      return trimmed
-    }
-
-    const pathMatch = url.pathname.match(/\/file\/d\/([^/]+)/)
-    const id = pathMatch?.[1] ?? url.searchParams.get('id') ?? ''
-
-    if (id.length === 0) {
-      return trimmed
-    }
-
-    return `https://drive.google.com/uc?export=view&id=${id}`
-  } catch (error) {
-    console.warn('[normalizeImageUrl] Failed to parse image URL', error)
-    return trimmed
-  }
-}
-
 function ensureTrailingSlash(value: string): string {
   return value.endsWith('/') ? value : `${value}/`
 }
@@ -114,7 +82,7 @@ export async function fetchProducts(baseUrl?: string): Promise<Product[]> {
     const price = toNumber(row.price)
     const name = normalizeText(row.name)
     const description = normalizeText(row.description)
-    const image = normalizeImageUrl(normalizeText(row.image))
+    const image = normalizeText(row.image)
     const category = normalizeText(row.category)
     const subcategory = normalizeText(row.subcategory)
 
