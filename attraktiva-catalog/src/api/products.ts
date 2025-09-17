@@ -49,7 +49,18 @@ function normalizeImageUrl(value: string): string {
       return trimmed
     }
 
-    return `https://drive.google.com/uc?export=view&id=${id}`
+    const ucUrl = new URL('/uc', url)
+    const params = new URLSearchParams(url.search)
+
+    params.set('id', id)
+
+    if (!params.has('export')) {
+      params.set('export', 'view')
+    }
+
+    ucUrl.search = params.toString()
+
+    return ucUrl.toString()
   } catch (error) {
     console.warn('[normalizeImageUrl] Failed to parse image URL', error)
     return trimmed
