@@ -44,6 +44,26 @@ export default function ProductDetail() {
         <h2 className={styles.name}>{product.name}</h2>
         <p className={styles.description}>{product.description}</p>
         <p className={styles.price}>R$ {product.price.toFixed(2)}</p>
+        <dl className={styles.details}>
+          <div className={styles.detailItem}>
+            <dt className={styles.detailLabel}>Fabricante</dt>
+            <dd className={styles.detailValue}>
+              {product.manufacturer || 'Não informado'}
+            </dd>
+          </div>
+          <div className={styles.detailItem}>
+            <dt className={styles.detailLabel}>Código do Fabricante</dt>
+            <dd className={styles.detailValue}>
+              {product.manufacturerCode || 'Não informado'}
+            </dd>
+          </div>
+          <div className={styles.detailItem}>
+            <dt className={styles.detailLabel}>Referência do Produto</dt>
+            <dd className={styles.detailValue}>
+              {product.productReference || 'Não informado'}
+            </dd>
+          </div>
+        </dl>
         <Link to="/" className={styles.back}>
           Back to products
         </Link>

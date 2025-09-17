@@ -15,6 +15,9 @@ const mockProducts: Product[] = [
     image: '/images/sofa.jpg',
     category: 'Sala de Estar',
     subcategory: 'Sofás',
+    manufacturer: 'ConfortHome',
+    manufacturerCode: 'CH-001',
+    productReference: 'REF-SOFA-01',
   },
   {
     id: 2,
@@ -24,6 +27,9 @@ const mockProducts: Product[] = [
     image: '/images/cama.jpg',
     category: 'Quarto',
     subcategory: 'Camas',
+    manufacturer: 'DreamWorks',
+    manufacturerCode: 'DW-200',
+    productReference: 'REF-CAMA-02',
   },
   {
     id: 3,
@@ -33,6 +39,9 @@ const mockProducts: Product[] = [
     image: '/images/luminaria.jpg',
     category: 'Iluminação',
     subcategory: 'Luminárias',
+    manufacturer: 'BrightIdeas',
+    manufacturerCode: 'BI-900',
+    productReference: 'REF-LUZ-03',
   },
 ]
 
@@ -52,6 +61,9 @@ describe('ProductList', () => {
           category=""
           subcategory=""
           sortOrder="default"
+          manufacturer=""
+          manufacturerCode=""
+          productReference=""
         />
       </MemoryRouter>,
     )
@@ -70,6 +82,9 @@ describe('ProductList', () => {
           category="Quarto"
           subcategory="Camas"
           sortOrder="default"
+          manufacturer="Dream"
+          manufacturerCode="DW-200"
+          productReference="REF-CAMA"
         />
       </MemoryRouter>,
     )
@@ -88,6 +103,9 @@ describe('ProductList', () => {
           category=""
           subcategory=""
           sortOrder="price-asc"
+          manufacturer=""
+          manufacturerCode=""
+          productReference=""
         />
       </MemoryRouter>,
     )

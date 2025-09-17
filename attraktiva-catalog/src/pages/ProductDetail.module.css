@@ -29,6 +29,29 @@
   font-weight: bold;
 }
 
+.details {
+  margin-top: 1rem;
+  display: grid;
+  gap: 0.75rem;
+  padding: 0;
+}
+
+.detailItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.detailLabel {
+  font-weight: 600;
+  color: #374151;
+}
+
+.detailValue {
+  margin: 0;
+  color: #1f2937;
+}
+
 .back {
   margin-top: 1rem;
   color: #2563eb;
