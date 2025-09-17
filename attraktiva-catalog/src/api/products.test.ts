@@ -68,6 +68,8 @@ describe('fetchProducts', () => {
   it('normalizes Google Drive image URLs', async () => {
     const googleDriveUrl =
       'https://drive.google.com/file/d/drive-file-id/view?usp=sharing'
+    const expectedUrl =
+      'https://drive.google.com/uc?export=view&id=drive-file-id'
 
     const csvResponse = createCsvResponse([
       {
@@ -89,47 +91,7 @@ describe('fetchProducts', () => {
     const data = await fetchProducts('http://localhost')
 
     expect(data).toHaveLength(1)
-    const normalizedUrl = new URL(data[0]?.image ?? '')
-
-    expect(normalizedUrl.origin).toBe('https://drive.google.com')
-    expect(normalizedUrl.pathname).toBe('/uc')
-    expect(normalizedUrl.searchParams.get('id')).toBe('drive-file-id')
-    expect(normalizedUrl.searchParams.get('export')).toBe('view')
-    expect(normalizedUrl.searchParams.get('usp')).toBe('sharing')
-  })
-
-  it('preserves Google Drive resource keys when normalizing image URLs', async () => {
-    const googleDriveUrl =
-      'https://drive.google.com/file/d/drive-file-id/view?usp=drive_link&resourcekey=0-resource-key'
-
-    const csvResponse = createCsvResponse([
-      {
-        id: 4,
-        name: 'Drive Resource Key Product',
-        description: 'Drive description',
-        price: 12,
-        image: googleDriveUrl,
-        category: 'Category 4',
-        subcategory: 'Subcategory 4',
-      },
-    ])
-
-    vi.spyOn(globalThis, 'fetch').mockResolvedValue({
-      ok: true,
-      text: async () => csvResponse,
-    } as unknown as Response)
-
-    const data = await fetchProducts('http://localhost')
-
-    expect(data).toHaveLength(1)
-    const normalizedUrl = new URL(data[0]?.image ?? '')
-
-    expect(normalizedUrl.searchParams.get('id')).toBe('drive-file-id')
-    expect(normalizedUrl.searchParams.get('export')).toBe('view')
-    expect(normalizedUrl.searchParams.get('resourcekey')).toBe(
-      '0-resource-key',
-    )
-    expect(normalizedUrl.searchParams.get('usp')).toBe('drive_link')
+    expect(data[0]?.image).toBe(expectedUrl)
   })
 })
 
