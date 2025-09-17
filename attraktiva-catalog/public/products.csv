@@ -1,7 +1,7 @@
-id;name;description;price;image;category;subcategory;image2;image3;image4;image5
-1;Cadeira Atenas;Cadeira super confortável;100;https://1drv.ms/i/c/3150482359d620a2/IQRJQPOGVRc5QY7onEyurxW2AaaLXcao-pU3eHgpcHYBNNU?width=1484&height=2136;Sala de Jantar;Cadeiras;;;;
-2;Sofá Melissa;Sofá amplo e confortável;2000;https://1drv.ms/i/c/3150482359d620a2/IQTDYolqE1cYQbmM2agloqDRAWDEqpobQCisRn18im4H3EU?width=938&height=654;Sala de Estar;Sofás;;;;
-3;Rack Aurora;Rack elegante para a sala de TV;450;https://1drv.ms/i/c/3150482359d620a2/IQTW57F_hy9dT5sKWsZ66D-zAeRRtAnxNnBKw0o2xoqk7dI?width=1046&height=998;Sala de Estar;Racks;;;;
-4;Mesa de Jantar Tupia;Mesa ideal para refeições em família;720;https://1drv.ms/i/c/3150482359d620a2/IQRVhz8xuW7wT6M8CiSEzPMjAcPmVbZ2u81JRGXfAcpu8k8?width=1026&height=1166;Sala de Jantar;Mesas;;;;
-5;Poltrona Karina;Poltrona com design moderno;1200;https://1drv.ms/i/c/3150482359d620a2/IQSNXlg1zZSfTKZVG2VoRtQxAUayZG_XqYela4kzX3ySR3I?width=1268&height=1166;Sala de Estar;Poltronas;;;;
-6;Mesa de Centro Roma;Mesa de Centro Bonita;980;https://cdn.dooca.store/102781/products/suica-1.jpeg?v=1741972365&webp=0;Sala de Estar;Mesa de Centro;;;;
+id;name;description;price;image;category;subcategory;image2;image3;image4;image5;Fabricante;codigo-fabricante;referencia-produto
+1;Cadeira Atenas;Cadeira super confortável;100;https://1drv.ms/i/c/3150482359d620a2/IQRJQPOGVRc5QY7onEyurxW2AaaLXcao-pU3eHgpcHYBNNU?width=1484&height=2136;Sala de Jantar;Cadeiras;https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCJsLKLfoI-V1WAbdYAJf7NNrO2ei208WOfw&s;;;;Asterope;112;2029
+2;Sofá Melissa;Sofá amplo e confortável;2000;https://1drv.ms/i/c/3150482359d620a2/IQTDYolqE1cYQbmM2agloqDRAWDEqpobQCisRn18im4H3EU?width=938&height=654;Sala de Estar;Sofás;;;;;Grafani;132;Melissa
+3;Rack Aurora;Rack elegante para a sala de TV;450;https://1drv.ms/i/c/3150482359d620a2/IQTW57F_hy9dT5sKWsZ66D-zAeRRtAnxNnBKw0o2xoqk7dI?width=1046&height=998;Sala de Estar;Racks;;;;;DallaCosta;143;DC2111
+4;Mesa de Jantar Tupia;Mesa ideal para refeições em família;720;https://1drv.ms/i/c/3150482359d620a2/IQRVhz8xuW7wT6M8CiSEzPMjAcPmVbZ2u81JRGXfAcpu8k8?width=1026&height=1166;Sala de Jantar;Mesas;;;;;Asterope;112;1404
+5;Poltrona Karina;Poltrona com design moderno;1200;https://1drv.ms/i/c/3150482359d620a2/IQSNXlg1zZSfTKZVG2VoRtQxAUayZG_XqYela4kzX3ySR3I?width=1268&height=1166;Sala de Estar;Poltronas;;;;;Ease;423;PO3003
+6;Mesa de Centro Roma;Mesa de Centro Bonita;980;https://cdn.dooca.store/102781/products/suica-1.jpeg?v=1741972365&webp=0;Sala de Estar;Mesa de Centro;;;;;Fabs;243;MC1203
