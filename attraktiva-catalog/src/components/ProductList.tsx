@@ -10,6 +10,9 @@ interface ProductListProps {
   category: string
   subcategory: string
   sortOrder: SortOrder
+  manufacturer: string
+  manufacturerCode: string
+  productReference: string
 }
 
 function filterProducts(
@@ -17,8 +20,14 @@ function filterProducts(
   searchTerm: string,
   category: string,
   subcategory: string,
+  manufacturer: string,
+  manufacturerCode: string,
+  productReference: string,
 ): Product[] {
   const normalizedSearch = searchTerm.trim().toLowerCase()
+  const normalizedManufacturer = manufacturer.trim().toLowerCase()
+  const normalizedManufacturerCode = manufacturerCode.trim().toLowerCase()
+  const normalizedProductReference = productReference.trim().toLowerCase()
 
   return products.filter((product) => {
     if (category && product.category !== category) {
@@ -26,6 +35,27 @@ function filterProducts(
     }
 
     if (subcategory && product.subcategory !== subcategory) {
+      return false
+    }
+
+    if (
+      normalizedManufacturer &&
+      !product.manufacturer.toLowerCase().includes(normalizedManufacturer)
+    ) {
+      return false
+    }
+
+    if (
+      normalizedManufacturerCode &&
+      !product.manufacturerCode.toLowerCase().includes(normalizedManufacturerCode)
+    ) {
+      return false
+    }
+
+    if (
+      normalizedProductReference &&
+      !product.productReference.toLowerCase().includes(normalizedProductReference)
+    ) {
       return false
     }
 
@@ -71,11 +101,31 @@ export default function ProductList({
   category,
   subcategory,
   sortOrder,
+  manufacturer,
+  manufacturerCode,
+  productReference,
 }: ProductListProps) {
   const filteredProducts = useMemo(() => {
-    const filtered = filterProducts(products, searchTerm, category, subcategory)
+    const filtered = filterProducts(
+      products,
+      searchTerm,
+      category,
+      subcategory,
+      manufacturer,
+      manufacturerCode,
+      productReference,
+    )
     return sortProducts(filtered, sortOrder)
-  }, [products, searchTerm, category, subcategory, sortOrder])
+  }, [
+    products,
+    searchTerm,
+    category,
+    subcategory,
+    sortOrder,
+    manufacturer,
+    manufacturerCode,
+    productReference,
+  ])
 
   return (
     <div className={styles.list}>
