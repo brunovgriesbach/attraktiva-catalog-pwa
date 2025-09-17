@@ -7,6 +7,10 @@ type RawProduct = {
   description?: string | null
   price?: string | number | null
   image?: string | null
+  image2?: string | null
+  image3?: string | null
+  image4?: string | null
+  image5?: string | null
   category?: string | null
   subcategory?: string | null
   Fabricante?: string | null
@@ -59,6 +63,42 @@ function resolveProductsUrl(baseUrl?: string): string {
   return new URL('products.csv', root).toString()
 }
 
+function extractImageUrls(row: RawProduct): string[] {
+  const entries = Object.entries(row as Record<string, unknown>)
+    .filter(([key]) => /^image\d*$/i.test(key))
+    .sort(([keyA], [keyB]) => {
+      const normalizedA = keyA.toLowerCase()
+      const normalizedB = keyB.toLowerCase()
+
+      if (normalizedA === 'image') {
+        return normalizedB === 'image' ? 0 : -1
+      }
+
+      if (normalizedB === 'image') {
+        return 1
+      }
+
+      const matchA = normalizedA.match(/^image(\d+)$/)
+      const matchB = normalizedB.match(/^image(\d+)$/)
+
+      const indexA = matchA ? Number.parseInt(matchA[1], 10) : Number.POSITIVE_INFINITY
+      const indexB = matchB ? Number.parseInt(matchB[1], 10) : Number.POSITIVE_INFINITY
+
+      return indexA - indexB
+    })
+
+  const imageUrls: string[] = []
+
+  for (const [, value] of entries) {
+    const url = normalizeText(value as string | number | null | undefined)
+    if (url.length > 0) {
+      imageUrls.push(url)
+    }
+  }
+
+  return imageUrls
+}
+
 export async function fetchProducts(baseUrl?: string): Promise<Product[]> {
   const requestUrl = resolveProductsUrl(baseUrl)
   const response = await fetch(requestUrl)
@@ -85,7 +125,8 @@ export async function fetchProducts(baseUrl?: string): Promise<Product[]> {
     const price = toNumber(row.price)
     const name = normalizeText(row.name)
     const description = normalizeText(row.description)
-    const image = normalizeText(row.image)
+    const images = extractImageUrls(row)
+    const image = images[0] ?? ''
     const category = normalizeText(row.category)
     const subcategory = normalizeText(row.subcategory)
     const manufacturer = normalizeText(row.Fabricante)
@@ -110,6 +151,7 @@ export async function fetchProducts(baseUrl?: string): Promise<Product[]> {
       description,
       price,
       image,
+      images,
       category,
       subcategory,
       manufacturer,
