@@ -18,6 +18,11 @@ const mockProducts = [
     description: 'Description for product 1',
     price: 9.99,
     image: '/images/product1.jpg',
+    images: [
+      '/images/product1.jpg',
+      '/images/product1-alt.jpg',
+      '/images/product1-detail.jpg',
+    ],
     category: 'Category 1',
     subcategory: 'Subcategory 1',
     manufacturer: 'Maker One',
@@ -30,6 +35,7 @@ const mockProducts = [
     description: 'Description for product 2',
     price: 19.99,
     image: '/images/product2.jpg',
+    images: ['/images/product2.jpg'],
     category: 'Category 2',
     subcategory: 'Subcategory 2',
     manufacturer: 'Maker Two',
@@ -72,6 +78,12 @@ describe('ProductDetail', () => {
     expect(screen.getByText('Maker One')).toBeInTheDocument()
     expect(screen.getByText('MK-1')).toBeInTheDocument()
     expect(screen.getByText('REF-001')).toBeInTheDocument()
+    const mainImage = screen.getByRole('img', { name: 'Product 1' })
+    expect(mainImage).toHaveAttribute('src', '/images/product1.jpg')
+    const thumbnailImages = screen.getAllByRole('img', {
+      name: /Product 1 - imagem/i,
+    })
+    expect(thumbnailImages).toHaveLength(mockProducts[0].images.length)
     const backLink = screen.getByRole('link', { name: 'Back to products' })
     expect(backLink).toHaveAttribute('href', '/')
     expect(mockedFetchProducts).toHaveBeenCalledTimes(1)

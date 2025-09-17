@@ -12,6 +12,7 @@ const mockProducts = [
     description: 'Mock description',
     price: 5,
     image: '/images/mock.jpg',
+    images: ['/images/mock.jpg', '/images/mock-alt.jpg'],
     category: 'Category 1',
     subcategory: 'Subcategory 1',
     manufacturer: 'Maker',
@@ -24,6 +25,7 @@ const mockProducts = [
     description: 'Another description',
     price: 8.5,
     image: '/images/second.jpg',
+    images: ['/images/second.jpg'],
     category: 'Category 2',
     subcategory: 'Subcategory 2',
     manufacturer: 'Builder',
@@ -34,21 +36,29 @@ const mockProducts = [
 
 function createCsvResponse(products: CsvProduct[]): string {
   const header =
-    'id;name;description;price;image;category;subcategory;Fabricante;codigo-fabricante;referencia-produto'
-  const rows = products.map((product) =>
-    [
+    'id;name;description;price;image;category;subcategory;image2;image3;image4;image5;Fabricante;codigo-fabricante;referencia-produto'
+  const rows = products.map((product) => {
+    const [primaryImage, ...additionalImages] =
+      product.images.length > 0 ? product.images : [product.image]
+    const [image2 = '', image3 = '', image4 = '', image5 = ''] = additionalImages
+
+    return [
       product.id,
       product.name,
       product.description,
       product.price,
-      product.image,
+      primaryImage,
       product.category,
       product.subcategory,
+      image2,
+      image3,
+      image4,
+      image5,
       product.manufacturer,
       product.manufacturerCode,
       product.productReference,
-    ].join(';'),
-  )
+    ].join(';')
+  })
 
   return [header, ...rows].join('\n')
 }
