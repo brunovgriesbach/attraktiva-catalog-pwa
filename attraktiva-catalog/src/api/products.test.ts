@@ -120,5 +120,24 @@ describe('fetchProducts', () => {
       },
     ])
   })
+
+  it('preserves query parameters for non-canonical OneDrive URLs', async () => {
+    const onedriveShareUrl = 'https://1drv.ms/i/s!AbCdEfGhIjKlMnOp?e=token123'
+
+    const csvResponse = [
+      'id;name;description;price;image;category;subcategory;image2;image3;image4;image5;Fabricante;codigo-fabricante;referencia-produto',
+      `1;Produto;Descrição;100;${onedriveShareUrl};Categoria;Subcategoria;;;;;Fabricante;COD-1;REF-1`,
+    ].join('\n')
+
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue({
+      ok: true,
+      text: async () => csvResponse,
+    } as unknown as Response)
+
+    const data = await fetchProducts('https://example.com')
+
+    expect(data[0]?.image).toBe(onedriveShareUrl)
+    expect(data[0]?.images).toEqual([onedriveShareUrl])
+  })
 })
 

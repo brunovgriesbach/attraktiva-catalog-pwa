@@ -99,7 +99,6 @@ function normalizeOneDriveImageUrl(url: string): string {
       return `${finalOrigin}${finalPath}${finalSearch}`
     }
 
-    parsedUrl.search = ''
     return parsedUrl.toString()
   } catch {
     return url
