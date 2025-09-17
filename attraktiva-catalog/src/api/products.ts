@@ -63,6 +63,48 @@ function resolveProductsUrl(baseUrl?: string): string {
   return new URL('products.csv', root).toString()
 }
 
+const ONEDRIVE_HOST_SUFFIX = '1drv.ms'
+const ONEDRIVE_CANONICAL_PREFIX = 'https://1drv.ms/i/c/3150482359d620a2/'
+const ONEDRIVE_DEFAULT_WIDTH = '1080'
+const ONEDRIVE_DEFAULT_HEIGHT = '1350'
+
+function normalizeOneDriveImageUrl(url: string): string {
+  try {
+    const parsedUrl = new URL(url)
+
+    if (!parsedUrl.hostname.toLowerCase().endsWith(ONEDRIVE_HOST_SUFFIX)) {
+      return url
+    }
+
+    const pathname = parsedUrl.pathname
+    const lastSlashIndex = pathname.lastIndexOf('/')
+    if (lastSlashIndex === -1) {
+      return url
+    }
+
+    const imageId = pathname.slice(lastSlashIndex + 1)
+    if (!imageId) {
+      return url
+    }
+
+    return `${ONEDRIVE_CANONICAL_PREFIX}${imageId}?width=${ONEDRIVE_DEFAULT_WIDTH}&height=${ONEDRIVE_DEFAULT_HEIGHT}`
+  } catch {
+    return url
+  }
+}
+
+function normalizeImageUrl(url: string): string {
+  if (url.length === 0) {
+    return url
+  }
+
+  if (/^https?:\/\//i.test(url) && url.includes(ONEDRIVE_HOST_SUFFIX)) {
+    return normalizeOneDriveImageUrl(url)
+  }
+
+  return url
+}
+
 function extractImageUrls(row: RawProduct): string[] {
   const entries = Object.entries(row as Record<string, unknown>)
     .filter(([key]) => /^image\d*$/i.test(key))
@@ -92,7 +134,7 @@ function extractImageUrls(row: RawProduct): string[] {
   for (const [, value] of entries) {
     const url = normalizeText(value as string | number | null | undefined)
     if (url.length > 0) {
-      imageUrls.push(url)
+      imageUrls.push(normalizeImageUrl(url))
     }
   }
 
