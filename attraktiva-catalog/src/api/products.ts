@@ -64,8 +64,15 @@ function resolveProductsUrl(baseUrl?: string): string {
 }
 
 const ONEDRIVE_HOST_SUFFIX = '1drv.ms'
-const ONEDRIVE_DEFAULT_WIDTH = '1080'
-const ONEDRIVE_DEFAULT_HEIGHT = '1350'
+const ONEDRIVE_IMAGE_PREFIX = 'https://1drv.ms/i/c/3150482359d620a2/'
+const ONEDRIVE_TARGET_WIDTH = '1080'
+const ONEDRIVE_TARGET_HEIGHT = '1350'
+
+const ONEDRIVE_IMAGE_PREFIX_URL = new URL(ONEDRIVE_IMAGE_PREFIX)
+const ONEDRIVE_IMAGE_PREFIX_ORIGIN = ONEDRIVE_IMAGE_PREFIX_URL.origin
+const ONEDRIVE_IMAGE_PREFIX_PATH = ONEDRIVE_IMAGE_PREFIX_URL.pathname
+const ONEDRIVE_IMAGE_PREFIX_PATH_LOWER = ONEDRIVE_IMAGE_PREFIX_PATH.toLowerCase()
+const ONEDRIVE_RESIZED_QUERY = `?width=${ONEDRIVE_TARGET_WIDTH}&height=${ONEDRIVE_TARGET_HEIGHT}`
 
 function normalizeOneDriveImageUrl(url: string): string {
   try {
@@ -75,26 +82,28 @@ function normalizeOneDriveImageUrl(url: string): string {
       return url
     }
 
-    const normalizedPath = parsedUrl.pathname.toLowerCase()
+    const resizedQuery = ONEDRIVE_RESIZED_QUERY
+    const originalPath = parsedUrl.pathname
+    const normalizedPath = originalPath.toLowerCase()
+
     if (!normalizedPath.startsWith('/i/')) {
       return url
     }
 
-    if (parsedUrl.searchParams.has('e')) {
-      parsedUrl.searchParams.delete('e')
+    if (normalizedPath.startsWith(ONEDRIVE_IMAGE_PREFIX_PATH_LOWER)) {
+      const suffix = originalPath
+        .slice(ONEDRIVE_IMAGE_PREFIX_PATH.length)
+        .replace(/^\/+/, '')
+      const normalizedSuffix = suffix.length > 0 ? suffix : ''
+      const finalPath = `${ONEDRIVE_IMAGE_PREFIX_PATH}${normalizedSuffix}`
+      const finalOrigin =
+        parsedUrl.origin.toLowerCase() === ONEDRIVE_IMAGE_PREFIX_ORIGIN
+          ? parsedUrl.origin
+          : ONEDRIVE_IMAGE_PREFIX_ORIGIN
+      return `${finalOrigin}${finalPath}${resizedQuery}`
     }
 
-    if (!parsedUrl.searchParams.has('width')) {
-      parsedUrl.searchParams.set('width', ONEDRIVE_DEFAULT_WIDTH)
-    }
-
-    if (!parsedUrl.searchParams.has('height')) {
-      parsedUrl.searchParams.set('height', ONEDRIVE_DEFAULT_HEIGHT)
-    }
-
-    const normalizedSearch = parsedUrl.searchParams.toString()
-    parsedUrl.search = normalizedSearch.length > 0 ? `?${normalizedSearch}` : ''
-
+    parsedUrl.search = resizedQuery
     return parsedUrl.toString()
   } catch {
     return url
