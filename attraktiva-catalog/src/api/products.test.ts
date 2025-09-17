@@ -64,5 +64,34 @@ describe('fetchProducts', () => {
 
     expect(data).toEqual(mockProducts)
   })
+
+  it('normalizes Google Drive image URLs', async () => {
+    const googleDriveUrl =
+      'https://drive.google.com/file/d/drive-file-id/view?usp=sharing'
+    const expectedUrl =
+      'https://drive.google.com/uc?export=view&id=drive-file-id'
+
+    const csvResponse = createCsvResponse([
+      {
+        id: 3,
+        name: 'Drive Product',
+        description: 'Drive description',
+        price: 10,
+        image: googleDriveUrl,
+        category: 'Category 3',
+        subcategory: 'Subcategory 3',
+      },
+    ])
+
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue({
+      ok: true,
+      text: async () => csvResponse,
+    } as unknown as Response)
+
+    const data = await fetchProducts('http://localhost')
+
+    expect(data).toHaveLength(1)
+    expect(data[0]?.image).toBe(expectedUrl)
+  })
 })
 
