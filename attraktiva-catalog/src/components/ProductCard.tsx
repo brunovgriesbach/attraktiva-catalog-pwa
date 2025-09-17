@@ -7,11 +7,13 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
+  const coverImage = product.image || product.images[0] || ''
+
   return (
     <div className={styles.card}>
       <Link to={`/product/${product.id}`} className={styles.link}>
         <div className={styles.imageContainer}>
-          <img src={product.image} alt={product.name} className={styles.image} />
+          <img src={coverImage} alt={product.name} className={styles.image} />
           <span className={styles.productId}>{product.id}</span>
         </div>
         <div className={styles.info}>
