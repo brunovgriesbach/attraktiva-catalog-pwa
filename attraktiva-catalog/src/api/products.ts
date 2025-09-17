@@ -95,7 +95,8 @@ function normalizeOneDriveImageUrl(url: string): string {
         parsedUrl.origin.toLowerCase() === ONEDRIVE_IMAGE_PREFIX_ORIGIN
           ? parsedUrl.origin
           : ONEDRIVE_IMAGE_PREFIX_ORIGIN
-      return `${finalOrigin}${finalPath}`
+      const finalSearch = parsedUrl.search ?? ''
+      return `${finalOrigin}${finalPath}${finalSearch}`
     }
 
     parsedUrl.search = ''
