@@ -65,14 +65,10 @@ function resolveProductsUrl(baseUrl?: string): string {
 
 const ONEDRIVE_HOST_SUFFIX = '1drv.ms'
 const ONEDRIVE_IMAGE_PREFIX = 'https://1drv.ms/i/c/3150482359d620a2/'
-const ONEDRIVE_TARGET_WIDTH = '1080'
-const ONEDRIVE_TARGET_HEIGHT = '1350'
-
 const ONEDRIVE_IMAGE_PREFIX_URL = new URL(ONEDRIVE_IMAGE_PREFIX)
 const ONEDRIVE_IMAGE_PREFIX_ORIGIN = ONEDRIVE_IMAGE_PREFIX_URL.origin
 const ONEDRIVE_IMAGE_PREFIX_PATH = ONEDRIVE_IMAGE_PREFIX_URL.pathname
 const ONEDRIVE_IMAGE_PREFIX_PATH_LOWER = ONEDRIVE_IMAGE_PREFIX_PATH.toLowerCase()
-const ONEDRIVE_RESIZED_QUERY = `?width=${ONEDRIVE_TARGET_WIDTH}&height=${ONEDRIVE_TARGET_HEIGHT}`
 
 function normalizeOneDriveImageUrl(url: string): string {
   try {
@@ -82,7 +78,6 @@ function normalizeOneDriveImageUrl(url: string): string {
       return url
     }
 
-    const resizedQuery = ONEDRIVE_RESIZED_QUERY
     const originalPath = parsedUrl.pathname
     const normalizedPath = originalPath.toLowerCase()
 
@@ -100,10 +95,10 @@ function normalizeOneDriveImageUrl(url: string): string {
         parsedUrl.origin.toLowerCase() === ONEDRIVE_IMAGE_PREFIX_ORIGIN
           ? parsedUrl.origin
           : ONEDRIVE_IMAGE_PREFIX_ORIGIN
-      return `${finalOrigin}${finalPath}${resizedQuery}`
+      return `${finalOrigin}${finalPath}`
     }
 
-    parsedUrl.search = resizedQuery
+    parsedUrl.search = ''
     return parsedUrl.toString()
   } catch {
     return url

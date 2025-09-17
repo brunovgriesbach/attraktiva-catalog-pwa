@@ -89,7 +89,7 @@ describe('fetchProducts', () => {
     const onedriveShareUrl =
       'https://1drv.ms/i/c/3150482359d620a2/EcNiiWoTVxhBuYzZqCWioNEBT9t--DH_PoTzD7BdyajnZA?e=hqWj51'
     const expectedNormalizedUrl =
-      'https://1drv.ms/i/c/3150482359d620a2/EcNiiWoTVxhBuYzZqCWioNEBT9t--DH_PoTzD7BdyajnZA?width=1080&height=1350'
+      'https://1drv.ms/i/c/3150482359d620a2/EcNiiWoTVxhBuYzZqCWioNEBT9t--DH_PoTzD7BdyajnZA'
 
     const csvResponse = [
       'id;name;description;price;image;category;subcategory;image2;image3;image4;image5;Fabricante;codigo-fabricante;referencia-produto',
