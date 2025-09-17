@@ -20,6 +20,9 @@ const mockProducts = [
     image: '/images/product1.jpg',
     category: 'Category 1',
     subcategory: 'Subcategory 1',
+    manufacturer: 'Maker One',
+    manufacturerCode: 'MK-1',
+    productReference: 'REF-001',
   },
   {
     id: 2,
@@ -29,6 +32,9 @@ const mockProducts = [
     image: '/images/product2.jpg',
     category: 'Category 2',
     subcategory: 'Subcategory 2',
+    manufacturer: 'Maker Two',
+    manufacturerCode: 'MK-2',
+    productReference: 'REF-002',
   },
 ] satisfies Product[]
 
@@ -63,6 +69,9 @@ describe('ProductDetail', () => {
     ).toBeInTheDocument()
     expect(screen.getByText('Description for product 1')).toBeInTheDocument()
     expect(screen.getByText('R$ 9.99')).toBeInTheDocument()
+    expect(screen.getByText('Maker One')).toBeInTheDocument()
+    expect(screen.getByText('MK-1')).toBeInTheDocument()
+    expect(screen.getByText('REF-001')).toBeInTheDocument()
     const backLink = screen.getByRole('link', { name: 'Back to products' })
     expect(backLink).toHaveAttribute('href', '/')
     expect(mockedFetchProducts).toHaveBeenCalledTimes(1)

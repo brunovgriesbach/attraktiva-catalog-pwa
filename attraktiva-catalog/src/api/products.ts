@@ -9,6 +9,9 @@ type RawProduct = {
   image?: string | null
   category?: string | null
   subcategory?: string | null
+  Fabricante?: string | null
+  'codigo-fabricante'?: string | null
+  'referencia-produto'?: string | null
 }
 
 function normalizeText(value: string | number | null | undefined): string {
@@ -85,6 +88,9 @@ export async function fetchProducts(baseUrl?: string): Promise<Product[]> {
     const image = normalizeText(row.image)
     const category = normalizeText(row.category)
     const subcategory = normalizeText(row.subcategory)
+    const manufacturer = normalizeText(row.Fabricante)
+    const manufacturerCode = normalizeText(row['codigo-fabricante'])
+    const productReference = normalizeText(row['referencia-produto'])
 
     if (
       Number.isNaN(id) ||
@@ -106,6 +112,9 @@ export async function fetchProducts(baseUrl?: string): Promise<Product[]> {
       image,
       category,
       subcategory,
+      manufacturer,
+      manufacturerCode,
+      productReference,
     })
   }
 

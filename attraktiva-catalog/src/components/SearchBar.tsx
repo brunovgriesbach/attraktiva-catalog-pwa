@@ -22,6 +22,9 @@ function mergeFilters(
     category: partial.category ?? current.category,
     subcategory: partial.subcategory ?? current.subcategory,
     sortOrder: partial.sortOrder ?? current.sortOrder,
+    manufacturer: partial.manufacturer ?? current.manufacturer,
+    manufacturerCode: partial.manufacturerCode ?? current.manufacturerCode,
+    productReference: partial.productReference ?? current.productReference,
   }
 }
 
@@ -38,6 +41,9 @@ export default function SearchBar({
   category,
   subcategory,
   sortOrder,
+  manufacturer,
+  manufacturerCode,
+  productReference,
   categories,
   onFilterChange,
 }: SearchBarProps) {
@@ -45,7 +51,18 @@ export default function SearchBar({
 
   function handleFilterChange(partial: Partial<SearchFilters>) {
     onFilterChange(
-      mergeFilters({ searchTerm, category, subcategory, sortOrder }, partial),
+      mergeFilters(
+        {
+          searchTerm,
+          category,
+          subcategory,
+          sortOrder,
+          manufacturer,
+          manufacturerCode,
+          productReference,
+        },
+        partial,
+      ),
     )
   }
 
@@ -64,6 +81,18 @@ export default function SearchBar({
 
   function handleSortOrderChange(event: ChangeEvent<HTMLSelectElement>) {
     handleFilterChange({ sortOrder: event.target.value as SortOrder })
+  }
+
+  function handleManufacturerChange(event: ChangeEvent<HTMLInputElement>) {
+    handleFilterChange({ manufacturer: event.target.value })
+  }
+
+  function handleManufacturerCodeChange(event: ChangeEvent<HTMLInputElement>) {
+    handleFilterChange({ manufacturerCode: event.target.value })
+  }
+
+  function handleProductReferenceChange(event: ChangeEvent<HTMLInputElement>) {
+    handleFilterChange({ productReference: event.target.value })
   }
 
   return (
@@ -127,6 +156,51 @@ export default function SearchBar({
             </option>
           ))}
         </select>
+      </div>
+
+      <div className={styles.field}>
+        <label className={styles.label} htmlFor="manufacturer">
+          Fabricante
+        </label>
+        <input
+          id="manufacturer"
+          type="text"
+          name="manufacturer"
+          placeholder="Filtrar por fabricante"
+          value={manufacturer}
+          onChange={handleManufacturerChange}
+          className={styles.input}
+        />
+      </div>
+
+      <div className={styles.field}>
+        <label className={styles.label} htmlFor="manufacturerCode">
+          Código do Fabricante
+        </label>
+        <input
+          id="manufacturerCode"
+          type="text"
+          name="manufacturerCode"
+          placeholder="Filtrar pelo código"
+          value={manufacturerCode}
+          onChange={handleManufacturerCodeChange}
+          className={styles.input}
+        />
+      </div>
+
+      <div className={styles.field}>
+        <label className={styles.label} htmlFor="productReference">
+          Referência do Produto
+        </label>
+        <input
+          id="productReference"
+          type="text"
+          name="productReference"
+          placeholder="Filtrar pela referência"
+          value={productReference}
+          onChange={handleProductReferenceChange}
+          className={styles.input}
+        />
       </div>
 
       <div className={styles.field}>

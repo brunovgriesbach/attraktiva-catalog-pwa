@@ -6,4 +6,7 @@ export interface Product {
   image: string
   category: string
   subcategory: string
+  manufacturer: string
+  manufacturerCode: string
+  productReference: string
 }

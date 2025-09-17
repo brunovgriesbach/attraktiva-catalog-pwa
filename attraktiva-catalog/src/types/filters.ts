@@ -5,4 +5,7 @@ export interface SearchFilters {
   category: string
   subcategory: string
   sortOrder: SortOrder
+  manufacturer: string
+  manufacturerCode: string
+  productReference: string
 }

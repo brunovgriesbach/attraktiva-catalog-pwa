@@ -11,6 +11,9 @@ export default function Home() {
   const [category, setCategory] = useState('')
   const [subcategory, setSubcategory] = useState('')
   const [sortOrder, setSortOrder] = useState<SortOrder>('default')
+  const [manufacturer, setManufacturer] = useState('')
+  const [manufacturerCode, setManufacturerCode] = useState('')
+  const [productReference, setProductReference] = useState('')
   const [products, setProducts] = useState<Product[]>([])
   const [error, setError] = useState('')
 
@@ -54,11 +57,17 @@ export default function Home() {
     category: nextCategory,
     subcategory: nextSubcategory,
     sortOrder: nextSortOrder,
+    manufacturer: nextManufacturer,
+    manufacturerCode: nextManufacturerCode,
+    productReference: nextProductReference,
   }: SearchFilters) {
     setSearchTerm(nextSearchTerm)
     setCategory(nextCategory)
     setSubcategory(nextSubcategory)
     setSortOrder(nextSortOrder)
+    setManufacturer(nextManufacturer)
+    setManufacturerCode(nextManufacturerCode)
+    setProductReference(nextProductReference)
   }
 
   return (
@@ -70,6 +79,9 @@ export default function Home() {
         category={category}
         subcategory={subcategory}
         sortOrder={sortOrder}
+        manufacturer={manufacturer}
+        manufacturerCode={manufacturerCode}
+        productReference={productReference}
         categories={categoryOptions}
         onFilterChange={handleFilterChange}
       />
@@ -79,6 +91,9 @@ export default function Home() {
         category={category}
         subcategory={subcategory}
         sortOrder={sortOrder}
+        manufacturer={manufacturer}
+        manufacturerCode={manufacturerCode}
+        productReference={productReference}
       />
     </div>
   )
