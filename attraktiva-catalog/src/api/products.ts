@@ -1,6 +1,6 @@
 import Papa from 'papaparse'
 import type { Product } from '../data/products'
-import { PRODUCTS_SOURCE_URL } from '../config/catalog'
+import { MAX_PRODUCT_IMAGES, PRODUCTS_SOURCE_URL } from '../config/catalog'
 
 type RawProduct = {
   [key: string]: string | number | null | undefined
@@ -79,7 +79,7 @@ function extractImageUrls(row: RawProduct): string[] {
     }
   }
 
-  return imageUrls
+  return imageUrls.slice(0, MAX_PRODUCT_IMAGES)
 }
 
 export async function fetchProducts(sourceUrl?: string): Promise<Product[]> {
