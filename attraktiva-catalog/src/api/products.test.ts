@@ -1,7 +1,6 @@
-import { describe, it, expect, vi, afterEach } from 'vitest'
+import { describe, it, expect, vi, afterEach, beforeEach } from 'vitest'
 
 import type { Product } from '../data/products'
-import { fetchProducts } from './products'
 
 type CsvProduct = Product
 
@@ -63,14 +62,37 @@ function createCsvResponse(products: CsvProduct[]): string {
   return [header, ...rows].join('\n')
 }
 
+const ORIGINAL_SHEETS_URL = import.meta.env.VITE_GOOGLE_SHEETS_URL
+
+function setGoogleSheetsUrl(value: string | undefined) {
+  const env = import.meta.env as Record<string, string | undefined>
+  if (value === undefined) {
+    delete env.VITE_GOOGLE_SHEETS_URL
+    return
+  }
+
+  env.VITE_GOOGLE_SHEETS_URL = value
+}
+
+async function importFetchProducts() {
+  const module = await import('./products')
+  return module.fetchProducts
+}
+
+beforeEach(() => {
+  vi.resetModules()
+})
+
 afterEach(() => {
+  setGoogleSheetsUrl(ORIGINAL_SHEETS_URL)
   vi.restoreAllMocks()
 })
 
 describe('fetchProducts', () => {
-  it('returns products in correct format', async () => {
-    const csvResponse = createCsvResponse(mockProducts)
+  it('falls back to baseUrl when provided', async () => {
+    setGoogleSheetsUrl('https://docs.google.com/spreadsheets/d/EXAMPLE/export?format=csv')
 
+    const csvResponse = createCsvResponse(mockProducts)
     const mockFetch = vi
       .spyOn(globalThis, 'fetch')
       .mockResolvedValue({
@@ -78,10 +100,50 @@ describe('fetchProducts', () => {
         text: async () => csvResponse,
       } as unknown as Response)
 
+    const fetchProducts = await importFetchProducts()
     const data = await fetchProducts('http://localhost')
 
     expect(mockFetch).toHaveBeenCalledWith('http://localhost/products.csv')
+    expect(data).toEqual(mockProducts)
+  })
 
+  it('uses Google Sheets URL from environment when available', async () => {
+    const sharedUrl =
+      'https://docs.google.com/spreadsheets/d/1V_cRwCFGDK6DRwI7xVYlf6raYq3iQzB7cZcgQRIRIo4/edit?usp=sharing'
+    const expectedCsvUrl =
+      'https://docs.google.com/spreadsheets/d/1V_cRwCFGDK6DRwI7xVYlf6raYq3iQzB7cZcgQRIRIo4/export?format=csv'
+    setGoogleSheetsUrl(sharedUrl)
+
+    const csvResponse = createCsvResponse(mockProducts)
+    const mockFetch = vi
+      .spyOn(globalThis, 'fetch')
+      .mockResolvedValue({
+        ok: true,
+        text: async () => csvResponse,
+      } as unknown as Response)
+
+    const fetchProducts = await importFetchProducts()
+    const data = await fetchProducts()
+
+    expect(mockFetch).toHaveBeenCalledWith(expectedCsvUrl)
+    expect(data).toEqual(mockProducts)
+  })
+
+  it('falls back to legacy products.csv when environment variable is missing', async () => {
+    setGoogleSheetsUrl('')
+
+    const csvResponse = createCsvResponse(mockProducts)
+    const mockFetch = vi
+      .spyOn(globalThis, 'fetch')
+      .mockResolvedValue({
+        ok: true,
+        text: async () => csvResponse,
+      } as unknown as Response)
+
+    const fetchProducts = await importFetchProducts()
+    const data = await fetchProducts()
+
+    expect(mockFetch).toHaveBeenCalledWith('/products.csv')
     expect(data).toEqual(mockProducts)
   })
 })

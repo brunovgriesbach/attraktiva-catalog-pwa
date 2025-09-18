@@ -43,7 +43,70 @@ function isAbsoluteUrl(value: string): boolean {
   return /^[a-zA-Z][a-zA-Z\d+\-.]*:\/\//.test(value)
 }
 
-const GOOGLE_SHEETS_CSV_URL = import.meta.env.VITE_GOOGLE_SHEETS_URL as string;
+function normalizeGoogleSheetsUrl(url: string): string {
+  if (!isAbsoluteUrl(url)) {
+    return url
+  }
+
+  try {
+    const parsedUrl = new URL(url)
+
+    const spreadsheetMatch = parsedUrl.pathname.match(
+      /\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/,
+    )
+
+    if (!spreadsheetMatch) {
+      return url
+    }
+
+    // Already pointing to an export endpoint – nothing to normalize
+    if (/\/export$/.test(parsedUrl.pathname)) {
+      return url
+    }
+
+    const spreadsheetId = spreadsheetMatch[1]
+    const gidFromSearch = parsedUrl.searchParams.get('gid')
+    const gidFromHashMatch = parsedUrl.hash.match(/gid=(\d+)/)
+    const gid = gidFromSearch ?? gidFromHashMatch?.[1] ?? undefined
+
+    const normalizedUrl = new URL(`/spreadsheets/d/${spreadsheetId}/export`, parsedUrl.origin)
+    normalizedUrl.searchParams.set('format', 'csv')
+    if (gid) {
+      normalizedUrl.searchParams.set('gid', gid)
+    }
+
+    return normalizedUrl.toString()
+  } catch (error) {
+    console.warn('[fetchProducts] Failed to normalize Google Sheets URL:', error)
+    return url
+  }
+}
+
+function resolveProductsRequestUrl(baseUrl: string | undefined): string {
+  const trimmedBaseUrl = baseUrl?.trim()
+  if (trimmedBaseUrl) {
+    if (isAbsoluteUrl(trimmedBaseUrl)) {
+      return `${ensureTrailingSlash(trimmedBaseUrl)}products.csv`
+    }
+
+    const normalizedBasePath = ensureTrailingSlash(
+      ensureLeadingSlash(trimmedBaseUrl.replace(/^(\.\/)+/, '')),
+    )
+    return `${normalizedBasePath}products.csv`
+  }
+
+  const envValue = (import.meta.env.VITE_GOOGLE_SHEETS_URL as string | undefined)?.trim() ?? ''
+  if (envValue.length > 0) {
+    const normalizedValue = normalizeGoogleSheetsUrl(envValue)
+    if (isAbsoluteUrl(normalizedValue)) {
+      return normalizedValue
+    }
+
+    return ensureLeadingSlash(normalizedValue)
+  }
+
+  return '/products.csv'
+}
 
 function extractImageUrls(row: RawProduct): string[] {
   const entries = Object.entries(row as Record<string, unknown>)
@@ -81,8 +144,8 @@ function extractImageUrls(row: RawProduct): string[] {
   return imageUrls
 }
 
-export async function fetchProducts(): Promise<Product[]> {
-  const requestUrl = GOOGLE_SHEETS_CSV_URL
+export async function fetchProducts(baseUrl?: string): Promise<Product[]> {
+  const requestUrl = resolveProductsRequestUrl(baseUrl)
   const response = await fetch(requestUrl)
   if (!response.ok) {
     throw new Error('Failed to fetch product catalog')

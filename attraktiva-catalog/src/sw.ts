@@ -12,8 +12,62 @@ precacheAndRoute(self.__WB_MANIFEST)
 const navigationRoute = new NavigationRoute(new NetworkFirst())
 registerRoute(navigationRoute)
 
+function normalizeGoogleSheetsUrl(url: string): string {
+  try {
+    const parsedUrl = new URL(url)
+
+    const spreadsheetMatch = parsedUrl.pathname.match(
+      /\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/,
+    )
+
+    if (!spreadsheetMatch) {
+      return url
+    }
+
+    if (/\/export$/.test(parsedUrl.pathname)) {
+      return url
+    }
+
+    const spreadsheetId = spreadsheetMatch[1]
+    const gidFromSearch = parsedUrl.searchParams.get('gid')
+    const gidFromHashMatch = parsedUrl.hash.match(/gid=(\d+)/)
+    const gid = gidFromSearch ?? gidFromHashMatch?.[1] ?? undefined
+
+    const normalizedUrl = new URL(`/spreadsheets/d/${spreadsheetId}/export`, parsedUrl.origin)
+    normalizedUrl.searchParams.set('format', 'csv')
+    if (gid) {
+      normalizedUrl.searchParams.set('gid', gid)
+    }
+
+    return normalizedUrl.toString()
+  } catch (error) {
+    console.warn('[sw] Failed to normalize Google Sheets URL:', error)
+    return url
+  }
+}
+
+function resolveGoogleSheetsRouteUrl(): URL | null {
+  const rawEnvValue = (import.meta.env.VITE_GOOGLE_SHEETS_URL as string | undefined)?.trim()
+  if (!rawEnvValue) {
+    return null
+  }
+
+  const normalizedValue = normalizeGoogleSheetsUrl(rawEnvValue)
+
+  try {
+    return new URL(normalizedValue, self.location.origin)
+  } catch (error) {
+    console.warn('[sw] Failed to parse Google Sheets URL:', error)
+    return null
+  }
+}
+
+const googleSheetsCsvUrl = resolveGoogleSheetsRouteUrl()
+
 registerRoute(
-  ({ url }) => url.pathname.endsWith('/products.csv'),
+  ({ url }) =>
+    url.pathname.endsWith('/products.csv') ||
+    (googleSheetsCsvUrl !== null && url.href === googleSheetsCsvUrl.href),
   new NetworkFirst({ cacheName: 'products-cache' }),
 )
 
