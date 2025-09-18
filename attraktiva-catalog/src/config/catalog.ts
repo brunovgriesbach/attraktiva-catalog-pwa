@@ -14,3 +14,5 @@ const envUrl = normalizeUrl(import.meta.env.VITE_PRODUCTS_SOURCE_URL)
 
 export const PRODUCTS_SOURCE_URL = envUrl ?? DEFAULT_PRODUCTS_SOURCE_URL
 
+export const MAX_PRODUCT_IMAGES = 10
+

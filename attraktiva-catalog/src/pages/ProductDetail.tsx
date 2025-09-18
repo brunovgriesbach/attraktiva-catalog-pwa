@@ -1,6 +1,7 @@
 import { Link, useParams } from 'react-router-dom'
 import { useEffect, useMemo, useState } from 'react'
 import { fetchProducts } from '../api/products'
+import { MAX_PRODUCT_IMAGES } from '../config/catalog'
 import type { Product } from '../data/products'
 import styles from './ProductDetail.module.css'
 
@@ -30,7 +31,7 @@ export default function ProductDetail() {
     }
 
     if (product.images.length > 0) {
-      return product.images
+      return product.images.slice(0, MAX_PRODUCT_IMAGES)
     }
 
     return product.image ? [product.image] : []

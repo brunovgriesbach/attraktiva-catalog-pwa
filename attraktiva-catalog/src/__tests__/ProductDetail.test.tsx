@@ -5,6 +5,7 @@ import * as matchers from '@testing-library/jest-dom/matchers'
 
 import ProductDetail from '../pages/ProductDetail'
 import { fetchProducts } from '../api/products'
+import { MAX_PRODUCT_IMAGES } from '../config/catalog'
 import type { Product } from '../data/products'
 
 vi.mock('../api/products', () => ({
@@ -41,6 +42,32 @@ const mockProducts = [
     manufacturer: 'Maker Two',
     manufacturerCode: 'MK-2',
     productReference: 'REF-002',
+  },
+  {
+    id: 3,
+    name: 'Product 3',
+    description: 'Description for product 3',
+    price: 29.99,
+    image: '/images/product3.jpg',
+    images: [
+      '/images/product3.jpg',
+      '/images/product3-1.jpg',
+      '/images/product3-2.jpg',
+      '/images/product3-3.jpg',
+      '/images/product3-4.jpg',
+      '/images/product3-5.jpg',
+      '/images/product3-6.jpg',
+      '/images/product3-7.jpg',
+      '/images/product3-8.jpg',
+      '/images/product3-9.jpg',
+      '/images/product3-10.jpg',
+      '/images/product3-11.jpg',
+    ],
+    category: 'Category 3',
+    subcategory: 'Subcategory 3',
+    manufacturer: 'Maker Three',
+    manufacturerCode: 'MK-3',
+    productReference: 'REF-003',
   },
 ] satisfies Product[]
 
@@ -100,5 +127,29 @@ describe('ProductDetail', () => {
       '/',
     )
     expect(mockedFetchProducts).toHaveBeenCalledTimes(1)
+  })
+
+  it('limits the gallery to the maximum number of images', async () => {
+    mockedFetchProducts.mockResolvedValue(mockProducts)
+
+    renderProductDetail(3)
+
+    expect(
+      await screen.findByRole('heading', { name: 'Product 3' }),
+    ).toBeInTheDocument()
+
+    const thumbnails = screen.getAllByRole('img', {
+      name: /Product 3 - imagem/i,
+    })
+
+    expect(thumbnails).toHaveLength(MAX_PRODUCT_IMAGES)
+    const lastThumbnail = thumbnails[thumbnails.length - 1]
+    expect(lastThumbnail).toHaveAttribute(
+      'alt',
+      `Product 3 - imagem ${MAX_PRODUCT_IMAGES}`,
+    )
+    expect(
+      screen.queryByRole('img', { name: /Product 3 - imagem 11/i }),
+    ).not.toBeInTheDocument()
   })
 })
