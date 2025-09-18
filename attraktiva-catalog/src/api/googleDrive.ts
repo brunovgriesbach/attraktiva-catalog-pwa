@@ -20,6 +20,15 @@ function normalizeName(value: string): string {
   return value.trim().toLowerCase()
 }
 
+function isLikelyUrl(value: string): boolean {
+  try {
+    const parsed = new URL(value)
+    return parsed.protocol === 'http:' || parsed.protocol === 'https:'
+  } catch {
+    return false
+  }
+}
+
 function buildDriveViewUrl(id: string): string {
   const url = new URL(DRIVE_VIEW_ENDPOINT)
   url.searchParams.set('export', 'view')
@@ -112,6 +121,10 @@ async function buildDriveResolver(config: DriveConfig): Promise<ImageUrlResolver
     const trimmed = value.trim()
     if (trimmed.length === 0) {
       return ''
+    }
+
+    if (isLikelyUrl(trimmed)) {
+      return trimmed
     }
 
     const normalized = normalizeName(trimmed)
