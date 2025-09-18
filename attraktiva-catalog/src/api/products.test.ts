@@ -103,5 +103,66 @@ describe('fetchProducts', () => {
     expect(mockFetch).toHaveBeenCalledWith('https://example.com/custom-sheet')
     expect(data).toEqual(mockProducts)
   })
+
+  it('resolves Google Drive file names when configured', async () => {
+    const driveProduct: CsvProduct = {
+      id: 3,
+      name: 'Drive Product',
+      description: 'Loaded from Drive',
+      price: 10,
+      image: 'catalog-image',
+      images: ['catalog-image'],
+      category: 'Drive Category',
+      subcategory: 'Drive Subcategory',
+      manufacturer: 'Drive Maker',
+      manufacturerCode: 'DR-300',
+      productReference: 'REF-300',
+    }
+
+    const csvResponse = createCsvResponse([driveProduct])
+
+    const mockFetch = vi
+      .spyOn(globalThis, 'fetch')
+      .mockImplementation(async (input: RequestInfo | URL) => {
+        const url = typeof input === 'string' ? input : input.toString()
+
+        if (url.startsWith('https://www.googleapis.com/drive/v3/files')) {
+          const parsed = new URL(url)
+          expect(parsed.searchParams.get('q')).toBe(
+            "'drive-folder-123' in parents and trashed = false",
+          )
+          return {
+            ok: true,
+            json: async () => ({
+              files: [
+                { id: 'drive-file-1', name: 'catalog-image.png' },
+                { id: 'drive-file-2', name: 'catalog-image.jpg' },
+              ],
+            }),
+          } as unknown as Response
+        }
+
+        expect(url).toBe(PRODUCTS_SOURCE_URL)
+
+        return {
+          ok: true,
+          text: async () => csvResponse,
+        } as unknown as Response
+      })
+
+    const data = await fetchProducts(undefined, {
+      driveFolderId: 'drive-folder-123',
+      driveApiKey: 'drive-api-key-456',
+    })
+
+    expect(mockFetch).toHaveBeenCalledTimes(2)
+    expect(data).toEqual([
+      {
+        ...driveProduct,
+        image: 'https://drive.google.com/uc?export=view&id=drive-file-1',
+        images: ['https://drive.google.com/uc?export=view&id=drive-file-1'],
+      },
+    ])
+  })
 })
 
