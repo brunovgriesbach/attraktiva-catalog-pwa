@@ -120,10 +120,10 @@ describe('fetchProducts', () => {
         description: 'Produto com imagem no Drive',
         price: 123.45,
         image:
-          'https://drive.google.com/uc?export=download&id=1DrivePrimaryID',
+          'https://drive.google.com/uc?export=view&id=1DrivePrimaryID',
         images: [
-          'https://drive.google.com/uc?export=download&id=1DrivePrimaryID',
-          'https://drive.google.com/uc?export=download&id=1DriveSecondaryID',
+          'https://drive.google.com/uc?export=view&id=1DrivePrimaryID',
+          'https://drive.google.com/uc?export=view&id=1DriveSecondaryID',
         ],
         category: 'Decor',
         subcategory: 'Quadros',
