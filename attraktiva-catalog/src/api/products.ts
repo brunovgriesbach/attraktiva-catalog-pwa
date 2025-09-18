@@ -43,25 +43,7 @@ function isAbsoluteUrl(value: string): boolean {
   return /^[a-zA-Z][a-zA-Z\d+\-.]*:\/\//.test(value)
 }
 
-function resolveProductsUrl(baseUrl?: string): string {
-  const rawBase = baseUrl ?? import.meta.env.BASE_URL ?? '/'
-  const trimmedBase = rawBase.trim()
-  const basePath = trimmedBase.length === 0 ? '/' : trimmedBase
-
-  if (isAbsoluteUrl(basePath)) {
-    const normalizedBaseUrl = ensureTrailingSlash(basePath)
-    return new URL('products.csv', normalizedBaseUrl).toString()
-  }
-
-  const normalizedBasePath = ensureLeadingSlash(ensureTrailingSlash(basePath))
-
-  if (typeof window === 'undefined' || typeof window.location === 'undefined') {
-    return `${normalizedBasePath}products.csv`
-  }
-
-  const root = new URL(normalizedBasePath, window.location.origin)
-  return new URL('products.csv', root).toString()
-}
+const GOOGLE_SHEETS_CSV_URL = import.meta.env.VITE_GOOGLE_SHEETS_URL as string;
 
 function extractImageUrls(row: RawProduct): string[] {
   const entries = Object.entries(row as Record<string, unknown>)
@@ -99,8 +81,8 @@ function extractImageUrls(row: RawProduct): string[] {
   return imageUrls
 }
 
-export async function fetchProducts(baseUrl?: string): Promise<Product[]> {
-  const requestUrl = resolveProductsUrl(baseUrl)
+export async function fetchProducts(): Promise<Product[]> {
+  const requestUrl = GOOGLE_SHEETS_CSV_URL
   const response = await fetch(requestUrl)
   if (!response.ok) {
     throw new Error('Failed to fetch product catalog')
