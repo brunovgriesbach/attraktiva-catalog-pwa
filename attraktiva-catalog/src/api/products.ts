@@ -1,8 +1,13 @@
 import Papa from 'papaparse'
 import type { Product } from '../data/products'
+import { PRODUCTS_SOURCE_URL } from '../config/catalog'
 
 type RawProduct = {
+  [key: string]: string | number | null | undefined
   id?: string | number | null
+  ID?: string | number | null
+  Id?: string | number | null
+  d?: string | number | null
   name?: string | null
   description?: string | null
   price?: string | number | null
@@ -31,40 +36,18 @@ function toNumber(value: string | number | null | undefined): number {
   return Number.isFinite(normalized) ? normalized : NaN
 }
 
-function ensureTrailingSlash(value: string): string {
-  return value.endsWith('/') ? value : `${value}/`
-}
+function resolveProductsUrl(sourceUrl?: string): string {
+  const candidate = typeof sourceUrl === 'string' ? sourceUrl.trim() : ''
 
-function ensureLeadingSlash(value: string): string {
-  return value.startsWith('/') ? value : `/${value}`
-}
-
-function isAbsoluteUrl(value: string): boolean {
-  return /^[a-zA-Z][a-zA-Z\d+\-.]*:\/\//.test(value)
-}
-
-function resolveProductsUrl(baseUrl?: string): string {
-  const rawBase = baseUrl ?? import.meta.env.BASE_URL ?? '/'
-  const trimmedBase = rawBase.trim()
-  const basePath = trimmedBase.length === 0 ? '/' : trimmedBase
-
-  if (isAbsoluteUrl(basePath)) {
-    const normalizedBaseUrl = ensureTrailingSlash(basePath)
-    return new URL('products.csv', normalizedBaseUrl).toString()
+  if (candidate.length > 0) {
+    return candidate
   }
 
-  const normalizedBasePath = ensureLeadingSlash(ensureTrailingSlash(basePath))
-
-  if (typeof window === 'undefined' || typeof window.location === 'undefined') {
-    return `${normalizedBasePath}products.csv`
-  }
-
-  const root = new URL(normalizedBasePath, window.location.origin)
-  return new URL('products.csv', root).toString()
+  return PRODUCTS_SOURCE_URL
 }
 
 function extractImageUrls(row: RawProduct): string[] {
-  const entries = Object.entries(row as Record<string, unknown>)
+  const entries = Object.entries(row)
     .filter(([key]) => /^image\d*$/i.test(key))
     .sort(([keyA], [keyB]) => {
       const normalizedA = keyA.toLowerCase()
@@ -99,8 +82,8 @@ function extractImageUrls(row: RawProduct): string[] {
   return imageUrls
 }
 
-export async function fetchProducts(baseUrl?: string): Promise<Product[]> {
-  const requestUrl = resolveProductsUrl(baseUrl)
+export async function fetchProducts(sourceUrl?: string): Promise<Product[]> {
+  const requestUrl = resolveProductsUrl(sourceUrl)
   const response = await fetch(requestUrl)
   if (!response.ok) {
     throw new Error('Failed to fetch product catalog')
@@ -109,7 +92,6 @@ export async function fetchProducts(baseUrl?: string): Promise<Product[]> {
   const csvText = await response.text()
   const { data, errors } = Papa.parse<RawProduct>(csvText, {
     header: true,
-    delimiter: ';',
     skipEmptyLines: true,
   })
 
@@ -121,7 +103,8 @@ export async function fetchProducts(baseUrl?: string): Promise<Product[]> {
   const products: Product[] = []
 
   for (const row of data) {
-    const id = toNumber(row.id)
+    const rawId = row.id ?? row.ID ?? row.Id ?? row.d
+    const id = toNumber(rawId)
     const price = toNumber(row.price)
     const name = normalizeText(row.name)
     const description = normalizeText(row.description)
