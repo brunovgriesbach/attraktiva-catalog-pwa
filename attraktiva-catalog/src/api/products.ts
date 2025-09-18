@@ -1,6 +1,15 @@
 import Papa from 'papaparse'
 import type { Product } from '../data/products'
-import { MAX_PRODUCT_IMAGES, PRODUCTS_SOURCE_URL } from '../config/catalog'
+import {
+  GOOGLE_DRIVE_API_KEY,
+  GOOGLE_DRIVE_FOLDER_ID,
+  MAX_PRODUCT_IMAGES,
+  PRODUCTS_SOURCE_URL,
+} from '../config/catalog'
+import {
+  createGoogleDriveImageResolver,
+  type ImageUrlResolver,
+} from './googleDrive'
 
 type RawProduct = {
   [key: string]: string | number | null | undefined
@@ -46,7 +55,7 @@ function resolveProductsUrl(sourceUrl?: string): string {
   return PRODUCTS_SOURCE_URL
 }
 
-function extractImageUrls(row: RawProduct): string[] {
+function extractImageUrls(row: RawProduct, resolveUrl: ImageUrlResolver): string[] {
   const entries = Object.entries(row)
     .filter(([key]) => /^image\d*$/i.test(key))
     .sort(([keyA], [keyB]) => {
@@ -73,16 +82,29 @@ function extractImageUrls(row: RawProduct): string[] {
   const imageUrls: string[] = []
 
   for (const [, value] of entries) {
-    const url = normalizeText(value as string | number | null | undefined)
-    if (url.length > 0) {
-      imageUrls.push(url)
+    const candidate = normalizeText(value as string | number | null | undefined)
+    if (candidate.length === 0) {
+      continue
+    }
+
+    const resolved = resolveUrl(candidate).trim()
+    if (resolved.length > 0) {
+      imageUrls.push(resolved)
     }
   }
 
   return imageUrls.slice(0, MAX_PRODUCT_IMAGES)
 }
 
-export async function fetchProducts(sourceUrl?: string): Promise<Product[]> {
+export type FetchProductsOptions = {
+  driveFolderId?: string | null
+  driveApiKey?: string | null
+}
+
+export async function fetchProducts(
+  sourceUrl?: string,
+  options: FetchProductsOptions = {},
+): Promise<Product[]> {
   const requestUrl = resolveProductsUrl(sourceUrl)
   const response = await fetch(requestUrl)
   if (!response.ok) {
@@ -100,6 +122,11 @@ export async function fetchProducts(sourceUrl?: string): Promise<Product[]> {
     throw new Error('Failed to parse product catalog')
   }
 
+  const resolveImageUrl = await createGoogleDriveImageResolver({
+    folderId: options.driveFolderId ?? GOOGLE_DRIVE_FOLDER_ID ?? undefined,
+    apiKey: options.driveApiKey ?? GOOGLE_DRIVE_API_KEY ?? undefined,
+  })
+
   const products: Product[] = []
 
   for (const row of data) {
@@ -108,7 +135,7 @@ export async function fetchProducts(sourceUrl?: string): Promise<Product[]> {
     const price = toNumber(row.price)
     const name = normalizeText(row.name)
     const description = normalizeText(row.description)
-    const images = extractImageUrls(row)
+    const images = extractImageUrls(row, resolveImageUrl)
     const image = images[0] ?? ''
     const category = normalizeText(row.category)
     const subcategory = normalizeText(row.subcategory)
