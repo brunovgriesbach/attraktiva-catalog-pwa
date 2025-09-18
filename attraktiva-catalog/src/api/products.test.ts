@@ -133,5 +133,55 @@ describe('fetchProducts', () => {
       },
     ])
   })
+
+  it('converts OneDrive share URLs into direct download URLs', async () => {
+    const shareUrl =
+      'https://1drv.ms/i/c/3150482359d620a2/EUlA84ZVFzlBjuicTK6vFbYBf4ofry0aLt9ZMBA2t_SrCA?e=Hgqcbb&download=1'
+    const csvResponse = [
+      'id;name;description;price;image;category;subcategory;image2;image3;image4;image5;Fabricante;codigo-fabricante;referencia-produto',
+      [
+        9,
+        'OneDrive Asset',
+        'Produto com imagem no OneDrive',
+        77.7,
+        shareUrl,
+        'Decor',
+        'Quadros',
+        '',
+        '',
+        '',
+        '',
+        'Maker',
+        'MK-900',
+        'REF-900',
+      ].join(';'),
+    ].join('\n')
+
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue({
+      ok: true,
+      text: async () => csvResponse,
+    } as unknown as Response)
+
+    const data = await fetchProducts('https://catalog.example.com')
+
+    expect(data).toEqual([
+      {
+        id: 9,
+        name: 'OneDrive Asset',
+        description: 'Produto com imagem no OneDrive',
+        price: 77.7,
+        image:
+          'https://api.onedrive.com/v1.0/shares/u!aHR0cHM6Ly8xZHJ2Lm1zL2kvYy8zMTUwNDgyMzU5ZDYyMGEyL0VVbEE4NFpWRnpsQmp1aWNUSzZ2RmJZQmY0b2ZyeTBhTHQ5Wk1CQTJ0X1NyQ0E_ZT1IZ3FjYmImZG93bmxvYWQ9MQ/root/content',
+        images: [
+          'https://api.onedrive.com/v1.0/shares/u!aHR0cHM6Ly8xZHJ2Lm1zL2kvYy8zMTUwNDgyMzU5ZDYyMGEyL0VVbEE4NFpWRnpsQmp1aWNUSzZ2RmJZQmY0b2ZyeTBhTHQ5Wk1CQTJ0X1NyQ0E_ZT1IZ3FjYmImZG93bmxvYWQ9MQ/root/content',
+        ],
+        category: 'Decor',
+        subcategory: 'Quadros',
+        manufacturer: 'Maker',
+        manufacturerCode: 'MK-900',
+        productReference: 'REF-900',
+      },
+    ])
+  })
 })
 

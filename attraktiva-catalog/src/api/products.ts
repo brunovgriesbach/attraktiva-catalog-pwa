@@ -20,6 +20,9 @@ type RawProduct = {
 
 const GOOGLE_DRIVE_DIRECT_DOWNLOAD_BASE_URL =
   'https://drive.google.com/uc?export=view&id='
+const ONEDRIVE_DIRECT_DOWNLOAD_BASE_URL =
+  'https://api.onedrive.com/v1.0/shares/'
+const ONEDRIVE_DIRECT_DOWNLOAD_SUFFIX = '/root/content'
 
 function normalizeText(value: string | number | null | undefined): string {
   if (typeof value === 'number') {
@@ -113,6 +116,11 @@ function normalizeImageUrl(value: string): string {
     return `${GOOGLE_DRIVE_DIRECT_DOWNLOAD_BASE_URL}${encodeURIComponent(googleDriveId)}`
   }
 
+  const oneDriveShareUrl = extractOneDriveShareUrl(value)
+  if (oneDriveShareUrl) {
+    return convertOneDriveShareUrl(oneDriveShareUrl)
+  }
+
   return value
 }
 
@@ -158,6 +166,118 @@ function extractGoogleDriveFileId(value: string): string | null {
   }
 
   return null
+}
+
+function extractOneDriveShareUrl(value: string): string | null {
+  const trimmedValue = value.trim()
+  if (trimmedValue.length === 0) {
+    return null
+  }
+
+  const attributeMatch = trimmedValue.match(/\b(?:src|href)\s*=\s*"([^"]+)"/i)
+  if (attributeMatch?.[1]) {
+    const nestedShareUrl = extractOneDriveShareUrl(attributeMatch[1])
+    if (nestedShareUrl) {
+      return nestedShareUrl
+    }
+  }
+
+  const singleQuoteAttributeMatch = trimmedValue.match(/\b(?:src|href)\s*=\s*'([^']+)'/i)
+  if (singleQuoteAttributeMatch?.[1]) {
+    const nestedShareUrl = extractOneDriveShareUrl(singleQuoteAttributeMatch[1])
+    if (nestedShareUrl) {
+      return nestedShareUrl
+    }
+  }
+
+  if (!isAbsoluteUrl(trimmedValue)) {
+    return null
+  }
+
+  try {
+    const url = new URL(trimmedValue)
+    const hostname = url.hostname.toLowerCase()
+
+    if (hostname === 'api.onedrive.com') {
+      return url.toString()
+    }
+
+    if (
+      hostname === '1drv.ms' ||
+      hostname === 'onedrive.live.com' ||
+      hostname.endsWith('.onedrive.live.com') ||
+      hostname.endsWith('.sharepoint.com')
+    ) {
+      return url.toString()
+    }
+  } catch {
+    return null
+  }
+
+  return null
+}
+
+function convertOneDriveShareUrl(value: string): string {
+  const trimmedValue = value.trim()
+  if (trimmedValue.length === 0) {
+    return trimmedValue
+  }
+
+  if (!isAbsoluteUrl(trimmedValue)) {
+    return trimmedValue
+  }
+
+  let url: URL
+  try {
+    url = new URL(trimmedValue)
+  } catch {
+    return trimmedValue
+  }
+
+  const hostname = url.hostname.toLowerCase()
+
+  if (hostname === 'api.onedrive.com') {
+    return url.toString()
+  }
+
+  if (
+    hostname !== '1drv.ms' &&
+    hostname !== 'onedrive.live.com' &&
+    !hostname.endsWith('.onedrive.live.com') &&
+    !hostname.endsWith('.sharepoint.com')
+  ) {
+    return trimmedValue
+  }
+
+  const normalizedShareUrl = url.toString()
+  const encodedShareUrl = base64UrlEncode(normalizedShareUrl)
+  return `${ONEDRIVE_DIRECT_DOWNLOAD_BASE_URL}u!${encodedShareUrl}${ONEDRIVE_DIRECT_DOWNLOAD_SUFFIX}`
+}
+
+type BufferFactory = {
+  from(input: string, encoding: string): { toString(encoding: string): string }
+}
+
+function base64UrlEncode(value: string): string {
+  if (typeof globalThis.btoa === 'function') {
+    return globalThis
+      .btoa(value)
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=+$/g, '')
+  }
+
+  const bufferCtor = (globalThis as typeof globalThis & { Buffer?: BufferFactory }).Buffer
+  if (bufferCtor) {
+    return bufferCtor
+      .from(value, 'utf8')
+      .toString('base64')
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=+$/g, '')
+  }
+
+  throw new Error('Base64 encoding is not supported in this environment')
 }
 
 export async function fetchProducts(baseUrl?: string): Promise<Product[]> {
