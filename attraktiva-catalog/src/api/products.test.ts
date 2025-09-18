@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
 
 import type { Product } from '../data/products'
+import { PRODUCTS_SOURCE_URL } from '../config/catalog'
 import { fetchProducts } from './products'
 
 type CsvProduct = Product
@@ -34,9 +35,13 @@ const mockProducts = [
   },
 ] satisfies CsvProduct[]
 
-function createCsvResponse(products: CsvProduct[]): string {
+function createCsvResponse(
+  products: CsvProduct[],
+  options: { idHeader?: string } = {},
+): string {
+  const idHeader = options.idHeader ?? 'id'
   const header =
-    'id;name;description;price;image;category;subcategory;image2;image3;image4;image5;Fabricante;codigo-fabricante;referencia-produto'
+    `${idHeader},name,description,price,image,category,subcategory,image2,image3,image4,image5,Fabricante,codigo-fabricante,referencia-produto`
   const rows = products.map((product) => {
     const [primaryImage, ...additionalImages] =
       product.images.length > 0 ? product.images : [product.image]
@@ -57,7 +62,7 @@ function createCsvResponse(products: CsvProduct[]): string {
       product.manufacturer,
       product.manufacturerCode,
       product.productReference,
-    ].join(';')
+    ].join(',')
   })
 
   return [header, ...rows].join('\n')
@@ -68,7 +73,7 @@ afterEach(() => {
 })
 
 describe('fetchProducts', () => {
-  it('returns products in correct format', async () => {
+  it('returns products in correct format for the default sheet', async () => {
     const csvResponse = createCsvResponse(mockProducts)
 
     const mockFetch = vi
@@ -78,10 +83,24 @@ describe('fetchProducts', () => {
         text: async () => csvResponse,
       } as unknown as Response)
 
-    const data = await fetchProducts('http://localhost')
+    const data = await fetchProducts()
 
-    expect(mockFetch).toHaveBeenCalledWith('http://localhost/products.csv')
+    expect(mockFetch).toHaveBeenCalledWith(PRODUCTS_SOURCE_URL)
 
+    expect(data).toEqual(mockProducts)
+  })
+
+  it('supports alternate Google Sheets identifiers', async () => {
+    const csvResponse = createCsvResponse(mockProducts, { idHeader: 'd' })
+
+    const mockFetch = vi.spyOn(globalThis, 'fetch').mockResolvedValue({
+      ok: true,
+      text: async () => csvResponse,
+    } as unknown as Response)
+
+    const data = await fetchProducts('https://example.com/custom-sheet')
+
+    expect(mockFetch).toHaveBeenCalledWith('https://example.com/custom-sheet')
     expect(data).toEqual(mockProducts)
   })
 })

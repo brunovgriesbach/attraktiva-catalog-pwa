@@ -4,8 +4,10 @@ This project uses React with Vite and React Router. The application starts in `s
 
 ## Product catalog
 
-The product catalog is stored in `public/products.csv` and served as a static asset. The frontend consumes this file directly and
-parses it to build the list of available products.
+The product data comes from a shared Google Sheets document
+([link](https://docs.google.com/spreadsheets/d/1V_cRwCFGDK6DRwI7xVYlf6raYq3iQzB7cZcgQRIRIo4/edit?usp=sharing)). The application
+fetches the sheet as CSV and parses it at runtime to build the list of available products. You can override the default sheet URL
+by setting the `VITE_PRODUCTS_SOURCE_URL` environment variable before running Vite.
 
 ## Linting, formatting, and tests
 

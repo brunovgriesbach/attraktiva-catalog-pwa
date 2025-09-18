@@ -7,7 +7,7 @@ O frontend está localizado na pasta [`attraktiva-catalog`](./attraktiva-catalog
 ## Imagens de produtos e execução local
 
 1. **Obter uma URL direta da imagem:** hospede o arquivo em um serviço que forneça um link público direto (CDN, armazenamento de objetos, etc.). Certifique-se de que a URL seja acessível sem autenticação.
-2. **Atualizar `products.csv`:** edite o arquivo [`attraktiva-catalog/public/products.csv`](./attraktiva-catalog/public/products.csv) e cole a URL na coluna `image` correspondente a cada produto.
+2. **Atualizar a planilha do catálogo:** edite a planilha do Google Sheets [disponível neste link](https://docs.google.com/spreadsheets/d/1V_cRwCFGDK6DRwI7xVYlf6raYq3iQzB7cZcgQRIRIo4/edit?usp=sharing) e preencha as colunas (id, nome, descrição, preço, imagens etc.) utilizadas pelo catálogo.
 3. **Rodar o Vite:** dentro da pasta [`attraktiva-catalog`](./attraktiva-catalog), execute `npm run dev` para iniciar o ambiente de desenvolvimento.
 4. *(Opcional)* **Executar o servidor Express:** rode `npm run server` para habilitar os endpoints utilizados nas notificações push.
 
