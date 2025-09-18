@@ -164,5 +164,51 @@ describe('fetchProducts', () => {
       },
     ])
   })
+
+  it('keeps direct image URLs unchanged when Drive integration is enabled', async () => {
+    const driveProduct: CsvProduct = {
+      id: 4,
+      name: 'Drive Product URL',
+      description: 'Loaded from Drive with direct URL',
+      price: 15,
+      image: 'https://cdn.example.com/product.jpg',
+      images: ['https://cdn.example.com/product.jpg'],
+      category: 'Drive Category',
+      subcategory: 'Drive Subcategory',
+      manufacturer: 'Drive Maker',
+      manufacturerCode: 'DR-400',
+      productReference: 'REF-400',
+    }
+
+    const csvResponse = createCsvResponse([driveProduct])
+
+    const mockFetch = vi
+      .spyOn(globalThis, 'fetch')
+      .mockImplementation(async (input: RequestInfo | URL) => {
+        const url = typeof input === 'string' ? input : input.toString()
+
+        if (url.startsWith('https://www.googleapis.com/drive/v3/files')) {
+          return {
+            ok: true,
+            json: async () => ({ files: [] }),
+          } as unknown as Response
+        }
+
+        expect(url).toBe(PRODUCTS_SOURCE_URL)
+
+        return {
+          ok: true,
+          text: async () => csvResponse,
+        } as unknown as Response
+      })
+
+    const data = await fetchProducts(undefined, {
+      driveFolderId: 'drive-folder-url-test',
+      driveApiKey: 'drive-api-key-url-test',
+    })
+
+    expect(mockFetch).toHaveBeenCalledTimes(2)
+    expect(data).toEqual([driveProduct])
+  })
 })
 
