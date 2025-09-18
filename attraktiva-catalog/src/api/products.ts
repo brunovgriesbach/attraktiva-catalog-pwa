@@ -19,7 +19,7 @@ type RawProduct = {
 }
 
 const GOOGLE_DRIVE_DIRECT_DOWNLOAD_BASE_URL =
-  'https://drive.google.com/uc?export=download&id='
+  'https://drive.google.com/uc?export=view&id='
 
 function normalizeText(value: string | number | null | undefined): string {
   if (typeof value === 'number') {
