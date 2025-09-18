@@ -4,6 +4,7 @@ import { precacheAndRoute } from 'workbox-precaching'
 import { registerRoute, NavigationRoute } from 'workbox-routing'
 import { NetworkFirst, CacheFirst } from 'workbox-strategies'
 import { ExpirationPlugin } from 'workbox-expiration'
+import { PRODUCTS_SOURCE_URL } from './config/catalog'
 
 declare const self: ServiceWorkerGlobalScope & { __WB_MANIFEST: any }
 
@@ -13,7 +14,7 @@ const navigationRoute = new NavigationRoute(new NetworkFirst())
 registerRoute(navigationRoute)
 
 registerRoute(
-  ({ url }) => url.pathname.endsWith('/products.csv'),
+  ({ url }) => url.href === PRODUCTS_SOURCE_URL,
   new NetworkFirst({ cacheName: 'products-cache' }),
 )
 
