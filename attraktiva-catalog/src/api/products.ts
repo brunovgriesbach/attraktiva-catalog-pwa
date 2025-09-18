@@ -18,6 +18,9 @@ type RawProduct = {
   'referencia-produto'?: string | null
 }
 
+const GOOGLE_DRIVE_DIRECT_DOWNLOAD_BASE_URL =
+  'https://drive.google.com/uc?export=download&id='
+
 function normalizeText(value: string | number | null | undefined): string {
   if (typeof value === 'number') {
     return String(value)
@@ -91,12 +94,70 @@ function extractImageUrls(row: RawProduct): string[] {
 
   for (const [, value] of entries) {
     const url = normalizeText(value as string | number | null | undefined)
-    if (url.length > 0) {
-      imageUrls.push(url)
+    const normalizedUrl = normalizeImageUrl(url)
+    if (normalizedUrl.length > 0) {
+      imageUrls.push(normalizedUrl)
     }
   }
 
   return imageUrls
+}
+
+function normalizeImageUrl(value: string): string {
+  if (value.length === 0) {
+    return value
+  }
+
+  const googleDriveId = extractGoogleDriveFileId(value)
+  if (googleDriveId) {
+    return `${GOOGLE_DRIVE_DIRECT_DOWNLOAD_BASE_URL}${encodeURIComponent(googleDriveId)}`
+  }
+
+  return value
+}
+
+function extractGoogleDriveFileId(value: string): string | null {
+  const trimmedValue = value.trim()
+  if (trimmedValue.length === 0) {
+    return null
+  }
+
+  const attributeMatch = trimmedValue.match(/\b(?:src|href)\s*=\s*"([^"]+)"/i)
+  if (attributeMatch?.[1]) {
+    const nestedId = extractGoogleDriveFileId(attributeMatch[1])
+    if (nestedId) {
+      return nestedId
+    }
+  }
+
+  const singleQuoteAttributeMatch = trimmedValue.match(/\b(?:src|href)\s*=\s*'([^']+)'/i)
+  if (singleQuoteAttributeMatch?.[1]) {
+    const nestedId = extractGoogleDriveFileId(singleQuoteAttributeMatch[1])
+    if (nestedId) {
+      return nestedId
+    }
+  }
+
+  if (!/google\.com/i.test(trimmedValue)) {
+    return null
+  }
+
+  const directIdMatch = trimmedValue.match(/\b([\w-]{10,})\b/)
+  if (directIdMatch && !/https?:/i.test(trimmedValue)) {
+    return directIdMatch[1]
+  }
+
+  const idParamMatch = trimmedValue.match(/[?&]id=([\w-]+)/i)
+  if (idParamMatch?.[1]) {
+    return idParamMatch[1]
+  }
+
+  const fileSegmentMatch = trimmedValue.match(/\/d\/([\w-]+)/i)
+  if (fileSegmentMatch?.[1]) {
+    return fileSegmentMatch[1]
+  }
+
+  return null
 }
 
 export async function fetchProducts(baseUrl?: string): Promise<Product[]> {

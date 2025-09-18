@@ -84,5 +84,54 @@ describe('fetchProducts', () => {
 
     expect(data).toEqual(mockProducts)
   })
+
+  it('converts Google Drive references into direct download URLs', async () => {
+    const csvResponse = [
+      'id;name;description;price;image;category;subcategory;image2;image3;image4;image5;Fabricante;codigo-fabricante;referencia-produto',
+      [
+        5,
+        'Drive Asset',
+        'Produto com imagem no Drive',
+        123.45,
+        'https://drive.google.com/file/d/1DrivePrimaryID/view?usp=sharing',
+        'Decor',
+        'Quadros',
+        '<img src="https://drive.google.com/open?id=1DriveSecondaryID" />',
+        '',
+        '',
+        '',
+        'Maker',
+        'MK-500',
+        'REF-500',
+      ].join(';'),
+    ].join('\n')
+
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue({
+      ok: true,
+      text: async () => csvResponse,
+    } as unknown as Response)
+
+    const data = await fetchProducts('https://catalog.example.com')
+
+    expect(data).toEqual([
+      {
+        id: 5,
+        name: 'Drive Asset',
+        description: 'Produto com imagem no Drive',
+        price: 123.45,
+        image:
+          'https://drive.google.com/uc?export=download&id=1DrivePrimaryID',
+        images: [
+          'https://drive.google.com/uc?export=download&id=1DrivePrimaryID',
+          'https://drive.google.com/uc?export=download&id=1DriveSecondaryID',
+        ],
+        category: 'Decor',
+        subcategory: 'Quadros',
+        manufacturer: 'Maker',
+        manufacturerCode: 'MK-500',
+        productReference: 'REF-500',
+      },
+    ])
+  })
 })
 
