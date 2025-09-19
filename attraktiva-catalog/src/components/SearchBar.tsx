@@ -25,6 +25,7 @@ function mergeFilters(
     manufacturer: partial.manufacturer ?? current.manufacturer,
     manufacturerCode: partial.manufacturerCode ?? current.manufacturerCode,
     productReference: partial.productReference ?? current.productReference,
+    onlyFavorites: partial.onlyFavorites ?? current.onlyFavorites,
   }
 }
 
@@ -44,6 +45,7 @@ export default function SearchBar({
   manufacturer,
   manufacturerCode,
   productReference,
+  onlyFavorites,
   categories,
   onFilterChange,
 }: SearchBarProps) {
@@ -93,6 +95,10 @@ export default function SearchBar({
 
   function handleProductReferenceChange(event: ChangeEvent<HTMLInputElement>) {
     handleFilterChange({ productReference: event.target.value })
+  }
+
+  function handleOnlyFavoritesChange(event: ChangeEvent<HTMLInputElement>) {
+    handleFilterChange({ onlyFavorites: event.target.checked })
   }
 
   return (
@@ -201,6 +207,21 @@ export default function SearchBar({
           onChange={handleProductReferenceChange}
           className={styles.input}
         />
+      </div>
+
+      <div className={`${styles.field} ${styles.checkboxField}`}>
+        <span className={styles.label}>Favoritos</span>
+        <label className={styles.checkboxLabel} htmlFor="onlyFavorites">
+          <input
+            id="onlyFavorites"
+            type="checkbox"
+            name="onlyFavorites"
+            checked={onlyFavorites}
+            onChange={handleOnlyFavoritesChange}
+            className={styles.checkboxInput}
+          />
+          Mostrar apenas favoritos
+        </label>
       </div>
 
       <div className={styles.field}>

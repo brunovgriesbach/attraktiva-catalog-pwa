@@ -8,4 +8,5 @@ export interface SearchFilters {
   manufacturer: string
   manufacturerCode: string
   productReference: string
+  onlyFavorites: boolean
 }

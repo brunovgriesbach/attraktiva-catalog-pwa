@@ -5,6 +5,7 @@ import * as matchers from '@testing-library/jest-dom/matchers'
 
 import ProductList from '../components/ProductList'
 import type { Product } from '../data/products'
+import { FavoritesProvider } from '../context/FavoritesContext'
 
 const mockProducts: Product[] = [
   {
@@ -52,23 +53,27 @@ expect.extend(matchers)
 
 afterEach(() => {
   cleanup()
+  localStorage.clear()
 })
 
 describe('ProductList', () => {
   it('renders all products', () => {
     render(
-      <MemoryRouter>
-        <ProductList
-          products={mockProducts}
-          searchTerm=""
-          category=""
-          subcategory=""
-          sortOrder="default"
-          manufacturer=""
-          manufacturerCode=""
-          productReference=""
-        />
-      </MemoryRouter>,
+      <FavoritesProvider>
+        <MemoryRouter>
+          <ProductList
+            products={mockProducts}
+            searchTerm=""
+            category=""
+            subcategory=""
+            sortOrder="default"
+            manufacturer=""
+            manufacturerCode=""
+            productReference=""
+            onlyFavorites={false}
+          />
+        </MemoryRouter>
+      </FavoritesProvider>,
     )
 
     mockProducts.forEach((product) => {
@@ -78,18 +83,21 @@ describe('ProductList', () => {
 
   it('filters by category, subcategory and search term', () => {
     render(
-      <MemoryRouter>
-        <ProductList
-          products={mockProducts}
-          searchTerm="queen"
-          category="Quarto"
-          subcategory="Camas"
-          sortOrder="default"
-          manufacturer="Dream"
-          manufacturerCode="DW-200"
-          productReference="REF-CAMA"
-        />
-      </MemoryRouter>,
+      <FavoritesProvider>
+        <MemoryRouter>
+          <ProductList
+            products={mockProducts}
+            searchTerm="queen"
+            category="Quarto"
+            subcategory="Camas"
+            sortOrder="default"
+            manufacturer="Dream"
+            manufacturerCode="DW-200"
+            productReference="REF-CAMA"
+            onlyFavorites={false}
+          />
+        </MemoryRouter>
+      </FavoritesProvider>,
     )
 
     expect(screen.getByText('Cama Lisboa')).toBeInTheDocument()
@@ -99,18 +107,21 @@ describe('ProductList', () => {
 
   it('sorts products by price when requested', () => {
     render(
-      <MemoryRouter>
-        <ProductList
-          products={mockProducts}
-          searchTerm=""
-          category=""
-          subcategory=""
-          sortOrder="price-asc"
-          manufacturer=""
-          manufacturerCode=""
-          productReference=""
-        />
-      </MemoryRouter>,
+      <FavoritesProvider>
+        <MemoryRouter>
+          <ProductList
+            products={mockProducts}
+            searchTerm=""
+            category=""
+            subcategory=""
+            sortOrder="price-asc"
+            manufacturer=""
+            manufacturerCode=""
+            productReference=""
+            onlyFavorites={false}
+          />
+        </MemoryRouter>
+      </FavoritesProvider>,
     )
 
     const productHeadings = screen.getAllByRole('heading', { level: 3 })
@@ -121,5 +132,31 @@ describe('ProductList', () => {
       'Cama Lisboa',
       'Sofá Boreal',
     ])
+  })
+
+  it('shows only favorite products when filtering favorites', () => {
+    localStorage.setItem('favorites', JSON.stringify([mockProducts[1]]))
+
+    render(
+      <FavoritesProvider>
+        <MemoryRouter>
+          <ProductList
+            products={mockProducts}
+            searchTerm=""
+            category=""
+            subcategory=""
+            sortOrder="default"
+            manufacturer=""
+            manufacturerCode=""
+            productReference=""
+            onlyFavorites={true}
+          />
+        </MemoryRouter>
+      </FavoritesProvider>,
+    )
+
+    expect(screen.getByText('Cama Lisboa')).toBeInTheDocument()
+    expect(screen.queryByText('Sofá Boreal')).not.toBeInTheDocument()
+    expect(screen.queryByText('Luminária Lunar')).not.toBeInTheDocument()
   })
 })

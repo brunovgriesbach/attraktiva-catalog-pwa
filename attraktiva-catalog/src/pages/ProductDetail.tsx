@@ -4,12 +4,14 @@ import { fetchProducts } from '../api/products'
 import { MAX_PRODUCT_IMAGES } from '../config/catalog'
 import type { Product } from '../data/products'
 import styles from './ProductDetail.module.css'
+import { useFavorites } from '../context/FavoritesContext'
 
 export default function ProductDetail() {
   const { id } = useParams()
   const [product, setProduct] = useState<Product | null>(null)
   const [loading, setLoading] = useState(true)
   const [activeImageIndex, setActiveImageIndex] = useState(0)
+  const { isFavorite, toggleFavorite } = useFavorites()
 
   useEffect(() => {
     fetchProducts()
@@ -38,6 +40,13 @@ export default function ProductDetail() {
   }, [product])
 
   const activeImage = galleryImages[activeImageIndex] ?? galleryImages[0]
+  const favorite = product ? isFavorite(product.id) : false
+
+  function handleFavoriteClick() {
+    if (product) {
+      toggleFavorite(product)
+    }
+  }
 
   if (loading) {
     return (
@@ -98,6 +107,15 @@ export default function ProductDetail() {
         </div>
         <div className={styles.info}>
           <h2 className={styles.name}>{product.name}</h2>
+          <button
+            type="button"
+            className={styles.favoriteButton}
+            data-active={favorite ? 'true' : 'false'}
+            onClick={handleFavoriteClick}
+            aria-pressed={favorite}
+          >
+            {favorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
+          </button>
           <p className={styles.description}>{product.description}</p>
           <p className={styles.price}>R$ {product.price.toFixed(2)}</p>
           <dl className={styles.details}>
