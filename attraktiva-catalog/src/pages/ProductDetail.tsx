@@ -41,6 +41,9 @@ export default function ProductDetail() {
 
   const activeImage = galleryImages[activeImageIndex] ?? galleryImages[0]
   const favorite = product ? isFavorite(product.id) : false
+  const favoriteLabel = favorite
+    ? 'Remover dos favoritos'
+    : 'Adicionar aos favoritos'
 
   function handleFavoriteClick() {
     if (product) {
@@ -113,8 +116,10 @@ export default function ProductDetail() {
             data-active={favorite ? 'true' : 'false'}
             onClick={handleFavoriteClick}
             aria-pressed={favorite}
+            aria-label={favoriteLabel}
+            title={favoriteLabel}
           >
-            {favorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
+            {favorite ? '★' : '☆'}
           </button>
           <p className={styles.description}>{product.description}</p>
           <p className={styles.price}>R$ {product.price.toFixed(2)}</p>

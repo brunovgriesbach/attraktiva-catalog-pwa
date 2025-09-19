@@ -220,7 +220,7 @@ export default function SearchBar({
             onChange={handleOnlyFavoritesChange}
             className={styles.checkboxInput}
           />
-          Mostrar apenas favoritos
+          Favoritos
         </label>
       </div>
 
