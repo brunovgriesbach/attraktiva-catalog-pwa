@@ -3,6 +3,7 @@ import type { Product } from '../data/products'
 import type { SortOrder } from '../types/filters'
 import ProductCard from './ProductCard'
 import styles from './ProductList.module.css'
+import { useFavorites } from '../context/FavoritesContext'
 
 interface ProductListProps {
   products: Product[]
@@ -13,6 +14,7 @@ interface ProductListProps {
   manufacturer: string
   manufacturerCode: string
   productReference: string
+  onlyFavorites: boolean
 }
 
 function filterProducts(
@@ -23,6 +25,8 @@ function filterProducts(
   manufacturer: string,
   manufacturerCode: string,
   productReference: string,
+  onlyFavorites: boolean,
+  favoriteIds: Set<number>,
 ): Product[] {
   const normalizedSearch = searchTerm.trim().toLowerCase()
   const normalizedManufacturer = manufacturer.trim().toLowerCase()
@@ -30,6 +34,10 @@ function filterProducts(
   const normalizedProductReference = productReference.trim().toLowerCase()
 
   return products.filter((product) => {
+    if (onlyFavorites && !favoriteIds.has(product.id)) {
+      return false
+    }
+
     if (category && product.category !== category) {
       return false
     }
@@ -104,7 +112,14 @@ export default function ProductList({
   manufacturer,
   manufacturerCode,
   productReference,
+  onlyFavorites,
 }: ProductListProps) {
+  const { favoriteIds } = useFavorites()
+  const favoriteIdSet = useMemo(
+    () => new Set(favoriteIds),
+    [favoriteIds],
+  )
+
   const filteredProducts = useMemo(() => {
     const filtered = filterProducts(
       products,
@@ -114,6 +129,8 @@ export default function ProductList({
       manufacturer,
       manufacturerCode,
       productReference,
+      onlyFavorites,
+      favoriteIdSet,
     )
     return sortProducts(filtered, sortOrder)
   }, [
@@ -125,6 +142,8 @@ export default function ProductList({
     manufacturer,
     manufacturerCode,
     productReference,
+    onlyFavorites,
+    favoriteIdSet,
   ])
 
   return (

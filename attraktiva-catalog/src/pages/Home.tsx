@@ -5,6 +5,7 @@ import { fetchProducts } from '../api/products'
 import type { Product } from '../data/products'
 import type { SearchFilters, SortOrder } from '../types/filters'
 import styles from './Home.module.css'
+import { useFavorites } from '../context/FavoritesContext'
 
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState('')
@@ -14,19 +15,24 @@ export default function Home() {
   const [manufacturer, setManufacturer] = useState('')
   const [manufacturerCode, setManufacturerCode] = useState('')
   const [productReference, setProductReference] = useState('')
+  const [onlyFavorites, setOnlyFavorites] = useState(false)
   const [products, setProducts] = useState<Product[]>([])
   const [error, setError] = useState('')
+  const { syncFavorites } = useFavorites()
 
   useEffect(() => {
     fetchProducts()
-      .then(setProducts)
+      .then((items) => {
+        setProducts(items)
+        syncFavorites(items)
+      })
       .catch((err) => {
         console.error('Erro ao buscar produtos', err)
         setError(
           'Não foi possível carregar os produtos. Verifique se o servidor/backend está em execução.',
         )
       })
-  }, [])
+  }, [syncFavorites])
 
   const categoryOptions = useMemo<CategoryOption[]>(
     () =>
@@ -60,6 +66,7 @@ export default function Home() {
     manufacturer: nextManufacturer,
     manufacturerCode: nextManufacturerCode,
     productReference: nextProductReference,
+    onlyFavorites: nextOnlyFavorites,
   }: SearchFilters) {
     setSearchTerm(nextSearchTerm)
     setCategory(nextCategory)
@@ -68,6 +75,7 @@ export default function Home() {
     setManufacturer(nextManufacturer)
     setManufacturerCode(nextManufacturerCode)
     setProductReference(nextProductReference)
+    setOnlyFavorites(nextOnlyFavorites)
   }
 
   return (
@@ -82,6 +90,7 @@ export default function Home() {
         manufacturer={manufacturer}
         manufacturerCode={manufacturerCode}
         productReference={productReference}
+        onlyFavorites={onlyFavorites}
         categories={categoryOptions}
         onFilterChange={handleFilterChange}
       />
@@ -94,6 +103,7 @@ export default function Home() {
         manufacturer={manufacturer}
         manufacturerCode={manufacturerCode}
         productReference={productReference}
+        onlyFavorites={onlyFavorites}
       />
     </div>
   )
