@@ -1,4 +1,5 @@
 import { cleanup, render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { afterEach, describe, it, expect } from 'vitest'
 import * as matchers from '@testing-library/jest-dom/matchers'
@@ -158,5 +159,45 @@ describe('ProductList', () => {
     expect(screen.getByText('Cama Lisboa')).toBeInTheDocument()
     expect(screen.queryByText('Sofá Boreal')).not.toBeInTheDocument()
     expect(screen.queryByText('Luminária Lunar')).not.toBeInTheDocument()
+  })
+
+  it('permite alternar favoritos diretamente no catálogo', async () => {
+    const user = userEvent.setup()
+
+    render(
+      <FavoritesProvider>
+        <MemoryRouter>
+          <ProductList
+            products={mockProducts}
+            searchTerm=""
+            category=""
+            subcategory=""
+            sortOrder="default"
+            manufacturer=""
+            manufacturerCode=""
+            productReference=""
+            onlyFavorites={false}
+          />
+        </MemoryRouter>
+      </FavoritesProvider>,
+    )
+
+    const favoriteButtons = screen.getAllByRole('button', {
+      name: 'Adicionar aos favoritos',
+    })
+
+    expect(favoriteButtons).toHaveLength(mockProducts.length)
+
+    const firstFavoriteButton = favoriteButtons[0]
+
+    await user.click(firstFavoriteButton)
+
+    expect(firstFavoriteButton).toHaveAttribute('aria-pressed', 'true')
+    expect(firstFavoriteButton).toHaveTextContent('★')
+
+    await user.click(firstFavoriteButton)
+
+    expect(firstFavoriteButton).toHaveAttribute('aria-pressed', 'false')
+    expect(firstFavoriteButton).toHaveTextContent('☆')
   })
 })

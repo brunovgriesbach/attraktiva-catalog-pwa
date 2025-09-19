@@ -11,6 +11,9 @@ export default function ProductCard({ product }: ProductCardProps) {
   const { isFavorite, toggleFavorite } = useFavorites()
   const coverImage = product.image || product.images[0] || ''
   const favorite = isFavorite(product.id)
+  const favoriteLabel = favorite
+    ? 'Remover dos favoritos'
+    : 'Adicionar aos favoritos'
 
   function handleFavoriteClick() {
     toggleFavorite(product)
@@ -24,7 +27,8 @@ export default function ProductCard({ product }: ProductCardProps) {
         data-active={favorite ? 'true' : 'false'}
         onClick={handleFavoriteClick}
         aria-pressed={favorite}
-        aria-label={favorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
+        aria-label={favoriteLabel}
+        title={favoriteLabel}
       >
         {favorite ? '★' : '☆'}
       </button>
