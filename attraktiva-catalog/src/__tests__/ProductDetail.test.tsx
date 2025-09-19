@@ -175,11 +175,15 @@ describe('ProductDetail', () => {
       name: 'Adicionar aos favoritos',
     })
 
+    expect(toggleButton).toHaveTextContent('☆')
+
     fireEvent.click(toggleButton)
 
     expect(
       await screen.findByRole('button', { name: 'Remover dos favoritos' }),
     ).toBeInTheDocument()
+
+    expect(toggleButton).toHaveTextContent('★')
 
     await waitFor(() => {
       const storedFavorites = JSON.parse(
