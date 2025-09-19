@@ -13,6 +13,28 @@
   min-width: 0;
 }
 
+.checkboxField {
+  justify-content: flex-end;
+}
+
+.checkboxLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  background-color: #fff;
+  font-weight: 500;
+  color: #1f2937;
+  cursor: pointer;
+}
+
+.checkboxInput {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
 .label {
   font-size: 0.875rem;
   font-weight: 600;

@@ -98,6 +98,33 @@
   color: #111827;
 }
 
+.favoriteButton {
+  align-self: flex-start;
+  padding: 0.65rem 1.2rem;
+  border-radius: 9999px;
+  border: none;
+  background: #f3f4f6;
+  color: #374151;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease, color 0.2s ease;
+}
+
+.favoriteButton:hover {
+  background: #e5e7eb;
+  transform: translateY(-1px);
+}
+
+.favoriteButton:focus-visible {
+  outline: 3px solid rgba(37, 99, 235, 0.35);
+  outline-offset: 2px;
+}
+
+.favoriteButton[data-active='true'] {
+  background: rgba(245, 158, 11, 0.12);
+  color: #b45309;
+}
+
 .description {
   margin: 0;
   color: #4b5563;

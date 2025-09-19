@@ -1,4 +1,10 @@
-import { cleanup, render, screen } from '@testing-library/react'
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import * as matchers from '@testing-library/jest-dom/matchers'
@@ -7,6 +13,7 @@ import ProductDetail from '../pages/ProductDetail'
 import { fetchProducts } from '../api/products'
 import { MAX_PRODUCT_IMAGES } from '../config/catalog'
 import type { Product } from '../data/products'
+import { FavoritesProvider } from '../context/FavoritesContext'
 
 vi.mock('../api/products', () => ({
   fetchProducts: vi.fn(),
@@ -75,11 +82,13 @@ const mockedFetchProducts = vi.mocked(fetchProducts)
 
 function renderProductDetail(productId: number) {
   render(
-    <MemoryRouter initialEntries={[`/product/${productId}`]}>
-      <Routes>
-        <Route path="/product/:id" element={<ProductDetail />} />
-      </Routes>
-    </MemoryRouter>,
+    <FavoritesProvider>
+      <MemoryRouter initialEntries={[`/product/${productId}`]}>
+        <Routes>
+          <Route path="/product/:id" element={<ProductDetail />} />
+        </Routes>
+      </MemoryRouter>
+    </FavoritesProvider>,
   )
 }
 
@@ -89,6 +98,7 @@ afterEach(() => {
   cleanup()
   vi.clearAllMocks()
   vi.restoreAllMocks()
+  localStorage.clear()
 })
 
 describe('ProductDetail', () => {
@@ -113,6 +123,9 @@ describe('ProductDetail', () => {
     expect(thumbnailImages).toHaveLength(mockProducts[0].images.length)
     const backLink = screen.getByRole('link', { name: 'Back to products' })
     expect(backLink).toHaveAttribute('href', '/')
+    expect(
+      screen.getByRole('button', { name: 'Adicionar aos favoritos' }),
+    ).toBeInTheDocument()
     expect(mockedFetchProducts).toHaveBeenCalledTimes(1)
   })
 
@@ -151,5 +164,30 @@ describe('ProductDetail', () => {
     expect(
       screen.queryByRole('img', { name: /Product 3 - imagem 11/i }),
     ).not.toBeInTheDocument()
+  })
+
+  it('allows toggling favorite status from the product page', async () => {
+    mockedFetchProducts.mockResolvedValue(mockProducts)
+
+    renderProductDetail(2)
+
+    const toggleButton = await screen.findByRole('button', {
+      name: 'Adicionar aos favoritos',
+    })
+
+    fireEvent.click(toggleButton)
+
+    expect(
+      await screen.findByRole('button', { name: 'Remover dos favoritos' }),
+    ).toBeInTheDocument()
+
+    await waitFor(() => {
+      const storedFavorites = JSON.parse(
+        localStorage.getItem('favorites') ?? '[]',
+      ) as Product[]
+
+      expect(storedFavorites).toHaveLength(1)
+      expect(storedFavorites[0]?.id).toBe(2)
+    })
   })
 })
