@@ -2,6 +2,11 @@ import Papa from 'papaparse'
 import type { Product } from '../data/products'
 import { MAX_PRODUCT_IMAGES, PRODUCTS_SOURCE_URL } from '../config/catalog'
 
+const FALLBACK_DESCRIPTION = 'Descrição não disponível'
+const FALLBACK_CATEGORY = 'Outros'
+const FALLBACK_SUBCATEGORY = 'Outros'
+const FALLBACK_IMAGE_URL = '/images/product-placeholder.svg'
+
 type RawProduct = {
   [key: string]: string | number | null | undefined
   id?: string | number | null
@@ -11,6 +16,9 @@ type RawProduct = {
   name?: string | null
   description?: string | null
   price?: string | number | null
+  ativo?: string | null
+  Ativo?: string | null
+  ATIVO?: string | null
   image?: string | null
   image2?: string | null
   image3?: string | null
@@ -31,9 +39,47 @@ function normalizeText(value: string | number | null | undefined): string {
 }
 
 function toNumber(value: string | number | null | undefined): number {
-  const normalized =
-    typeof value === 'number' ? value : Number((value ?? '').toString().trim())
-  return Number.isFinite(normalized) ? normalized : NaN
+  if (typeof value === 'number') {
+    return Number.isFinite(value) ? value : NaN
+  }
+
+  const textValue = (value ?? '').toString().trim()
+  if (textValue.length === 0) {
+    return NaN
+  }
+
+  const compactValue = textValue.replace(/\s+/g, '')
+  const numericCharacters = compactValue.replace(/[^\d.,-]/g, '')
+
+  if (numericCharacters.length === 0 || numericCharacters === '-') {
+    return NaN
+  }
+
+  if (!/[0-9]/.test(numericCharacters)) {
+    return NaN
+  }
+
+  const lastComma = numericCharacters.lastIndexOf(',')
+  const lastDot = numericCharacters.lastIndexOf('.')
+
+  let normalizedValue = numericCharacters
+
+  if (lastComma !== -1 && lastDot !== -1) {
+    if (lastComma > lastDot) {
+      normalizedValue = numericCharacters
+        .replace(/\./g, '')
+        .replace(',', '.')
+    } else {
+      normalizedValue = numericCharacters.replace(/,/g, '')
+    }
+  } else if (lastComma !== -1) {
+    normalizedValue = numericCharacters.replace(',', '.')
+  } else {
+    normalizedValue = numericCharacters.replace(/,/g, '')
+  }
+
+  const parsed = Number(normalizedValue)
+  return Number.isFinite(parsed) ? parsed : NaN
 }
 
 function resolveProductsUrl(sourceUrl?: string): string {
@@ -105,26 +151,35 @@ export async function fetchProducts(sourceUrl?: string): Promise<Product[]> {
   for (const row of data) {
     const rawId = row.id ?? row.ID ?? row.Id ?? row.d
     const id = toNumber(rawId)
-    const price = toNumber(row.price)
-    const name = normalizeText(row.name)
-    const description = normalizeText(row.description)
-    const images = extractImageUrls(row)
-    const image = images[0] ?? ''
-    const category = normalizeText(row.category)
-    const subcategory = normalizeText(row.subcategory)
+    if (Number.isNaN(id)) {
+      continue
+    }
+
+    const activeValue = normalizeText(row.ativo ?? row.Ativo ?? row.ATIVO)
+    if (activeValue.toLowerCase() !== 'sim') {
+      continue
+    }
+
+    const priceValue = toNumber(row.price)
+    const price = Number.isNaN(priceValue) ? null : priceValue
+    const normalizedName = normalizeText(row.name)
+    const name =
+      normalizedName.length > 0 ? normalizedName : `Produto ${Math.trunc(id)}`
+    const descriptionValue = normalizeText(row.description)
+    const description =
+      descriptionValue.length > 0 ? descriptionValue : FALLBACK_DESCRIPTION
+    let images = extractImageUrls(row)
+    if (images.length === 0) {
+      images = [FALLBACK_IMAGE_URL]
+    }
+    const image = images[0]
+    const category = normalizeText(row.category) || FALLBACK_CATEGORY
+    const subcategory = normalizeText(row.subcategory) || FALLBACK_SUBCATEGORY
     const manufacturer = normalizeText(row.Fabricante)
     const manufacturerCode = normalizeText(row['codigo-fabricante'])
     const productReference = normalizeText(row['referencia-produto'])
 
-    if (
-      Number.isNaN(id) ||
-      Number.isNaN(price) ||
-      name.length === 0 ||
-      description.length === 0 ||
-      image.length === 0 ||
-      category.length === 0 ||
-      subcategory.length === 0
-    ) {
+    if (image.length === 0) {
       continue
     }
 
