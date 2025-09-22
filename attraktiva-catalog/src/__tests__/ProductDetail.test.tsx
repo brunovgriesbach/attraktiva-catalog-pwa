@@ -194,4 +194,32 @@ describe('ProductDetail', () => {
       expect(storedFavorites[0]?.id).toBe(2)
     })
   })
+
+  it('shows a fallback message when the product price is missing', async () => {
+    const productsWithMissingPrice = [
+      ...mockProducts,
+      {
+        id: 4,
+        name: 'Product 4',
+        description: 'Description for product 4',
+        price: null,
+        image: '/images/product4.jpg',
+        images: ['/images/product4.jpg'],
+        category: 'Category 4',
+        subcategory: 'Subcategory 4',
+        manufacturer: 'Maker Four',
+        manufacturerCode: 'MK-4',
+        productReference: 'REF-004',
+      },
+    ] satisfies Product[]
+
+    mockedFetchProducts.mockResolvedValue(productsWithMissingPrice)
+
+    renderProductDetail(4)
+
+    expect(
+      await screen.findByRole('heading', { name: 'Product 4' }),
+    ).toBeInTheDocument()
+    expect(screen.getByText('Preço indisponível')).toBeInTheDocument()
+  })
 })

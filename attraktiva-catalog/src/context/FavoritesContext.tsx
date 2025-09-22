@@ -45,11 +45,14 @@ function readStoredFavorites(): Product[] {
 
         const candidate = item as Partial<Product>
 
+        const hasValidPrice =
+          typeof candidate.price === 'number' || candidate.price === null
+
         return (
           typeof candidate.id === 'number' &&
           typeof candidate.name === 'string' &&
           typeof candidate.description === 'string' &&
-          typeof candidate.price === 'number'
+          hasValidPrice
         )
       })
       .map((item) => ({ ...item }))
