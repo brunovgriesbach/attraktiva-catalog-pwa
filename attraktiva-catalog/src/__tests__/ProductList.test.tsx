@@ -87,7 +87,7 @@ describe('ProductList', () => {
         <MemoryRouter>
           <ProductList
             products={mockProducts}
-            searchTerm="queen"
+            searchTerm="Lisboa"
             category="Quarto"
             subcategory="Camas"
             sortOrder="default"
@@ -125,6 +125,30 @@ describe('ProductList', () => {
     )
 
     expect(screen.getByText('Sofá Boreal')).toBeInTheDocument()
+    expect(screen.queryByText('Cama Lisboa')).not.toBeInTheDocument()
+    expect(screen.queryByText('Luminária Lunar')).not.toBeInTheDocument()
+  })
+
+  it('ignores matches that occur only in the product description', () => {
+    render(
+      <FavoritesProvider>
+        <MemoryRouter>
+          <ProductList
+            products={mockProducts}
+            searchTerm="confortável"
+            category=""
+            subcategory=""
+            sortOrder="default"
+            manufacturer=""
+            manufacturerCode=""
+            productReference=""
+            onlyFavorites={false}
+          />
+        </MemoryRouter>
+      </FavoritesProvider>,
+    )
+
+    expect(screen.queryByText('Sofá Boreal')).not.toBeInTheDocument()
     expect(screen.queryByText('Cama Lisboa')).not.toBeInTheDocument()
     expect(screen.queryByText('Luminária Lunar')).not.toBeInTheDocument()
   })
