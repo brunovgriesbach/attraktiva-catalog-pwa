@@ -73,7 +73,6 @@ function filterProducts(
 
     const searchableText = createSearchableText(
       product.name,
-      product.description,
       product.manufacturer,
       product.manufacturerCode,
       product.productReference,
