@@ -122,7 +122,11 @@ export default function ProductDetail() {
             {favorite ? '★' : '☆'}
           </button>
           <p className={styles.description}>{product.description}</p>
-          <p className={styles.price}>R$ {product.price.toFixed(2)}</p>
+          <p className={styles.price}>
+            {typeof product.price === 'number'
+              ? `R$ ${product.price.toFixed(2)}`
+              : 'Preço indisponível'}
+          </p>
           <dl className={styles.details}>
             <div className={styles.detailItem}>
               <dt className={styles.detailLabel}>Fabricante</dt>

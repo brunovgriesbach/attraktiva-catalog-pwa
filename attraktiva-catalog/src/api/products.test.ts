@@ -103,5 +103,50 @@ describe('fetchProducts', () => {
     expect(mockFetch).toHaveBeenCalledWith('https://example.com/custom-sheet')
     expect(data).toEqual(mockProducts)
   })
+
+  it('parses localized prices and keeps incomplete rows', async () => {
+    const csvResponse = [
+      'id,name,description,price,category,subcategory,Fabricante,codigo-fabricante,referencia-produto,image,image2,image3,image4,image5',
+      '5,,,"R$ 1.234,56",,,,,,,,,,',
+      '6,"Produto informado",,"",Sala,Mesas,"Fabricante X","COD-123","REF-123","https://example.com/image.jpg",,,,',
+    ].join('\n')
+
+    const mockFetch = vi.spyOn(globalThis, 'fetch').mockResolvedValue({
+      ok: true,
+      text: async () => csvResponse,
+    } as unknown as Response)
+
+    const data = await fetchProducts('https://example.com/localized-sheet')
+
+    expect(mockFetch).toHaveBeenCalledWith('https://example.com/localized-sheet')
+    expect(data).toEqual([
+      {
+        id: 5,
+        name: 'Produto 5',
+        description: 'Descrição não disponível',
+        price: 1234.56,
+        image: '/images/product-placeholder.svg',
+        images: ['/images/product-placeholder.svg'],
+        category: 'Outros',
+        subcategory: 'Outros',
+        manufacturer: '',
+        manufacturerCode: '',
+        productReference: '',
+      },
+      {
+        id: 6,
+        name: 'Produto informado',
+        description: 'Descrição não disponível',
+        price: null,
+        image: 'https://example.com/image.jpg',
+        images: ['https://example.com/image.jpg'],
+        category: 'Sala',
+        subcategory: 'Mesas',
+        manufacturer: 'Fabricante X',
+        manufacturerCode: 'COD-123',
+        productReference: 'REF-123',
+      },
+    ])
+  })
 })
 

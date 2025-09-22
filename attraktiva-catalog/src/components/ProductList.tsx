@@ -91,10 +91,24 @@ function sortProducts(products: Product[], sortOrder: SortOrder): Product[] {
 
   switch (sortOrder) {
     case 'price-asc':
-      sorted.sort((a, b) => a.price - b.price)
+      sorted.sort((a, b) => {
+        const priceA =
+          typeof a.price === 'number' ? a.price : Number.POSITIVE_INFINITY
+        const priceB =
+          typeof b.price === 'number' ? b.price : Number.POSITIVE_INFINITY
+
+        return priceA - priceB
+      })
       break
     case 'price-desc':
-      sorted.sort((a, b) => b.price - a.price)
+      sorted.sort((a, b) => {
+        const priceA =
+          typeof a.price === 'number' ? a.price : Number.NEGATIVE_INFINITY
+        const priceB =
+          typeof b.price === 'number' ? b.price : Number.NEGATIVE_INFINITY
+
+        return priceB - priceA
+      })
       break
     case 'name-asc':
       sorted.sort((a, b) =>
