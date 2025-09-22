@@ -27,7 +27,7 @@
 .imageContainer {
   position: relative;
   overflow: hidden;
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 4 / 3;
   background: linear-gradient(135deg, rgba(37, 99, 235, 0.12), rgba(99, 102, 241, 0.12));
 }
 
@@ -44,8 +44,8 @@
 
 .productId {
   position: absolute;
-  top: clamp(0.75rem, 2vw, 1.1rem);
-  left: clamp(0.75rem, 2vw, 1.1rem);
+  top: 0.75rem;
+  left: 0.75rem;
   padding: 0.35rem 0.6rem;
   border-radius: 999px;
   background: rgba(15, 23, 42, 0.85);
@@ -71,8 +71,8 @@
 
 .favoriteButton {
   position: absolute;
-  top: clamp(0.75rem, 2vw, 1.1rem);
-  right: clamp(0.75rem, 2vw, 1.1rem);
+  top: 0.75rem;
+  right: 0.75rem;
   width: 2rem;
   height: 2rem;
   border: none;
