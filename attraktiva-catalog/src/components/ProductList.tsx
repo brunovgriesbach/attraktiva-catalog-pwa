@@ -4,6 +4,7 @@ import type { SortOrder } from '../types/filters'
 import ProductCard from './ProductCard'
 import styles from './ProductList.module.css'
 import { useFavorites } from '../context/FavoritesContext'
+import { smartSearchMatch, createSearchableText } from '../utils/smartSearch'
 
 interface ProductListProps {
   products: Product[]
@@ -28,7 +29,6 @@ function filterProducts(
   onlyFavorites: boolean,
   favoriteIds: Set<number>,
 ): Product[] {
-  const normalizedSearch = searchTerm.trim().toLowerCase()
   const normalizedManufacturer = manufacturer.trim().toLowerCase()
   const normalizedManufacturerCode = manufacturerCode.trim().toLowerCase()
   const normalizedProductReference = productReference.trim().toLowerCase()
@@ -67,13 +67,18 @@ function filterProducts(
       return false
     }
 
-    if (normalizedSearch.length === 0) {
+    if (searchTerm.trim().length === 0) {
       return true
     }
 
-    const searchableText = `${product.name} ${product.description}`.toLowerCase()
+    const searchableText = createSearchableText(
+      product.name,
+      product.manufacturer,
+      product.manufacturerCode,
+      product.productReference,
+    )
 
-    return searchableText.includes(normalizedSearch)
+    return smartSearchMatch(searchTerm, searchableText)
   })
 }
 

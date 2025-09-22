@@ -1,5 +1,4 @@
-import { cleanup, render, screen } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
+import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { afterEach, describe, it, expect } from 'vitest'
 import * as matchers from '@testing-library/jest-dom/matchers'
@@ -88,7 +87,7 @@ describe('ProductList', () => {
         <MemoryRouter>
           <ProductList
             products={mockProducts}
-            searchTerm="queen"
+            searchTerm="Lisboa"
             category="Quarto"
             subcategory="Camas"
             sortOrder="default"
@@ -103,6 +102,54 @@ describe('ProductList', () => {
 
     expect(screen.getByText('Cama Lisboa')).toBeInTheDocument()
     expect(screen.queryByText('Sofá Boreal')).not.toBeInTheDocument()
+    expect(screen.queryByText('Luminária Lunar')).not.toBeInTheDocument()
+  })
+
+  it('supports fuzzy search when the user makes small typos', () => {
+    render(
+      <FavoritesProvider>
+        <MemoryRouter>
+          <ProductList
+            products={mockProducts}
+            searchTerm="sofaa"
+            category=""
+            subcategory=""
+            sortOrder="default"
+            manufacturer=""
+            manufacturerCode=""
+            productReference=""
+            onlyFavorites={false}
+          />
+        </MemoryRouter>
+      </FavoritesProvider>,
+    )
+
+    expect(screen.getByText('Sofá Boreal')).toBeInTheDocument()
+    expect(screen.queryByText('Cama Lisboa')).not.toBeInTheDocument()
+    expect(screen.queryByText('Luminária Lunar')).not.toBeInTheDocument()
+  })
+
+  it('ignores matches that occur only in the product description', () => {
+    render(
+      <FavoritesProvider>
+        <MemoryRouter>
+          <ProductList
+            products={mockProducts}
+            searchTerm="confortável"
+            category=""
+            subcategory=""
+            sortOrder="default"
+            manufacturer=""
+            manufacturerCode=""
+            productReference=""
+            onlyFavorites={false}
+          />
+        </MemoryRouter>
+      </FavoritesProvider>,
+    )
+
+    expect(screen.queryByText('Sofá Boreal')).not.toBeInTheDocument()
+    expect(screen.queryByText('Cama Lisboa')).not.toBeInTheDocument()
     expect(screen.queryByText('Luminária Lunar')).not.toBeInTheDocument()
   })
 
@@ -162,8 +209,6 @@ describe('ProductList', () => {
   })
 
   it('permite alternar favoritos diretamente no catálogo', async () => {
-    const user = userEvent.setup()
-
     render(
       <FavoritesProvider>
         <MemoryRouter>
@@ -190,12 +235,12 @@ describe('ProductList', () => {
 
     const firstFavoriteButton = favoriteButtons[0]
 
-    await user.click(firstFavoriteButton)
+    fireEvent.click(firstFavoriteButton)
 
     expect(firstFavoriteButton).toHaveAttribute('aria-pressed', 'true')
     expect(firstFavoriteButton).toHaveTextContent('★')
 
-    await user.click(firstFavoriteButton)
+    fireEvent.click(firstFavoriteButton)
 
     expect(firstFavoriteButton).toHaveAttribute('aria-pressed', 'false')
     expect(firstFavoriteButton).toHaveTextContent('☆')
