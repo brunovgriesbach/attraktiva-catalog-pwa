@@ -16,6 +16,9 @@ type RawProduct = {
   name?: string | null
   description?: string | null
   price?: string | number | null
+  ativo?: string | null
+  Ativo?: string | null
+  ATIVO?: string | null
   image?: string | null
   image2?: string | null
   image3?: string | null
@@ -151,6 +154,12 @@ export async function fetchProducts(sourceUrl?: string): Promise<Product[]> {
     if (Number.isNaN(id)) {
       continue
     }
+
+    const activeValue = normalizeText(row.ativo ?? row.Ativo ?? row.ATIVO)
+    if (activeValue.toLowerCase() !== 'sim') {
+      continue
+    }
+
     const priceValue = toNumber(row.price)
     const price = Number.isNaN(priceValue) ? null : priceValue
     const normalizedName = normalizeText(row.name)
