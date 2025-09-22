@@ -4,7 +4,7 @@ import type { Product } from '../data/products'
 import { PRODUCTS_SOURCE_URL } from '../config/catalog'
 import { fetchProducts } from './products'
 
-type CsvProduct = Product
+type CsvProduct = Product & { ativo?: string }
 
 const mockProducts = [
   {
@@ -41,11 +41,12 @@ function createCsvResponse(
 ): string {
   const idHeader = options.idHeader ?? 'id'
   const header =
-    `${idHeader},name,description,price,image,category,subcategory,image2,image3,image4,image5,Fabricante,codigo-fabricante,referencia-produto`
+    `${idHeader},name,description,price,image,category,subcategory,image2,image3,image4,image5,Fabricante,codigo-fabricante,referencia-produto,ativo`
   const rows = products.map((product) => {
     const [primaryImage, ...additionalImages] =
       product.images.length > 0 ? product.images : [product.image]
     const [image2 = '', image3 = '', image4 = '', image5 = ''] = additionalImages
+    const ativo = product.ativo ?? 'sim'
 
     return [
       product.id,
@@ -62,6 +63,7 @@ function createCsvResponse(
       product.manufacturer,
       product.manufacturerCode,
       product.productReference,
+      ativo,
     ].join(',')
   })
 
@@ -106,9 +108,57 @@ describe('fetchProducts', () => {
 
   it('parses localized prices and keeps incomplete rows', async () => {
     const csvResponse = [
-      'id,name,description,price,category,subcategory,Fabricante,codigo-fabricante,referencia-produto,image,image2,image3,image4,image5',
-      '5,,,"R$ 1.234,56",,,,,,,,,,',
-      '6,"Produto informado",,"",Sala,Mesas,"Fabricante X","COD-123","REF-123","https://example.com/image.jpg",,,,',
+      [
+        'id',
+        'name',
+        'description',
+        'price',
+        'category',
+        'subcategory',
+        'Fabricante',
+        'codigo-fabricante',
+        'referencia-produto',
+        'image',
+        'image2',
+        'image3',
+        'image4',
+        'image5',
+        'ativo',
+      ].join(','),
+      [
+        '5',
+        '',
+        '',
+        '"R$ 1.234,56"',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        'sim',
+      ].join(','),
+      [
+        '6',
+        '"Produto informado"',
+        '',
+        '""',
+        'Sala',
+        'Mesas',
+        '"Fabricante X"',
+        '"COD-123"',
+        '"REF-123"',
+        '"https://example.com/image.jpg"',
+        '',
+        '',
+        '',
+        '',
+        'sim',
+      ].join(','),
     ].join('\n')
 
     const mockFetch = vi.spyOn(globalThis, 'fetch').mockResolvedValue({
@@ -145,6 +195,39 @@ describe('fetchProducts', () => {
         manufacturer: 'Fabricante X',
         manufacturerCode: 'COD-123',
         productReference: 'REF-123',
+      },
+    ])
+  })
+
+  it('filters out products marked as inactive', async () => {
+    const csvResponse = createCsvResponse([
+      {
+        ...mockProducts[0],
+        id: 10,
+        name: 'Produto ativo',
+        ativo: 'Sim',
+      },
+      {
+        ...mockProducts[1],
+        id: 11,
+        name: 'Produto inativo',
+        ativo: 'não',
+      },
+    ])
+
+    const mockFetch = vi.spyOn(globalThis, 'fetch').mockResolvedValue({
+      ok: true,
+      text: async () => csvResponse,
+    } as unknown as Response)
+
+    const data = await fetchProducts('https://example.com/active-flag')
+
+    expect(mockFetch).toHaveBeenCalledWith('https://example.com/active-flag')
+    expect(data).toEqual([
+      {
+        ...mockProducts[0],
+        id: 10,
+        name: 'Produto ativo',
       },
     ])
   })
