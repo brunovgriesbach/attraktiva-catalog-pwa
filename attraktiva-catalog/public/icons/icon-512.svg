@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-labelledby="title">
+  <title id="title">Attraktiva placeholder icon 512</title>
+  <defs>
+    <linearGradient id="gradient-512" x1="0%" x2="100%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#ff6b6b" />
+      <stop offset="100%" stop-color="#ffd93d" />
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="96" fill="url(#gradient-512)" />
+  <path
+    fill="#ffffff"
+    d="M256 96 104 416h96l32-80h148l32 80h96L320 96zm-14.5 168 58.5 144h-117z"
+  />
+</svg>
