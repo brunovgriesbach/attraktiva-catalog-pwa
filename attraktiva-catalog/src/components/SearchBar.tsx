@@ -112,38 +112,39 @@ export default function SearchBar({
       onSubmit={(event) => event.preventDefault()}
     >
       <div className={styles.searchHeader}>
-        <div className={`${styles.field} ${styles.searchField}`}>
+        <div className={styles.searchContainer}>
           <label className={styles.label} htmlFor="searchTerm">
             Buscar
           </label>
-          <input
-            id="searchTerm"
-            type="search"
-            name="searchTerm"
-            placeholder="Buscar produtos"
-            value={searchTerm}
-            onChange={handleSearchTermChange}
-            className={styles.input}
-          />
+          <div className={styles.searchControl}>
+            <button
+              type="button"
+              className={styles.toggleButton}
+              aria-expanded={isFiltersOpen}
+              aria-controls={filtersPanelId}
+              aria-label={isFiltersOpen ? 'Ocultar filtros' : 'Mostrar filtros'}
+              onClick={() => setIsFiltersOpen((value) => !value)}
+            >
+              <span aria-hidden="true" className={styles.toggleIcon}>
+                <svg viewBox="0 0 24 24" role="img" focusable="false">
+                  <path
+                    d="M4.5 6.75h15a.75.75 0 0 0 0-1.5h-15a.75.75 0 0 0 0 1.5Zm3 5h9a.75.75 0 0 0 0-1.5h-9a.75.75 0 0 0 0 1.5Zm3 5h3a.75.75 0 0 0 0-1.5h-3a.75.75 0 0 0 0 1.5Z"
+                    fill="currentColor"
+                  />
+                </svg>
+              </span>
+            </button>
+            <input
+              id="searchTerm"
+              type="search"
+              name="searchTerm"
+              placeholder="Buscar produtos"
+              value={searchTerm}
+              onChange={handleSearchTermChange}
+              className={`${styles.input} ${styles.searchInput}`}
+            />
+          </div>
         </div>
-
-        <button
-          type="button"
-          className={styles.toggleButton}
-          aria-expanded={isFiltersOpen}
-          aria-controls={filtersPanelId}
-          aria-label={isFiltersOpen ? 'Ocultar filtros' : 'Mostrar filtros'}
-          onClick={() => setIsFiltersOpen((value) => !value)}
-        >
-          <span aria-hidden="true" className={styles.toggleIcon}>
-            <svg viewBox="0 0 24 24" role="img" focusable="false">
-              <path
-                d="M4.5 6.75h15a.75.75 0 0 0 0-1.5h-15a.75.75 0 0 0 0 1.5Zm3 5h9a.75.75 0 0 0 0-1.5h-9a.75.75 0 0 0 0 1.5Zm3 5h3a.75.75 0 0 0 0-1.5h-3a.75.75 0 0 0 0 1.5Z"
-                fill="currentColor"
-              />
-            </svg>
-          </span>
-        </button>
       </div>
 
       <div
