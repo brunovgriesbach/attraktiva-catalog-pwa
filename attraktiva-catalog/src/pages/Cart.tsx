@@ -187,22 +187,22 @@ export default function Cart() {
                         </div>
                       )}
                       <div className={styles.quantitySection}>
-                        <div className={styles.quantityBlock}>
-                          <span className={styles.quantityLabel}>Quantidade</span>
+                        <span className={styles.quantityLabel}>Quantidade</span>
+                        <div className={styles.quantityControls}>
                           <QuantitySelector
                             value={quantity}
                             onChange={(nextQuantity) => updateQuantity(product.id, nextQuantity)}
                             decreaseLabel={`Diminuir quantidade de ${product.name}`}
                             increaseLabel={`Aumentar quantidade de ${product.name}`}
                           />
+                          <button
+                            type="button"
+                            className={styles.removeButton}
+                            onClick={() => removeItem(product.id)}
+                          >
+                            Excluir
+                          </button>
                         </div>
-                        <button
-                          type="button"
-                          className={styles.removeButton}
-                          onClick={() => removeItem(product.id)}
-                        >
-                          Excluir
-                        </button>
                       </div>
                     </div>
                     <label className={styles.notesLabel} htmlFor={`notes-${product.id}`}>
