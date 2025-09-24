@@ -169,10 +169,9 @@
 
 .quantitySection {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.75rem;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.4rem;
 }
 
 .toggleInfoButton {
@@ -324,11 +323,12 @@
 }
 
 
-.quantityBlock {
+.quantityControls {
   display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-  align-items: flex-start;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
 }
 
 
@@ -519,7 +519,8 @@
     align-items: flex-start;
   }
 
-  .quantityBlock {
+  .quantityControls {
+    justify-content: space-between;
     width: 100%;
   }
 }
