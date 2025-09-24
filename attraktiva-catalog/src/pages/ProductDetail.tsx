@@ -47,6 +47,14 @@ export default function ProductDetail() {
     ? 'Remover dos favoritos'
     : 'Adicionar aos favoritos'
   const isInCart = product ? items.some((item) => item.product.id === product.id) : false
+  const cartItemCount = items.reduce((total, item) => total + item.quantity, 0)
+  const cartLabel =
+    cartItemCount === 0
+      ? 'Abrir carrinho'
+      : `Abrir carrinho com ${cartItemCount} produto${
+          cartItemCount > 1 ? 's' : ''
+        }`
+  const addToCartLabel = isInCart ? 'Produto no carrinho' : 'Adicionar ao carrinho'
 
   function handleFavoriteClick() {
     if (product) {
@@ -135,20 +143,22 @@ export default function ProductDetail() {
               <Link
                 to="/cart"
                 className={styles.cartShortcut}
-                aria-label="Ir para o carrinho"
-                title="Ir para o carrinho"
+                aria-label={cartLabel}
+                title="Carrinho de compras"
               >
-                <svg
-                  aria-hidden="true"
-                  focusable="false"
-                  viewBox="0 0 24 24"
-                  className={styles.cartShortcutIcon}
-                >
-                  <path
-                    d="M7.5 21a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Zm9 0a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Zm-9.63-6.75a1.25 1.25 0 0 1-1.21-.92L3.28 5.88H2a.75.75 0 0 1 0-1.5h1.83c.56 0 1.05.38 1.21.92l.54 1.85h13.87a1.25 1.25 0 0 1 1.21 1.58l-1.35 4.74a2.25 2.25 0 0 1-2.16 1.67H6.87Z"
-                    fill="currentColor"
-                  />
-                </svg>
+                <span aria-hidden="true" className={styles.cartShortcutIcon}>
+                  <svg viewBox="0 0 24 24" role="img" focusable="false">
+                    <path
+                      d="M7.5 21a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Zm9 0a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Zm-9.63-6.75a1.25 1.25 0 0 1-1.21-.92L3.28 5.88H2a.75.75 0 0 1 0-1.5h1.83c.56 0 1.05.38 1.21.92l.54 1.85h13.87a1.25 1.25 0 0 1 1.21 1.58l-1.35 4.74a2.25 2.25 0 0 1-2.16 1.67H6.87Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                </span>
+                {cartItemCount > 0 && (
+                  <span className={styles.cartShortcutBadge} aria-hidden="true">
+                    {cartItemCount}
+                  </span>
+                )}
               </Link>
             </div>
           </div>
@@ -156,29 +166,28 @@ export default function ProductDetail() {
           <div className={styles.priceRow}>
             <button
               type="button"
-              className={styles.addToCartIcon}
+              className={styles.addToCartButton}
               data-active={isInCart ? 'true' : 'false'}
               onClick={handleAddToCart}
-              disabled={isInCart}
               aria-pressed={isInCart}
               aria-label={
-                isInCart ? 'Produto já está no carrinho' : 'Adicionar produto ao carrinho'
+                isInCart
+                  ? 'Adicionar mais unidades do produto ao carrinho'
+                  : 'Adicionar produto ao carrinho'
               }
               title={
-                isInCart ? 'Produto já está no carrinho' : 'Adicionar produto ao carrinho'
+                isInCart ? 'Adicionar mais unidades do produto ao carrinho' : 'Adicionar produto ao carrinho'
               }
             >
-              <svg
-                aria-hidden="true"
-                focusable="false"
-                viewBox="0 0 24 24"
-                className={styles.addToCartIconSvg}
-              >
-                <path
-                  d="M7.5 21a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Zm9 0a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Zm-9.63-6.75a1.25 1.25 0 0 1-1.21-.92L3.28 5.88H2a.75.75 0 0 1 0-1.5h1.83c.56 0 1.05.38 1.21.92l.54 1.85h13.87a1.25 1.25 0 0 1 1.21 1.58l-1.35 4.74a2.25 2.25 0 0 1-2.16 1.67H6.87Z"
-                  fill="currentColor"
-                />
-              </svg>
+              <span aria-hidden="true" className={styles.addToCartButtonIcon}>
+                <svg viewBox="0 0 24 24" role="img" focusable="false">
+                  <path
+                    d="M7.5 21a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Zm9 0a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Zm-9.63-6.75a1.25 1.25 0 0 1-1.21-.92L3.28 5.88H2a.75.75 0 0 1 0-1.5h1.83c.56 0 1.05.38 1.21.92l.54 1.85h13.87a1.25 1.25 0 0 1 1.21 1.58l-1.35 4.74a2.25 2.25 0 0 1-2.16 1.67H6.87Z"
+                    fill="currentColor"
+                  />
+                </svg>
+              </span>
+              {addToCartLabel}
             </button>
             <p className={styles.price}>
               {typeof product.price === 'number'
@@ -186,9 +195,6 @@ export default function ProductDetail() {
                 : 'Preço indisponível'}
             </p>
           </div>
-          {isInCart && (
-            <p className={styles.cartStatus}>Produto no carrinho</p>
-          )}
           <dl className={styles.details}>
             <div className={styles.detailItem}>
               <dt className={styles.detailLabel}>Fabricante</dt>
