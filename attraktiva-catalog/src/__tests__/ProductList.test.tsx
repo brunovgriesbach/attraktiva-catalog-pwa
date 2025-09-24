@@ -2,10 +2,12 @@ import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { afterEach, describe, it, expect } from 'vitest'
 import * as matchers from '@testing-library/jest-dom/matchers'
+import type { ReactNode } from 'react'
 
 import ProductList from '../components/ProductList'
 import type { Product } from '../data/products'
 import { FavoritesProvider } from '../context/FavoritesContext'
+import { CartProvider } from '../context/CartContext'
 
 const mockProducts: Product[] = [
   {
@@ -56,24 +58,30 @@ afterEach(() => {
   localStorage.clear()
 })
 
+function renderWithProviders(ui: ReactNode) {
+  return render(
+    <FavoritesProvider>
+      <CartProvider>
+        <MemoryRouter>{ui}</MemoryRouter>
+      </CartProvider>
+    </FavoritesProvider>,
+  )
+}
+
 describe('ProductList', () => {
   it('renders all products', () => {
-    render(
-      <FavoritesProvider>
-        <MemoryRouter>
-          <ProductList
-            products={mockProducts}
-            searchTerm=""
-            category=""
-            subcategory=""
-            sortOrder="default"
-            manufacturer=""
-            manufacturerCode=""
-            productReference=""
-            onlyFavorites={false}
-          />
-        </MemoryRouter>
-      </FavoritesProvider>,
+    renderWithProviders(
+      <ProductList
+        products={mockProducts}
+        searchTerm=""
+        category=""
+        subcategory=""
+        sortOrder="default"
+        manufacturer=""
+        manufacturerCode=""
+        productReference=""
+        onlyFavorites={false}
+      />,
     )
 
     mockProducts.forEach((product) => {
@@ -82,22 +90,18 @@ describe('ProductList', () => {
   })
 
   it('filters by category, subcategory and search term', () => {
-    render(
-      <FavoritesProvider>
-        <MemoryRouter>
-          <ProductList
-            products={mockProducts}
-            searchTerm="Lisboa"
-            category="Quarto"
-            subcategory="Camas"
-            sortOrder="default"
-            manufacturer="Dream"
-            manufacturerCode="DW-200"
-            productReference="REF-CAMA"
-            onlyFavorites={false}
-          />
-        </MemoryRouter>
-      </FavoritesProvider>,
+    renderWithProviders(
+      <ProductList
+        products={mockProducts}
+        searchTerm="Lisboa"
+        category="Quarto"
+        subcategory="Camas"
+        sortOrder="default"
+        manufacturer="Dream"
+        manufacturerCode="DW-200"
+        productReference="REF-CAMA"
+        onlyFavorites={false}
+      />,
     )
 
     expect(screen.getByText('Cama Lisboa')).toBeInTheDocument()
@@ -106,22 +110,18 @@ describe('ProductList', () => {
   })
 
   it('supports fuzzy search when the user makes small typos', () => {
-    render(
-      <FavoritesProvider>
-        <MemoryRouter>
-          <ProductList
-            products={mockProducts}
-            searchTerm="sofaa"
-            category=""
-            subcategory=""
-            sortOrder="default"
-            manufacturer=""
-            manufacturerCode=""
-            productReference=""
-            onlyFavorites={false}
-          />
-        </MemoryRouter>
-      </FavoritesProvider>,
+    renderWithProviders(
+      <ProductList
+        products={mockProducts}
+        searchTerm="sofaa"
+        category=""
+        subcategory=""
+        sortOrder="default"
+        manufacturer=""
+        manufacturerCode=""
+        productReference=""
+        onlyFavorites={false}
+      />,
     )
 
     expect(screen.getByText('Sofá Boreal')).toBeInTheDocument()
@@ -130,22 +130,18 @@ describe('ProductList', () => {
   })
 
   it('ignores matches that occur only in the product description', () => {
-    render(
-      <FavoritesProvider>
-        <MemoryRouter>
-          <ProductList
-            products={mockProducts}
-            searchTerm="confortável"
-            category=""
-            subcategory=""
-            sortOrder="default"
-            manufacturer=""
-            manufacturerCode=""
-            productReference=""
-            onlyFavorites={false}
-          />
-        </MemoryRouter>
-      </FavoritesProvider>,
+    renderWithProviders(
+      <ProductList
+        products={mockProducts}
+        searchTerm="confortável"
+        category=""
+        subcategory=""
+        sortOrder="default"
+        manufacturer=""
+        manufacturerCode=""
+        productReference=""
+        onlyFavorites={false}
+      />,
     )
 
     expect(screen.queryByText('Sofá Boreal')).not.toBeInTheDocument()
@@ -154,22 +150,18 @@ describe('ProductList', () => {
   })
 
   it('sorts products by price when requested', () => {
-    render(
-      <FavoritesProvider>
-        <MemoryRouter>
-          <ProductList
-            products={mockProducts}
-            searchTerm=""
-            category=""
-            subcategory=""
-            sortOrder="price-asc"
-            manufacturer=""
-            manufacturerCode=""
-            productReference=""
-            onlyFavorites={false}
-          />
-        </MemoryRouter>
-      </FavoritesProvider>,
+    renderWithProviders(
+      <ProductList
+        products={mockProducts}
+        searchTerm=""
+        category=""
+        subcategory=""
+        sortOrder="price-asc"
+        manufacturer=""
+        manufacturerCode=""
+        productReference=""
+        onlyFavorites={false}
+      />,
     )
 
     const productHeadings = screen.getAllByRole('heading', { level: 3 })
@@ -185,22 +177,18 @@ describe('ProductList', () => {
   it('shows only favorite products when filtering favorites', () => {
     localStorage.setItem('favorites', JSON.stringify([mockProducts[1]]))
 
-    render(
-      <FavoritesProvider>
-        <MemoryRouter>
-          <ProductList
-            products={mockProducts}
-            searchTerm=""
-            category=""
-            subcategory=""
-            sortOrder="default"
-            manufacturer=""
-            manufacturerCode=""
-            productReference=""
-            onlyFavorites={true}
-          />
-        </MemoryRouter>
-      </FavoritesProvider>,
+    renderWithProviders(
+      <ProductList
+        products={mockProducts}
+        searchTerm=""
+        category=""
+        subcategory=""
+        sortOrder="default"
+        manufacturer=""
+        manufacturerCode=""
+        productReference=""
+        onlyFavorites={true}
+      />,
     )
 
     expect(screen.getByText('Cama Lisboa')).toBeInTheDocument()
@@ -209,22 +197,18 @@ describe('ProductList', () => {
   })
 
   it('permite alternar favoritos diretamente no catálogo', async () => {
-    render(
-      <FavoritesProvider>
-        <MemoryRouter>
-          <ProductList
-            products={mockProducts}
-            searchTerm=""
-            category=""
-            subcategory=""
-            sortOrder="default"
-            manufacturer=""
-            manufacturerCode=""
-            productReference=""
-            onlyFavorites={false}
-          />
-        </MemoryRouter>
-      </FavoritesProvider>,
+    renderWithProviders(
+      <ProductList
+        products={mockProducts}
+        searchTerm=""
+        category=""
+        subcategory=""
+        sortOrder="default"
+        manufacturer=""
+        manufacturerCode=""
+        productReference=""
+        onlyFavorites={false}
+      />,
     )
 
     const favoriteButtons = screen.getAllByRole('button', {

@@ -1,6 +1,8 @@
 import { useId, useState, type ChangeEvent } from 'react'
+import { Link } from 'react-router-dom'
 import type { SearchFilters, SortOrder } from '../types/filters'
 import styles from './SearchBar.module.css'
+import { useCart } from '../context/CartContext'
 
 export interface CategoryOption {
   value: string
@@ -52,6 +54,14 @@ export default function SearchBar({
   const subcategoryOptions = getSubcategories(categories, category)
   const [isFiltersOpen, setIsFiltersOpen] = useState(false)
   const filtersPanelId = useId()
+  const { items } = useCart()
+  const cartItemCount = items.length
+  const cartLabel =
+    cartItemCount === 0
+      ? 'Abrir carrinho'
+      : `Abrir carrinho com ${cartItemCount} produto${
+          cartItemCount > 1 ? 's' : ''
+        }`
 
   function handleFilterChange(partial: Partial<SearchFilters>) {
     onFilterChange(
@@ -145,6 +155,26 @@ export default function SearchBar({
             />
           </div>
         </div>
+        <Link
+          to="/cart"
+          className={styles.cartButton}
+          aria-label={cartLabel}
+          title="Carrinho de compras"
+        >
+          <span aria-hidden="true" className={styles.cartIcon}>
+            <svg viewBox="0 0 24 24" role="img" focusable="false">
+              <path
+                d="M7.5 21a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Zm9 0a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Zm-9.63-6.75a1.25 1.25 0 0 1-1.21-.92L3.28 5.88H2a.75.75 0 0 1 0-1.5h1.83c.56 0 1.05.38 1.21.92l.54 1.85h13.87a1.25 1.25 0 0 1 1.21 1.58l-1.35 4.74a2.25 2.25 0 0 1-2.16 1.67H6.87Z"
+                fill="currentColor"
+              />
+            </svg>
+          </span>
+          {cartItemCount > 0 && (
+            <span className={styles.cartBadge} aria-hidden="true">
+              {cartItemCount}
+            </span>
+          )}
+        </Link>
       </div>
 
       <div
