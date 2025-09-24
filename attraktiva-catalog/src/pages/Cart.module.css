@@ -207,10 +207,53 @@
   font-weight: 600;
 }
 
-.price {
-  margin: 0.5rem 0 0;
+.purchaseRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.priceBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.priceLabel {
+  font-size: 0.75rem;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+}
+
+.priceValue {
   font-weight: 700;
   color: #2563eb;
+}
+
+.lineTotal {
+  font-size: 0.9rem;
+  color: #1f2937;
+  font-weight: 600;
+}
+
+.quantityBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  align-items: flex-start;
+}
+
+.quantityLabel {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #64748b;
+  font-weight: 600;
 }
 
 .notesLabel {
@@ -381,5 +424,14 @@
 
   .cardContent {
     padding: 1.25rem;
+  }
+
+  .purchaseRow {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .quantityBlock {
+    width: 100%;
   }
 }

@@ -55,7 +55,7 @@ export default function SearchBar({
   const [isFiltersOpen, setIsFiltersOpen] = useState(false)
   const filtersPanelId = useId()
   const { items } = useCart()
-  const cartItemCount = items.length
+  const cartItemCount = items.reduce((total, item) => total + item.quantity, 0)
   const cartLabel =
     cartItemCount === 0
       ? 'Abrir carrinho'
