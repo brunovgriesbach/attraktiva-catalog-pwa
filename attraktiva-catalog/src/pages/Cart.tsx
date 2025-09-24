@@ -117,6 +117,8 @@ export default function Cart() {
             {items.map((item) => {
               const { product, notes, quantity } = item
               const image = product.image || product.images[0] || ''
+              const manufacturer = product.manufacturer || 'Não informado'
+              const productReference = product.productReference || 'Não informado'
 
               return (
                 <article key={product.id} className={styles.card}>
@@ -131,7 +133,9 @@ export default function Cart() {
                   </div>
                   <div className={styles.cardContent}>
                     <div className={styles.cardHeader}>
-                      <h2 className={styles.productName}>{product.name}</h2>
+                      <h2 className={styles.productName} title={product.name}>
+                        {product.name}
+                      </h2>
                       <button
                         type="button"
                         className={styles.removeButton}
@@ -147,11 +151,15 @@ export default function Cart() {
                       </li>
                       <li>
                         <span className={styles.metaLabel}>Fabricante</span>
-                        <span className={styles.metaValue}>{product.manufacturer || 'Não informado'}</span>
+                        <span className={styles.metaValue} title={manufacturer}>
+                          {manufacturer}
+                        </span>
                       </li>
                       <li>
                         <span className={styles.metaLabel}>Referência</span>
-                        <span className={styles.metaValue}>{product.productReference || 'Não informado'}</span>
+                        <span className={styles.metaValue} title={productReference}>
+                          {productReference}
+                        </span>
                       </li>
                     </ul>
                     <div className={styles.purchaseRow}>
