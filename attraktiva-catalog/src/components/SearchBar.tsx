@@ -1,4 +1,4 @@
-import type { ChangeEvent } from 'react'
+import { useId, useState, type ChangeEvent } from 'react'
 import type { SearchFilters, SortOrder } from '../types/filters'
 import styles from './SearchBar.module.css'
 
@@ -50,6 +50,8 @@ export default function SearchBar({
   onFilterChange,
 }: SearchBarProps) {
   const subcategoryOptions = getSubcategories(categories, category)
+  const [isFiltersOpen, setIsFiltersOpen] = useState(false)
+  const filtersPanelId = useId()
 
   function handleFilterChange(partial: Partial<SearchFilters>) {
     onFilterChange(
@@ -62,6 +64,7 @@ export default function SearchBar({
           manufacturer,
           manufacturerCode,
           productReference,
+          onlyFavorites,
         },
         partial,
       ),
@@ -108,138 +111,164 @@ export default function SearchBar({
       aria-label="Busca de produtos"
       onSubmit={(event) => event.preventDefault()}
     >
-      <div className={styles.field}>
-        <label className={styles.label} htmlFor="searchTerm">
-          Buscar
-        </label>
-        <input
-          id="searchTerm"
-          type="search"
-          name="searchTerm"
-          placeholder="Buscar produtos"
-          value={searchTerm}
-          onChange={handleSearchTermChange}
-          className={styles.input}
-        />
-      </div>
-
-      <div className={styles.field}>
-        <label className={styles.label} htmlFor="category">
-          Categoria
-        </label>
-        <select
-          id="category"
-          name="category"
-          value={category}
-          onChange={handleCategoryChange}
-          className={styles.select}
-        >
-          <option value="">Todas as categorias</option>
-          {categories.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div className={styles.field}>
-        <label className={styles.label} htmlFor="subcategory">
-          Subcategoria
-        </label>
-        <select
-          id="subcategory"
-          name="subcategory"
-          value={subcategory}
-          onChange={handleSubcategoryChange}
-          className={styles.select}
-          disabled={category === '' || subcategoryOptions.length === 0}
-        >
-          <option value="">Todas as subcategorias</option>
-          {subcategoryOptions.map((option) => (
-            <option key={option} value={option}>
-              {option}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div className={styles.field}>
-        <label className={styles.label} htmlFor="manufacturer">
-          Fabricante
-        </label>
-        <input
-          id="manufacturer"
-          type="text"
-          name="manufacturer"
-          placeholder="Filtrar por fabricante"
-          value={manufacturer}
-          onChange={handleManufacturerChange}
-          className={styles.input}
-        />
-      </div>
-
-      <div className={styles.field}>
-        <label className={styles.label} htmlFor="manufacturerCode">
-          Código do Fabricante
-        </label>
-        <input
-          id="manufacturerCode"
-          type="text"
-          name="manufacturerCode"
-          placeholder="Filtrar pelo código"
-          value={manufacturerCode}
-          onChange={handleManufacturerCodeChange}
-          className={styles.input}
-        />
-      </div>
-
-      <div className={styles.field}>
-        <label className={styles.label} htmlFor="productReference">
-          Referência do Produto
-        </label>
-        <input
-          id="productReference"
-          type="text"
-          name="productReference"
-          placeholder="Filtrar pela referência"
-          value={productReference}
-          onChange={handleProductReferenceChange}
-          className={styles.input}
-        />
-      </div>
-
-      <div className={`${styles.field} ${styles.checkboxField}`}>
-        <span className={styles.label}>Favoritos</span>
-        <label className={styles.checkboxLabel} htmlFor="onlyFavorites">
+      <div className={styles.searchHeader}>
+        <div className={`${styles.field} ${styles.searchField}`}>
+          <label className={styles.label} htmlFor="searchTerm">
+            Buscar
+          </label>
           <input
-            id="onlyFavorites"
-            type="checkbox"
-            name="onlyFavorites"
-            checked={onlyFavorites}
-            onChange={handleOnlyFavoritesChange}
-            className={styles.checkboxInput}
+            id="searchTerm"
+            type="search"
+            name="searchTerm"
+            placeholder="Buscar produtos"
+            value={searchTerm}
+            onChange={handleSearchTermChange}
+            className={styles.input}
           />
-          Favoritos
-        </label>
+        </div>
+
+        <button
+          type="button"
+          className={styles.toggleButton}
+          aria-expanded={isFiltersOpen}
+          aria-controls={filtersPanelId}
+          aria-label={isFiltersOpen ? 'Ocultar filtros' : 'Mostrar filtros'}
+          onClick={() => setIsFiltersOpen((value) => !value)}
+        >
+          <span aria-hidden="true" className={styles.toggleIcon}>
+            <svg viewBox="0 0 24 24" role="img" focusable="false">
+              <path
+                d="M4.5 6.75h15a.75.75 0 0 0 0-1.5h-15a.75.75 0 0 0 0 1.5Zm3 5h9a.75.75 0 0 0 0-1.5h-9a.75.75 0 0 0 0 1.5Zm3 5h3a.75.75 0 0 0 0-1.5h-3a.75.75 0 0 0 0 1.5Z"
+                fill="currentColor"
+              />
+            </svg>
+          </span>
+        </button>
       </div>
 
-      <div className={styles.field}>
-        <label className={styles.label} htmlFor="sortOrder">
-          Ordenar por
-        </label>
-        <select
-          id="sortOrder"
-          name="sortOrder"
-          value={sortOrder}
-          onChange={handleSortOrderChange}
-          className={styles.select}
-        >
-          <option value="default">Ordenação padrão</option>
-          <option value="price-asc">Menor preço</option>
-          <option value="price-desc">Maior preço</option>
-          <option value="name-asc">Nome A–Z</option>
-        </select>
+      <div
+        id={filtersPanelId}
+        className={styles.filtersPanel}
+        hidden={!isFiltersOpen}
+      >
+        <div className={styles.field}>
+          <label className={styles.label} htmlFor="category">
+            Categoria
+          </label>
+          <select
+            id="category"
+            name="category"
+            value={category}
+            onChange={handleCategoryChange}
+            className={styles.select}
+          >
+            <option value="">Todas as categorias</option>
+            {categories.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className={styles.field}>
+          <label className={styles.label} htmlFor="subcategory">
+            Subcategoria
+          </label>
+          <select
+            id="subcategory"
+            name="subcategory"
+            value={subcategory}
+            onChange={handleSubcategoryChange}
+            className={styles.select}
+            disabled={category === '' || subcategoryOptions.length === 0}
+          >
+            <option value="">Todas as subcategorias</option>
+            {subcategoryOptions.map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className={styles.field}>
+          <label className={styles.label} htmlFor="manufacturer">
+            Fabricante
+          </label>
+          <input
+            id="manufacturer"
+            type="text"
+            name="manufacturer"
+            placeholder="Filtrar por fabricante"
+            value={manufacturer}
+            onChange={handleManufacturerChange}
+            className={styles.input}
+          />
+        </div>
+
+        <div className={styles.field}>
+          <label className={styles.label} htmlFor="manufacturerCode">
+            Código do Fabricante
+          </label>
+          <input
+            id="manufacturerCode"
+            type="text"
+            name="manufacturerCode"
+            placeholder="Filtrar pelo código"
+            value={manufacturerCode}
+            onChange={handleManufacturerCodeChange}
+            className={styles.input}
+          />
+        </div>
+
+        <div className={styles.field}>
+          <label className={styles.label} htmlFor="productReference">
+            Referência do Produto
+          </label>
+          <input
+            id="productReference"
+            type="text"
+            name="productReference"
+            placeholder="Filtrar pela referência"
+            value={productReference}
+            onChange={handleProductReferenceChange}
+            className={styles.input}
+          />
+        </div>
+
+        <div className={`${styles.field} ${styles.checkboxField}`}>
+          <span className={styles.label}>Favoritos</span>
+          <label className={styles.checkboxLabel} htmlFor="onlyFavorites">
+            <input
+              id="onlyFavorites"
+              type="checkbox"
+              name="onlyFavorites"
+              checked={onlyFavorites}
+              onChange={handleOnlyFavoritesChange}
+              className={styles.checkboxInput}
+            />
+            Favoritos
+          </label>
+        </div>
+
+        <div className={styles.field}>
+          <label className={styles.label} htmlFor="sortOrder">
+            Ordenar por
+          </label>
+          <select
+            id="sortOrder"
+            name="sortOrder"
+            value={sortOrder}
+            onChange={handleSortOrderChange}
+            className={styles.select}
+          >
+            <option value="default">Ordenação padrão</option>
+            <option value="price-asc">Menor preço</option>
+            <option value="price-desc">Maior preço</option>
+            <option value="name-asc">Nome A–Z</option>
+          </select>
+        </div>
       </div>
     </form>
   )
