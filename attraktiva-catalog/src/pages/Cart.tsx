@@ -14,6 +14,7 @@ function formatCurrency(value: number | null | undefined) {
 
 export default function Cart() {
   const { items, removeItem, clearCart, updateNotes, updateQuantity } = useCart()
+  const [expandedItems, setExpandedItems] = useState<Record<number, boolean>>({})
   const [vendorEmail, setVendorEmail] = useState(() => {
     if (typeof window === 'undefined') {
       return ''
@@ -51,6 +52,13 @@ export default function Cart() {
 
   function handleEmailChange(event: ChangeEvent<HTMLInputElement>) {
     setVendorEmail(event.target.value)
+  }
+
+  function handleToggleDetails(productId: number) {
+    setExpandedItems((previous) => ({
+      ...previous,
+      [productId]: !previous[productId],
+    }))
   }
 
   function handleSendQuote(event: FormEvent<HTMLFormElement>) {
@@ -119,6 +127,7 @@ export default function Cart() {
               const image = product.image || product.images[0] || ''
               const manufacturer = product.manufacturer || 'Não informado'
               const productReference = product.productReference || 'Não informado'
+              const isExpanded = expandedItems[product.id] ?? false
 
               return (
                 <article key={product.id} className={styles.card}>
@@ -144,34 +153,46 @@ export default function Cart() {
                         Remover
                       </button>
                     </div>
-                    <ul className={styles.metaList}>
-                      <li>
-                        <span className={styles.metaLabel}>ID</span>
-                        <span className={styles.metaValue}>#{product.id}</span>
-                      </li>
-                      <li>
-                        <span className={styles.metaLabel}>Fabricante</span>
-                        <span className={styles.metaValue} title={manufacturer}>
-                          {manufacturer}
-                        </span>
-                      </li>
-                      <li>
-                        <span className={styles.metaLabel}>Referência</span>
-                        <span className={styles.metaValue} title={productReference}>
-                          {productReference}
-                        </span>
-                      </li>
-                    </ul>
-                    <div className={styles.purchaseRow}>
-                      <div className={styles.priceBlock}>
-                        <span className={styles.priceLabel}>Preço unitário</span>
-                        <span className={styles.priceValue}>{formatCurrency(product.price)}</span>
-                        {typeof product.price === 'number' && (
-                          <span className={styles.lineTotal}>
-                            Total: {formatCurrency(product.price * quantity)}
+                    <button
+                      type="button"
+                      className={styles.toggleInfoButton}
+                      onClick={() => handleToggleDetails(product.id)}
+                      aria-expanded={isExpanded}
+                    >
+                      {isExpanded ? 'Ocultar informações' : 'Ver informações'}
+                    </button>
+                    {isExpanded && (
+                      <ul className={styles.metaList}>
+                        <li>
+                          <span className={styles.metaLabel}>ID</span>
+                          <span className={styles.metaValue}>#{product.id}</span>
+                        </li>
+                        <li>
+                          <span className={styles.metaLabel}>Fabricante</span>
+                          <span className={styles.metaValue} title={manufacturer}>
+                            {manufacturer}
                           </span>
-                        )}
-                      </div>
+                        </li>
+                        <li>
+                          <span className={styles.metaLabel}>Referência</span>
+                          <span className={styles.metaValue} title={productReference}>
+                            {productReference}
+                          </span>
+                        </li>
+                      </ul>
+                    )}
+                    <div className={styles.purchaseRow}>
+                      {isExpanded && (
+                        <div className={styles.priceBlock}>
+                          <span className={styles.priceLabel}>Preço unitário</span>
+                          <span className={styles.priceValue}>{formatCurrency(product.price)}</span>
+                          {typeof product.price === 'number' && (
+                            <span className={styles.lineTotal}>
+                              Total: {formatCurrency(product.price * quantity)}
+                            </span>
+                          )}
+                        </div>
+                      )}
                       <div className={styles.quantityBlock}>
                         <span className={styles.quantityLabel}>Quantidade</span>
                         <QuantitySelector

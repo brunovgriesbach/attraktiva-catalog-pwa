@@ -167,6 +167,33 @@
   gap: 0.5rem;
 }
 
+.toggleInfoButton {
+  border: none;
+  background: transparent;
+  color: #2563eb;
+  font-weight: 600;
+  font-size: 0.85rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  cursor: pointer;
+  padding: 0;
+  margin-top: 0.25rem;
+  align-self: flex-start;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.toggleInfoButton:hover {
+  color: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+.toggleInfoButton:focus-visible {
+  outline: 3px solid rgba(37, 99, 235, 0.3);
+  outline-offset: 2px;
+  border-radius: 999px;
+}
+
 .productName {
   margin: 0;
   font-size: 1rem;
