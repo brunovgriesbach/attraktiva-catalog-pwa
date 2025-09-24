@@ -96,36 +96,44 @@
   outline-offset: 3px;
 }
 
+
 .gallery {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.25rem;
+  align-items: stretch;
 }
 
 .card {
   display: flex;
   flex-direction: column;
   background: #ffffff;
-  border-radius: 1.25rem;
+  border-radius: 1rem;
   border: 1px solid rgba(15, 23, 42, 0.08);
-  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.07);
   overflow: hidden;
-  min-height: 100%;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 36px rgba(15, 23, 42, 0.12);
 }
 
 .imageWrapper {
   position: relative;
   background: #f8fafc;
-  padding: 1.5rem;
+  padding: 1rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 1 / 1;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.05);
 }
 
 .image {
-  max-width: 100%;
-  max-height: 100%;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
 }
 
@@ -144,8 +152,8 @@
 .cardContent {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  padding: 1.5rem;
+  gap: 0.65rem;
+  padding: 1.15rem 1.25rem;
 }
 
 .cardHeader {
@@ -157,8 +165,9 @@
 
 .productName {
   margin: 0;
-  font-size: 1.1rem;
+  font-size: 1rem;
   color: #0f172a;
+  line-height: 1.35;
 }
 
 .removeButton {
@@ -182,19 +191,20 @@
   outline-offset: 2px;
 }
 
+
 .metaList {
   list-style: none;
   margin: 0;
   padding: 0;
   display: grid;
-  gap: 0.35rem;
+  gap: 0.25rem;
+  font-size: 0.8rem;
 }
 
 .metaList li {
   display: flex;
   justify-content: space-between;
-  gap: 0.75rem;
-  font-size: 0.85rem;
+  gap: 0.5rem;
 }
 
 .metaLabel {
@@ -207,68 +217,80 @@
   font-weight: 600;
 }
 
+
 .purchaseRow {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
-  gap: 1rem;
-  margin-top: 0.5rem;
+  gap: 0.85rem;
+  margin-top: 0.35rem;
 }
+
 
 .priceBlock {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.2rem;
 }
 
+
 .priceLabel {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   color: #6b7280;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   font-weight: 600;
 }
 
+
 .priceValue {
   font-weight: 700;
   color: #2563eb;
+  font-size: 0.95rem;
 }
 
+
 .lineTotal {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: #1f2937;
   font-weight: 600;
 }
 
+
 .quantityBlock {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 0.3rem;
   align-items: flex-start;
 }
 
+
 .quantityLabel {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: #64748b;
   font-weight: 600;
 }
 
+
 .notesLabel {
   font-weight: 600;
   color: #1f2937;
+  font-size: 0.85rem;
 }
+
 
 .notes {
   border-radius: 0.75rem;
   border: 1px solid #d1d5db;
-  padding: 0.75rem;
-  min-height: 120px;
+  padding: 0.65rem 0.75rem;
+  min-height: 90px;
   resize: vertical;
   font: inherit;
-  line-height: 1.5;
+  font-size: 0.9rem;
+  line-height: 1.4;
   background: #f8fafc;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
