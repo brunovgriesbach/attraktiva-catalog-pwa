@@ -406,7 +406,7 @@
   color: #111827;
 }
 
-.clearButton {
+.clearButton { 
   align-self: flex-start;
   margin-top: 0.5rem;
   padding: 0.6rem 1.1rem;
@@ -427,6 +427,15 @@
 .clearButton:focus-visible {
   outline: 3px solid rgba(251, 191, 36, 0.4);
   outline-offset: 2px;
+}
+
+.emailSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(15, 23, 42, 0.08);
 }
 
 .summaryActions {
@@ -452,6 +461,31 @@
   outline: none;
   border-color: #6366f1;
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+.summaryNotesLabel {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.summaryNotes {
+  border-radius: 0.9rem;
+  border: 1px solid #d1d5db;
+  padding: 0.85rem 1rem;
+  font: inherit;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  background: #f8fafc;
+  resize: vertical;
+  min-height: 120px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.summaryNotes:focus {
+  outline: none;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+  background: #ffffff;
 }
 
 .emailHint {
