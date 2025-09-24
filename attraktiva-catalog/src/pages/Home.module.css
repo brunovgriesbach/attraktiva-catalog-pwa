@@ -34,3 +34,9 @@
     font-size: clamp(1.5rem, 6vw, 2.125rem);
   }
 }
+
+@media (max-width: 480px) {
+  .container {
+    gap: 0.5rem;
+  }
+}
