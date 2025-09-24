@@ -4,6 +4,7 @@ import { RouterProvider } from 'react-router-dom'
 import './index.css'
 import { router } from './routes'
 import { FavoritesProvider } from './context/FavoritesContext'
+import { CartProvider } from './context/CartContext'
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
@@ -27,9 +28,11 @@ if ('serviceWorker' in navigator) {
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <FavoritesProvider>
-      <RouterProvider router={router} />
-    </FavoritesProvider>
+    <CartProvider>
+      <FavoritesProvider>
+        <RouterProvider router={router} />
+      </FavoritesProvider>
+    </CartProvider>
   </StrictMode>,
 )
 

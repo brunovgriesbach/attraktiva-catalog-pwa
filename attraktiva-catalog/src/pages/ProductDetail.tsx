@@ -5,6 +5,7 @@ import { MAX_PRODUCT_IMAGES } from '../config/catalog'
 import type { Product } from '../data/products'
 import styles from './ProductDetail.module.css'
 import { useFavorites } from '../context/FavoritesContext'
+import { useCart } from '../context/CartContext'
 
 export default function ProductDetail() {
   const { id } = useParams()
@@ -12,6 +13,7 @@ export default function ProductDetail() {
   const [loading, setLoading] = useState(true)
   const [activeImageIndex, setActiveImageIndex] = useState(0)
   const { isFavorite, toggleFavorite } = useFavorites()
+  const { addItem, items } = useCart()
 
   useEffect(() => {
     fetchProducts()
@@ -44,10 +46,17 @@ export default function ProductDetail() {
   const favoriteLabel = favorite
     ? 'Remover dos favoritos'
     : 'Adicionar aos favoritos'
+  const isInCart = product ? items.some((item) => item.product.id === product.id) : false
 
   function handleFavoriteClick() {
     if (product) {
       toggleFavorite(product)
+    }
+  }
+
+  function handleAddToCart() {
+    if (product) {
+      addItem(product)
     }
   }
 
@@ -127,6 +136,19 @@ export default function ProductDetail() {
               ? `R$ ${product.price.toFixed(2)}`
               : 'Preço indisponível'}
           </p>
+          <div className={styles.actions}>
+            <button
+              type="button"
+              className={styles.addToCart}
+              onClick={handleAddToCart}
+              disabled={isInCart}
+            >
+              {isInCart ? 'Produto no carrinho' : 'Adicionar ao carrinho'}
+            </button>
+            <Link to="/cart" className={styles.goToCart}>
+              Ver carrinho
+            </Link>
+          </div>
           <dl className={styles.details}>
             <div className={styles.detailItem}>
               <dt className={styles.detailLabel}>Fabricante</dt>

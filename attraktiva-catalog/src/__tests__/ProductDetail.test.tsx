@@ -14,6 +14,8 @@ import { fetchProducts } from '../api/products'
 import { MAX_PRODUCT_IMAGES } from '../config/catalog'
 import type { Product } from '../data/products'
 import { FavoritesProvider } from '../context/FavoritesContext'
+import { CartProvider } from '../context/CartContext'
+import type { ReactNode } from 'react'
 
 vi.mock('../api/products', () => ({
   fetchProducts: vi.fn(),
@@ -80,16 +82,22 @@ const mockProducts = [
 
 const mockedFetchProducts = vi.mocked(fetchProducts)
 
-function renderProductDetail(productId: number) {
-  render(
+function renderWithProviders(ui: ReactNode, initialPath: string) {
+  return render(
     <FavoritesProvider>
-      <MemoryRouter initialEntries={[`/product/${productId}`]}>
-        <Routes>
-          <Route path="/product/:id" element={<ProductDetail />} />
-        </Routes>
-      </MemoryRouter>
+      <CartProvider>
+        <MemoryRouter initialEntries={[initialPath]}>
+          <Routes>
+            <Route path="/product/:id" element={ui} />
+          </Routes>
+        </MemoryRouter>
+      </CartProvider>
     </FavoritesProvider>,
   )
+}
+
+function renderProductDetail(productId: number) {
+  renderWithProviders(<ProductDetail />, `/product/${productId}`)
 }
 
 expect.extend(matchers)
