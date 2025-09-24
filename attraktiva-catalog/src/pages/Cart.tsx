@@ -21,6 +21,12 @@ export default function Cart() {
     }
     return window.localStorage.getItem('cartVendorEmail') ?? ''
   })
+  const [summaryNotes, setSummaryNotes] = useState(() => {
+    if (typeof window === 'undefined') {
+      return ''
+    }
+    return window.localStorage.getItem('cartSummaryNotes') ?? ''
+  })
 
   useEffect(() => {
     if (typeof window === 'undefined') {
@@ -28,6 +34,13 @@ export default function Cart() {
     }
     window.localStorage.setItem('cartVendorEmail', vendorEmail)
   }, [vendorEmail])
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return
+    }
+    window.localStorage.setItem('cartSummaryNotes', summaryNotes)
+  }, [summaryNotes])
 
   const hasItems = items.length > 0
   const totalItems = useMemo(
@@ -52,6 +65,10 @@ export default function Cart() {
 
   function handleEmailChange(event: ChangeEvent<HTMLInputElement>) {
     setVendorEmail(event.target.value)
+  }
+
+  function handleSummaryNotesChange(event: ChangeEvent<HTMLTextAreaElement>) {
+    setSummaryNotes(event.target.value)
   }
 
   function handleToggleDetails(productId: number) {
@@ -82,8 +99,10 @@ export default function Cart() {
 
     const summary = [`Itens selecionados: ${totalItems}`, `Valor estimado: ${formatCurrency(totalValue)}`]
 
+    const extraNotes = summaryNotes.trim().length > 0 ? `\n\nObservações adicionais:\n${summaryNotes.trim()}` : ''
+
     const body = encodeURIComponent(
-      `${lines.join('\n\n')}\n\n${summary.join('\n')}\n\nEnviado automaticamente pelo catálogo Attraktiva.`,
+      `${lines.join('\n\n')}\n\n${summary.join('\n')}\n${extraNotes}\n\nEnviado automaticamente pelo catálogo Attraktiva.`,
     )
     const subject = encodeURIComponent('Pedido de orçamento - Catálogo Attraktiva')
     const email = encodeURIComponent(vendorEmail.trim())
@@ -236,23 +255,37 @@ export default function Cart() {
               <button type="button" className={styles.clearButton} onClick={clearCart}>
                 Limpar carrinho
               </button>
+              <div className={styles.emailSection}>
+                <label className={styles.emailLabel} htmlFor="vendorEmail">
+                  Receba o orçamento por e-mail
+                </label>
+                <input
+                  id="vendorEmail"
+                  name="vendorEmail"
+                  type="email"
+                  value={vendorEmail}
+                  onChange={handleEmailChange}
+                  placeholder="seuemail@empresa.com"
+                  className={styles.emailInput}
+                />
+                <p className={styles.emailHint}>
+                  Vamos montar um e-mail com todos os itens selecionados para você revisar e enviar ao cliente.
+                </p>
+              </div>
             </div>
             <div className={styles.summaryActions}>
-              <label className={styles.emailLabel} htmlFor="vendorEmail">
-                Receba o orçamento por e-mail
+              <label className={styles.summaryNotesLabel} htmlFor="summaryNotes">
+                Observações adicionais
               </label>
-              <input
-                id="vendorEmail"
-                name="vendorEmail"
-                type="email"
-                value={vendorEmail}
-                onChange={handleEmailChange}
-                placeholder="seuemail@empresa.com"
-                className={styles.emailInput}
+              <textarea
+                id="summaryNotes"
+                name="summaryNotes"
+                className={styles.summaryNotes}
+                placeholder="Use este espaço para anotar pendências, dados do cliente ou orientações para o vendedor."
+                value={summaryNotes}
+                onChange={handleSummaryNotesChange}
+                rows={4}
               />
-              <p className={styles.emailHint}>
-                Vamos montar um e-mail com todos os itens selecionados para você revisar e enviar ao cliente.
-              </p>
               <button type="submit" className={styles.sendButton}>
                 Enviar para orçamento
               </button>
