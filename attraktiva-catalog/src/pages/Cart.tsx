@@ -145,13 +145,6 @@ export default function Cart() {
                       <h2 className={styles.productName} title={product.name}>
                         {product.name}
                       </h2>
-                      <button
-                        type="button"
-                        className={styles.removeButton}
-                        onClick={() => removeItem(product.id)}
-                      >
-                        Excluir
-                      </button>
                     </div>
                     <button
                       type="button"
@@ -193,14 +186,23 @@ export default function Cart() {
                           )}
                         </div>
                       )}
-                      <div className={styles.quantityBlock}>
-                        <span className={styles.quantityLabel}>Quantidade</span>
-                        <QuantitySelector
-                          value={quantity}
-                          onChange={(nextQuantity) => updateQuantity(product.id, nextQuantity)}
-                          decreaseLabel={`Diminuir quantidade de ${product.name}`}
-                          increaseLabel={`Aumentar quantidade de ${product.name}`}
-                        />
+                      <div className={styles.quantitySection}>
+                        <div className={styles.quantityBlock}>
+                          <span className={styles.quantityLabel}>Quantidade</span>
+                          <QuantitySelector
+                            value={quantity}
+                            onChange={(nextQuantity) => updateQuantity(product.id, nextQuantity)}
+                            decreaseLabel={`Diminuir quantidade de ${product.name}`}
+                            increaseLabel={`Aumentar quantidade de ${product.name}`}
+                          />
+                        </div>
+                        <button
+                          type="button"
+                          className={styles.removeButton}
+                          onClick={() => removeItem(product.id)}
+                        >
+                          Excluir
+                        </button>
                       </div>
                     </div>
                     <label className={styles.notesLabel} htmlFor={`notes-${product.id}`}>
