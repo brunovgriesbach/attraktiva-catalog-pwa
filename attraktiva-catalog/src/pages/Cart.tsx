@@ -150,7 +150,7 @@ export default function Cart() {
                         className={styles.removeButton}
                         onClick={() => removeItem(product.id)}
                       >
-                        Remover
+                        Excluir
                       </button>
                     </div>
                     <button
