@@ -132,9 +132,17 @@ export default function SearchBar({
           className={styles.toggleButton}
           aria-expanded={isFiltersOpen}
           aria-controls={filtersPanelId}
+          aria-label={isFiltersOpen ? 'Ocultar filtros' : 'Mostrar filtros'}
           onClick={() => setIsFiltersOpen((value) => !value)}
         >
-          {isFiltersOpen ? 'Ocultar filtros' : 'Mostrar filtros'}
+          <span aria-hidden="true" className={styles.toggleIcon}>
+            <svg viewBox="0 0 24 24" role="img" focusable="false">
+              <path
+                d="M4.5 6.75h15a.75.75 0 0 0 0-1.5h-15a.75.75 0 0 0 0 1.5Zm3 5h9a.75.75 0 0 0 0-1.5h-9a.75.75 0 0 0 0 1.5Zm3 5h3a.75.75 0 0 0 0-1.5h-3a.75.75 0 0 0 0 1.5Z"
+                fill="currentColor"
+              />
+            </svg>
+          </span>
         </button>
       </div>
 
