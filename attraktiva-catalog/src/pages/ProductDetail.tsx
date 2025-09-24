@@ -218,39 +218,41 @@ export default function ProductDetail() {
                   </button>
                 </div>
               </div>
-              <button
-                type="button"
-                className={styles.addToCartButton}
-                data-active={isInCart ? 'true' : 'false'}
-                onClick={handleAddToCart}
-                aria-pressed={isInCart}
-                aria-label={
-                  isInCart
-                    ? 'Adicionar mais unidades do produto ao carrinho'
-                    : 'Adicionar produto ao carrinho'
-                }
-                title={
-                  isInCart ? 'Adicionar mais unidades do produto ao carrinho' : 'Adicionar produto ao carrinho'
-                }
-              >
-                <span aria-hidden="true" className={styles.addToCartButtonContent}>
-                  <span className={styles.addToCartButtonIcon}>
-                    <svg viewBox="0 0 24 24" role="img" focusable="false">
-                      <path
-                        d="M7.5 21a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Zm9 0a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Zm-9.63-6.75a1.25 1.25 0 0 1-1.21-.92L3.28 5.88H2a.75.75 0 0 1 0-1.5h1.83c.56 0 1.05.38 1.21.92l.54 1.85h13.87a1.25 1.25 0 0 1 1.21 1.58l-1.35 4.74a2.25 2.25 0 0 1-2.16 1.67H6.87Z"
-                        fill="currentColor"
-                      />
-                    </svg>
+              <div className={styles.cartActionRow}>
+                <button
+                  type="button"
+                  className={styles.addToCartButton}
+                  data-active={isInCart ? 'true' : 'false'}
+                  onClick={handleAddToCart}
+                  aria-pressed={isInCart}
+                  aria-label={
+                    isInCart
+                      ? 'Adicionar mais unidades do produto ao carrinho'
+                      : 'Adicionar produto ao carrinho'
+                  }
+                  title={
+                    isInCart ? 'Adicionar mais unidades do produto ao carrinho' : 'Adicionar produto ao carrinho'
+                  }
+                >
+                  <span aria-hidden="true" className={styles.addToCartButtonContent}>
+                    <span className={styles.addToCartButtonIcon}>
+                      <svg viewBox="0 0 24 24" role="img" focusable="false">
+                        <path
+                          d="M7.5 21a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Zm9 0a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Zm-9.63-6.75a1.25 1.25 0 0 1-1.21-.92L3.28 5.88H2a.75.75 0 0 1 0-1.5h1.83c.56 0 1.05.38 1.21.92l.54 1.85h13.87a1.25 1.25 0 0 1 1.21 1.58l-1.35 4.74a2.25 2.25 0 0 1-2.16 1.67H6.87Z"
+                          fill="currentColor"
+                        />
+                      </svg>
+                    </span>
+                    <span className={styles.addToCartButtonPlus}>+</span>
                   </span>
-                  <span className={styles.addToCartButtonPlus}>+</span>
-                </span>
-              </button>
+                </button>
+                <p className={styles.price}>
+                  {typeof product.price === 'number'
+                    ? `R$ ${product.price.toFixed(2)}`
+                    : 'Preço indisponível'}
+                </p>
+              </div>
             </div>
-            <p className={styles.price}>
-              {typeof product.price === 'number'
-                ? `R$ ${product.price.toFixed(2)}`
-                : 'Preço indisponível'}
-            </p>
           </div>
           <dl className={styles.details}>
             <div className={styles.detailItem}>
