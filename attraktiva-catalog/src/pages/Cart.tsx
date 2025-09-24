@@ -2,6 +2,7 @@ import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import styles from './Cart.module.css'
 import { useCart } from '../context/CartContext'
+import QuantitySelector from '../components/QuantitySelector'
 
 function formatCurrency(value: number | null | undefined) {
   if (typeof value !== 'number') {
@@ -12,7 +13,7 @@ function formatCurrency(value: number | null | undefined) {
 }
 
 export default function Cart() {
-  const { items, removeItem, clearCart, updateNotes } = useCart()
+  const { items, removeItem, clearCart, updateNotes, updateQuantity } = useCart()
   const [vendorEmail, setVendorEmail] = useState(() => {
     if (typeof window === 'undefined') {
       return ''
@@ -28,12 +29,16 @@ export default function Cart() {
   }, [vendorEmail])
 
   const hasItems = items.length > 0
+  const totalItems = useMemo(
+    () => items.reduce((total, item) => total + item.quantity, 0),
+    [items],
+  )
   const totalValue = useMemo(
     () =>
       items.reduce((total, item) => {
         const price = item.product.price
         if (typeof price === 'number') {
-          return total + price
+          return total + price * item.quantity
         }
         return total
       }, 0),
@@ -56,14 +61,18 @@ export default function Cart() {
     }
 
     const lines = items.map((item, index) => {
-      const { product, notes } = item
+      const { product, notes, quantity } = item
       const noteText = notes.trim().length > 0 ? `\nObservações: ${notes.trim()}` : ''
       const priceText =
-        typeof product.price === 'number' ? `\nPreço: ${formatCurrency(product.price)}` : ''
-      return `${index + 1}. ${product.name} (ID: ${product.id})${priceText}${noteText}`
+        typeof product.price === 'number'
+          ? `\nPreço unitário: ${formatCurrency(product.price)}\nSubtotal: ${formatCurrency(
+              product.price * quantity,
+            )}`
+          : ''
+      return `${index + 1}. ${product.name} (ID: ${product.id})\nQuantidade: ${quantity}${priceText}${noteText}`
     })
 
-    const summary = [`Itens selecionados: ${items.length}`, `Valor estimado: ${formatCurrency(totalValue)}`]
+    const summary = [`Itens selecionados: ${totalItems}`, `Valor estimado: ${formatCurrency(totalValue)}`]
 
     const body = encodeURIComponent(
       `${lines.join('\n\n')}\n\n${summary.join('\n')}\n\nEnviado automaticamente pelo catálogo Attraktiva.`,
@@ -106,7 +115,7 @@ export default function Cart() {
         <>
           <div className={styles.gallery}>
             {items.map((item) => {
-              const { product, notes } = item
+              const { product, notes, quantity } = item
               const image = product.image || product.images[0] || ''
 
               return (
@@ -145,7 +154,26 @@ export default function Cart() {
                         <span className={styles.metaValue}>{product.productReference || 'Não informado'}</span>
                       </li>
                     </ul>
-                    <p className={styles.price}>{formatCurrency(product.price)}</p>
+                    <div className={styles.purchaseRow}>
+                      <div className={styles.priceBlock}>
+                        <span className={styles.priceLabel}>Preço unitário</span>
+                        <span className={styles.priceValue}>{formatCurrency(product.price)}</span>
+                        {typeof product.price === 'number' && (
+                          <span className={styles.lineTotal}>
+                            Total: {formatCurrency(product.price * quantity)}
+                          </span>
+                        )}
+                      </div>
+                      <div className={styles.quantityBlock}>
+                        <span className={styles.quantityLabel}>Quantidade</span>
+                        <QuantitySelector
+                          value={quantity}
+                          onChange={(nextQuantity) => updateQuantity(product.id, nextQuantity)}
+                          decreaseLabel={`Diminuir quantidade de ${product.name}`}
+                          increaseLabel={`Aumentar quantidade de ${product.name}`}
+                        />
+                      </div>
+                    </div>
                     <label className={styles.notesLabel} htmlFor={`notes-${product.id}`}>
                       Observações para o vendedor
                     </label>
@@ -168,7 +196,7 @@ export default function Cart() {
               <h2 className={styles.summaryTitle}>Resumo do pedido</h2>
               <p className={styles.summaryItem}>
                 <span>Itens selecionados</span>
-                <strong>{items.length}</strong>
+                <strong>{totalItems}</strong>
               </p>
               <p className={styles.summaryItem}>
                 <span>Valor estimado</span>

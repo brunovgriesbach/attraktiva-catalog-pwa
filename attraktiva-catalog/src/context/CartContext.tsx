@@ -10,14 +10,16 @@ import type { Product } from '../data/products'
 export interface CartItem {
   product: Product
   notes: string
+  quantity: number
 }
 
 interface CartContextType {
   items: CartItem[]
-  addItem(product: Product): void
+  addItem(product: Product, quantity?: number): void
   removeItem(id: number): void
   clearCart(): void
   updateNotes(id: number, notes: string): void
+  updateQuantity(id: number, quantity: number): void
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined)
@@ -36,10 +38,15 @@ function parseStoredCart(value: string | null): CartItem[] {
     return parsed
       .map((item) => {
         if (item && typeof item === 'object' && 'product' in item) {
-          const candidate = item as { product: Product; notes?: string }
+          const candidate = item as {
+            product: Product
+            notes?: string
+            quantity?: number
+          }
           return {
             product: candidate.product,
             notes: candidate.notes ?? '',
+            quantity: Math.max(1, Math.floor(candidate.quantity ?? 1)),
           }
         }
 
@@ -47,6 +54,7 @@ function parseStoredCart(value: string | null): CartItem[] {
         return {
           product,
           notes: '',
+          quantity: 1,
         }
       })
       .filter((item) => Boolean(item.product))
@@ -75,14 +83,30 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     window.localStorage.setItem('cart', JSON.stringify(items))
   }, [items])
 
-  const addItem = (product: Product) => {
+  const normalizeQuantity = (quantity?: number) => {
+    if (typeof quantity !== 'number' || Number.isNaN(quantity)) {
+      return 1
+    }
+
+    return Math.max(1, Math.floor(quantity))
+  }
+
+  const addItem = (product: Product, quantity?: number) => {
+    const amount = normalizeQuantity(quantity)
+
     setItems((prev) => {
-      const exists = prev.some((item) => item.product.id === product.id)
-      if (exists) {
-        return prev
+      const existingIndex = prev.findIndex((item) => item.product.id === product.id)
+      if (existingIndex !== -1) {
+        const next = [...prev]
+        const current = next[existingIndex]
+        next[existingIndex] = {
+          ...current,
+          quantity: current.quantity + amount,
+        }
+        return next
       }
 
-      return [...prev, { product, notes: '' }]
+      return [...prev, { product, notes: '', quantity: amount }]
     })
   }
 
@@ -107,9 +131,24 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     )
   }
 
+  const updateQuantity = (id: number, quantity: number) => {
+    const amount = normalizeQuantity(quantity)
+
+    setItems((prev) =>
+      prev.map((item) =>
+        item.product.id === id
+          ? {
+              ...item,
+              quantity: amount,
+            }
+          : item,
+      ),
+    )
+  }
+
   return (
     <CartContext.Provider
-      value={{ items, addItem, removeItem, clearCart, updateNotes }}
+      value={{ items, addItem, removeItem, clearCart, updateNotes, updateQuantity }}
     >
       {children}
     </CartContext.Provider>

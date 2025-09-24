@@ -1,8 +1,10 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import type { Product } from '../data/products'
 import styles from './ProductCard.module.css'
 import { useFavorites } from '../context/FavoritesContext'
 import { useCart } from '../context/CartContext'
+import QuantitySelector from './QuantitySelector'
 
 interface ProductCardProps {
   product: Product
@@ -11,19 +13,23 @@ interface ProductCardProps {
 export default function ProductCard({ product }: ProductCardProps) {
   const { isFavorite, toggleFavorite } = useFavorites()
   const { addItem, items } = useCart()
+  const [quantity, setQuantity] = useState(1)
   const coverImage = product.image || product.images[0] || ''
   const favorite = isFavorite(product.id)
   const favoriteLabel = favorite
     ? 'Remover dos favoritos'
     : 'Adicionar aos favoritos'
-  const isInCart = items.some((item) => item.product.id === product.id)
+  const cartItem = items.find((item) => item.product.id === product.id)
+  const isInCart = Boolean(cartItem)
+  const buttonLabel = isInCart ? 'Adicionar mais' : 'Adicionar ao carrinho'
 
   function handleFavoriteClick() {
     toggleFavorite(product)
   }
 
   function handleAddToCart() {
-    addItem(product)
+    addItem(product, quantity)
+    setQuantity(1)
   }
 
   return (
@@ -49,14 +55,26 @@ export default function ProductCard({ product }: ProductCardProps) {
         </div>
       </Link>
       <div className={styles.actions}>
-        <button
-          type="button"
-          onClick={handleAddToCart}
-          className={styles.cartButton}
-          disabled={isInCart}
-        >
-          {isInCart ? 'No carrinho' : 'Adicionar ao carrinho'}
-        </button>
+        <div className={styles.actionRow}>
+          <QuantitySelector
+            value={quantity}
+            onChange={setQuantity}
+            decreaseLabel="Diminuir quantidade do produto"
+            increaseLabel="Aumentar quantidade do produto"
+          />
+          <button
+            type="button"
+            onClick={handleAddToCart}
+            className={styles.cartButton}
+          >
+            {buttonLabel}
+          </button>
+        </div>
+        {cartItem && (
+          <span className={styles.cartInfo}>
+            No carrinho: <strong>{cartItem.quantity}</strong>
+          </span>
+        )}
       </div>
     </div>
   )
