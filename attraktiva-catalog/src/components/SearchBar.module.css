@@ -9,12 +9,20 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
-  align-items: center;
 }
 
-.searchField {
+.searchContainer {
+  display: flex;
+  flex-direction: column;
   flex: 1 1 240px;
   min-width: 200px;
+  gap: 0.5rem;
+}
+
+.searchControl {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
 }
 
 .toggleButton {
@@ -22,10 +30,12 @@
   align-items: center;
   justify-content: center;
   width: 2.5rem;
-  height: 2.5rem;
+  min-width: 2.5rem;
+  min-height: 2.5rem;
   padding: 0.25rem;
-  border-radius: 9999px;
+  border-radius: 0.5rem 0 0 0.5rem;
   border: 1px solid #c7d2fe;
+  border-right: none;
   background-color: #eef2ff;
   color: #312e81;
   cursor: pointer;
@@ -35,16 +45,19 @@
 .toggleButton:hover {
   background-color: #e0e7ff;
   border-color: #a5b4fc;
+  border-right: none;
 }
 
 .toggleButton:focus-visible {
   outline: none;
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.35);
+  border-right: none;
 }
 
 .toggleButton[aria-expanded='true'] {
   background-color: #e0e7ff;
   border-color: #818cf8;
+  border-right: none;
 }
 
 .toggleIcon {
@@ -122,6 +135,18 @@
   min-height: 2.5rem;
 }
 
+.searchInput {
+  flex: 1 1 auto;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  border-left: none;
+}
+
+.searchInput:focus {
+  position: relative;
+  z-index: 1;
+}
+
 .input:focus,
 .select:focus {
   outline: 3px solid rgba(59, 130, 246, 0.35);
@@ -134,11 +159,11 @@
       align-items: stretch;
     }
 
-    .searchField {
+    .searchContainer {
       min-width: 0;
     }
 
-    .toggleButton {
-      align-self: flex-start;
+    .searchControl {
+      width: 100%;
     }
   }
