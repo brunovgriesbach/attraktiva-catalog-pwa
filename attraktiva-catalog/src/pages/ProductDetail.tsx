@@ -118,7 +118,27 @@ export default function ProductDetail() {
           )}
         </div>
         <div className={styles.info}>
-          <h2 className={styles.name}>{product.name}</h2>
+          <div className={styles.header}>
+            <h2 className={styles.name}>{product.name}</h2>
+            <Link
+              to="/cart"
+              className={styles.cartQuickLink}
+              aria-label="Ir para o carrinho"
+              title="Ir para o carrinho"
+            >
+              <svg
+                aria-hidden="true"
+                focusable="false"
+                viewBox="0 0 24 24"
+                className={styles.cartQuickLinkIcon}
+              >
+                <path
+                  d="M7.5 21a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Zm9 0a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Zm-9.63-6.75a1.25 1.25 0 0 1-1.21-.92L3.28 5.88H2a.75.75 0 0 1 0-1.5h1.83c.56 0 1.05.38 1.21.92l.54 1.85h13.87a1.25 1.25 0 0 1 1.21 1.58l-1.35 4.74a2.25 2.25 0 0 1-2.16 1.67H6.87Z"
+                  fill="currentColor"
+                />
+              </svg>
+            </Link>
+          </div>
           <button
             type="button"
             className={styles.favoriteButton}
@@ -145,9 +165,6 @@ export default function ProductDetail() {
             >
               {isInCart ? 'Produto no carrinho' : 'Adicionar ao carrinho'}
             </button>
-            <Link to="/cart" className={styles.goToCart}>
-              Ver carrinho
-            </Link>
           </div>
           <dl className={styles.details}>
             <div className={styles.detailItem}>
